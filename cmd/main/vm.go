@@ -458,7 +458,9 @@ func main() {
 
 	// JBC
 	OPCODES[0x10+0x00] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
@@ -545,7 +547,9 @@ func main() {
 
 	// JB
 	OPCODES[0x20+0x00] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
@@ -632,7 +636,9 @@ func main() {
 
 	// JNB
 	OPCODES[0x30+0x00] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
@@ -740,7 +746,9 @@ func main() {
 
 	// ORL
 	OPCODES[0x40+0x03] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
@@ -921,7 +929,9 @@ func main() {
 
 	// XRL
 	OPCODES[0x60+0x03] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
@@ -1024,7 +1034,9 @@ func main() {
 
 	// MOV
 	OPCODES[0x70+0x05] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
@@ -1133,7 +1145,9 @@ func main() {
 
 	// MOV
 	OPCODES[0x80+0x05] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
@@ -1209,7 +1223,9 @@ func main() {
 
 	// MOV
 	OPCODES[0x90+0x00] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
@@ -1428,73 +1444,97 @@ func main() {
 
 	// CJNE A,#data,reladdr
 	OPCODES[0xB0+0x04] = func(program []byte, pos int) int {
-		// TODO: operand
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
 	// CJNE A,iram addr,reladdr
 	OPCODES[0xB0+0x05] = func(program []byte, pos int) int {
-		// TODO: operand
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
 	// CJNE
 	OPCODES[0xB0+0x06] = func(program []byte, pos int) int {
-		// TODO: operand
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
 	// CJNE
 	OPCODES[0xB0+0x07] = func(program []byte, pos int) int {
-		// TODO: operand
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
 	// CJNE R0,#data,reladdr
 	OPCODES[0xB0+0x08] = func(program []byte, pos int) int {
-		// TODO: operand
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
 	// CJNE
 	OPCODES[0xB0+0x09] = func(program []byte, pos int) int {
-		// TODO: operand
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
 	// CJNE
 	OPCODES[0xB0+0x0A] = func(program []byte, pos int) int {
-		// TODO: operand
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
 	// CJNE
 	OPCODES[0xB0+0x0B] = func(program []byte, pos int) int {
-		// TODO: operand
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
 	// CJNE
 	OPCODES[0xB0+0x0C] = func(program []byte, pos int) int {
-		// TODO: operand
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
 	// CJNE
 	OPCODES[0xB0+0x0D] = func(program []byte, pos int) int {
-		// TODO: operand
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
 	// CJNE
 	OPCODES[0xB0+0x0E] = func(program []byte, pos int) int {
-		// TODO: operand
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
 	// CJNE
 	OPCODES[0xB0+0x0F] = func(program []byte, pos int) int {
-		// TODO: operand
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
@@ -1619,7 +1659,9 @@ func main() {
 
 	// DJNZ
 	OPCODES[0xD0+0x05] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+
 		return 3
 	}
 
