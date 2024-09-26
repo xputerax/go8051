@@ -1,6 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"io"
+	"log"
+	"os"
+)
 
 /** Special function registers - 80h - FFh */
 type Register struct {
@@ -82,6 +88,13 @@ func PSW_P(psw byte) bool {
 type Operation func(program []byte, pos int) int
 
 func main() {
+
+	if len(os.Args) < 2 {
+		fmt.Println("usage: ./vm <binary>")
+		fmt.Println("usage: ./vm examples/blink.bin")
+		return
+	}
+
 	OPCODES_NAME := make(map[byte]string)
 	OPCODES_NAME[0x00+0x00] = "NOP"
 	OPCODES_NAME[0x00+0x01] = "AJMP"
@@ -1655,19 +1668,26 @@ func main() {
 		return 1
 	}
 
-	// TODO: pass via argument
-	// $ ./asem blink.a51 blink.hex -v
-	// $ ./hexbin blink.hex blink.bin
-	// $ xxd blink.bin
-	program := []byte{
-		0xb2, 0xb5,
-		0x7b, 0x08,
-		0x7a, 0x00,
-		0x79, 0x00,
-		0xd9, 0xfe,
-		0xda, 0xfc,
-		0xdb, 0xfa,
-		0x80, 0xf0,
+	fileName := os.Args[1]
+
+	log.Printf("Processing file %s\n", fileName)
+
+	f, err := os.Open(fileName)
+	if err != nil {
+		log.Fatalf("Failed to open file %s: %s\n", fileName, err)
+	}
+	defer f.Close()
+
+	stat, err := f.Stat()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	program := make([]byte, stat.Size())
+	_, err = bufio.NewReader(f).Read(program)
+	if err != nil && err != io.EOF {
+		log.Fatalf("error when reading file: %s\n", err)
 	}
 
 	for pos := 0; pos < len(program); {
@@ -1679,7 +1699,7 @@ func main() {
 			continue
 		}
 
-		cb, ok := OPCODES[opcode]
+		parseFn, ok := OPCODES[opcode]
 		if !ok {
 			fmt.Printf("op %d not in OPCODES\n", opcode)
 			continue
@@ -1687,7 +1707,7 @@ func main() {
 
 		fmt.Printf("pos %d op %d (0x%02X) = %s\n", pos, opcode, opcode, name)
 
-		sz := cb(program[pos:], pos)
+		sz := parseFn(program[pos:], pos)
 
 		fmt.Println()
 
