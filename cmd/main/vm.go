@@ -401,7 +401,8 @@ func main() {
 
 	// INC
 	OPCODES[0x00+0x05] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -455,8 +456,6 @@ func main() {
 		return 1
 	}
 
-	//---atas semua ok
-
 	// JBC
 	OPCODES[0x10+0x00] = func(program []byte, pos int) int {
 		// TODO: oper
@@ -489,7 +488,8 @@ func main() {
 
 	// DEC
 	OPCODES[0x10+0x05] = func(program []byte, pos int) int {
-		// TODO oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -543,8 +543,6 @@ func main() {
 		return 1
 	}
 
-	// -- semua ok
-
 	// JB
 	OPCODES[0x20+0x00] = func(program []byte, pos int) int {
 		// TODO: oper
@@ -553,7 +551,8 @@ func main() {
 
 	// AJMP
 	OPCODES[0x20+0x01] = func(program []byte, pos int) int {
-		// TODO
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -569,13 +568,15 @@ func main() {
 
 	// ADD
 	OPCODES[0x20+0x04] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// ADD
 	OPCODES[0x20+0x05] = func(program []byte, pos int) int {
-		// todo: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -629,8 +630,6 @@ func main() {
 		return 1
 	}
 
-	// -- ok
-
 	// JNB
 	OPCODES[0x30+0x00] = func(program []byte, pos int) int {
 		// TODO: oper
@@ -639,7 +638,8 @@ func main() {
 
 	// ACALL
 	OPCODES[0x30+0x01] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -655,13 +655,15 @@ func main() {
 
 	// ADDC
 	OPCODES[0x30+0x04] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// ADDC
 	OPCODES[0x30+0x05] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -715,23 +717,24 @@ func main() {
 		return 1
 	}
 
-	// -- ok
-
 	// JC reladdr
 	OPCODES[0x40+0x00] = func(program []byte, pos int) int {
-		// TODO: operand
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// AJMP
 	OPCODES[0x40+0x01] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// ORL
 	OPCODES[0x40+0x02] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -743,13 +746,15 @@ func main() {
 
 	// ORL
 	OPCODES[0x40+0x04] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// ORL
 	OPCODES[0x40+0x05] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -805,19 +810,22 @@ func main() {
 
 	// JNC reladdr
 	OPCODES[0x50+0x00] = func(program []byte, pos int) int {
-		// TODO: operand
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// ACALL
 	OPCODES[0x50+0x01] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// ANL
 	OPCODES[0x50+0x02] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -828,11 +836,15 @@ func main() {
 
 	// ANL
 	OPCODES[0x50+0x04] = func(program []byte, pos int) int {
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// ANL
 	OPCODES[0x50+0x05] = func(program []byte, pos int) int {
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -895,13 +907,15 @@ func main() {
 
 	// AJMP
 	OPCODES[0x60+0x01] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// XRL
 	OPCODES[0x60+0x02] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -913,13 +927,15 @@ func main() {
 
 	// XRL
 	OPCODES[0x60+0x04] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// XRL
 	OPCODES[0x60+0x05] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -975,19 +991,22 @@ func main() {
 
 	// JNZ reladdr
 	OPCODES[0x70+0x00] = func(program []byte, pos int) int {
-		// TODO: operand
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// ACALL
 	OPCODES[0x70+0x01] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// ORL
 	OPCODES[0x70+0x02] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -998,7 +1017,8 @@ func main() {
 
 	// MOV
 	OPCODES[0x70+0x04] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -1010,19 +1030,22 @@ func main() {
 
 	// MOV
 	OPCODES[0x70+0x06] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0x70+0x07] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0x70+0x08] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -1051,25 +1074,29 @@ func main() {
 
 	// MOV
 	OPCODES[0x70+0x0C] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0x70+0x0D] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0x70+0x0E] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0x70+0x0F] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -1082,13 +1109,15 @@ func main() {
 
 	// AJMP
 	OPCODES[0x80+0x01] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// ANL
 	OPCODES[0x80+0x02] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -1110,61 +1139,71 @@ func main() {
 
 	// MOV
 	OPCODES[0x80+0x06] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0x80+0x07] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0x80+0x08] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0x80+0x09] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0x80+0x0A] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0x80+0x0B] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0x80+0x0C] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0x80+0x0D] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0x80+0x0E] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0x80+0x0F] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -1176,7 +1215,8 @@ func main() {
 
 	// ACALL
 	OPCODES[0x90+0x01] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -1192,13 +1232,15 @@ func main() {
 
 	// SUBB
 	OPCODES[0x90+0x04] = func(program []byte, pos int) int {
-		// todo: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// SUBB
 	OPCODES[0x90+0x05] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -1254,19 +1296,22 @@ func main() {
 
 	// ORL
 	OPCODES[0xA0+0x00] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// AJMP
 	OPCODES[0xA0+0x01] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x02] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -1287,73 +1332,85 @@ func main() {
 
 	// MOV
 	OPCODES[0xA0+0x06] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x07] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x08] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x09] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x0A] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x0B] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x0C] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x0D] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x0E] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x0F] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// ANL
 	OPCODES[0xB0+0x00] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// ACALL
 	OPCODES[0xB0+0x01] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -1443,19 +1500,22 @@ func main() {
 
 	// PUSH
 	OPCODES[0xC0+0x00] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// AJMP
 	OPCODES[0xC0+0x01] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// CLR
 	OPCODES[0xC0+0x02] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -1471,7 +1531,8 @@ func main() {
 
 	// XCH
 	OPCODES[0xC0+0x05] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -1527,19 +1588,22 @@ func main() {
 
 	// POP
 	OPCODES[0xD0+0x00] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// ACALL
 	OPCODES[0xD0+0x01] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// SETB
 	OPCODES[0xD0+0x02] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -1571,7 +1635,8 @@ func main() {
 
 	// DJNZ R0,reladdr
 	OPCODES[0xD0+0x08] = func(program []byte, pos int) int {
-		// TODO
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -1598,25 +1663,29 @@ func main() {
 
 	// DJNZ R4,reladdr
 	OPCODES[0xD0+0x0C] = func(program []byte, pos int) int {
-		// TODO
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// DJNZ R5,reladdr
 	OPCODES[0xD0+0x0D] = func(program []byte, pos int) int {
-		// TODO
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// DJNZ R6,reladdr
 	OPCODES[0xD0+0x0E] = func(program []byte, pos int) int {
-		// TODO
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
 	// DJNZ R7,reladdr
 	OPCODES[0xD0+0x0F] = func(program []byte, pos int) int {
-		// TODO
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -1627,7 +1696,8 @@ func main() {
 
 	// AJMP
 	OPCODES[0xE0+0x01] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -1648,7 +1718,8 @@ func main() {
 
 	// MOV
 	OPCODES[0xE0+0x05] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -1709,7 +1780,8 @@ func main() {
 
 	// ACALL
 	OPCODES[0xF0+0x01] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
@@ -1730,7 +1802,8 @@ func main() {
 
 	// MOV
 	OPCODES[0xF0+0x05] = func(program []byte, pos int) int {
-		// TODO: oper
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
 		return 2
 	}
 
