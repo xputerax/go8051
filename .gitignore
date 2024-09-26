@@ -1,3 +1,3 @@
 gen.txt
 cmd/gen/
-*.bin
+./*.bin
