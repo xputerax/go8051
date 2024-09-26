@@ -97,8 +97,8 @@ func main() {
 
 	OPCODES_NAME := make(map[byte]string)
 	OPCODES_NAME[0x00+0x00] = "NOP"
-	OPCODES_NAME[0x00+0x01] = "AJMP"
-	OPCODES_NAME[0x00+0x02] = "LJMP"
+	OPCODES_NAME[0x00+0x01] = "AJMP codeaddr"
+	OPCODES_NAME[0x00+0x02] = "LJMP codeaddr"
 	OPCODES_NAME[0x00+0x03] = "RR"
 	OPCODES_NAME[0x00+0x04] = "INC"
 	OPCODES_NAME[0x00+0x05] = "INC"
@@ -114,8 +114,8 @@ func main() {
 	OPCODES_NAME[0x00+0x0f] = "INC"
 
 	OPCODES_NAME[0x10+0x00] = "JBC"
-	OPCODES_NAME[0x10+0x01] = "ACALL"
-	OPCODES_NAME[0x10+0x02] = "LCALL"
+	OPCODES_NAME[0x10+0x01] = "ACALL page0"
+	OPCODES_NAME[0x10+0x02] = "LCALL codeaddr"
 	OPCODES_NAME[0x10+0x03] = "RRC"
 	OPCODES_NAME[0x10+0x04] = "DEC"
 	OPCODES_NAME[0x10+0x05] = "DEC"
@@ -164,7 +164,7 @@ func main() {
 	OPCODES_NAME[0x30+0x0e] = "ADDC"
 	OPCODES_NAME[0x30+0x0f] = "ADDC"
 
-	OPCODES_NAME[0x40+0x00] = "JC"
+	OPCODES_NAME[0x40+0x00] = "JC reladdr"
 	OPCODES_NAME[0x40+0x01] = "AJMP"
 	OPCODES_NAME[0x40+0x02] = "ORL"
 	OPCODES_NAME[0x40+0x03] = "ORL"
@@ -181,7 +181,7 @@ func main() {
 	OPCODES_NAME[0x40+0x0e] = "ORL"
 	OPCODES_NAME[0x40+0x0f] = "ORL"
 
-	OPCODES_NAME[0x50+0x00] = "JNC"
+	OPCODES_NAME[0x50+0x00] = "JNC reladdr"
 	OPCODES_NAME[0x50+0x01] = "ACALL"
 	OPCODES_NAME[0x50+0x02] = "ANL"
 	OPCODES_NAME[0x50+0x03] = "ANL"
@@ -198,7 +198,7 @@ func main() {
 	OPCODES_NAME[0x50+0x0e] = "ANL"
 	OPCODES_NAME[0x50+0x0f] = "ANL"
 
-	OPCODES_NAME[0x60+0x00] = "JZ"
+	OPCODES_NAME[0x60+0x00] = "JZ reladdr"
 	OPCODES_NAME[0x60+0x01] = "AJMP"
 	OPCODES_NAME[0x60+0x02] = "XRL"
 	OPCODES_NAME[0x60+0x03] = "XRL"
@@ -215,7 +215,7 @@ func main() {
 	OPCODES_NAME[0x60+0x0e] = "XRL"
 	OPCODES_NAME[0x60+0x0f] = "XRL"
 
-	OPCODES_NAME[0x70+0x00] = "JNZ"
+	OPCODES_NAME[0x70+0x00] = "JNZ reladdr"
 	OPCODES_NAME[0x70+0x01] = "ACALL"
 	OPCODES_NAME[0x70+0x02] = "ORL"
 	OPCODES_NAME[0x70+0x03] = "JMP"
@@ -287,18 +287,18 @@ func main() {
 	OPCODES_NAME[0xb0+0x01] = "ACALL"
 	OPCODES_NAME[0xb0+0x02] = "CPL bitaddr"
 	OPCODES_NAME[0xb0+0x03] = "CPL"
-	OPCODES_NAME[0xb0+0x04] = "CJNE"
-	OPCODES_NAME[0xb0+0x05] = "CJNE"
-	OPCODES_NAME[0xb0+0x06] = "CJNE"
-	OPCODES_NAME[0xb0+0x07] = "CJNE"
-	OPCODES_NAME[0xb0+0x08] = "CJNE"
-	OPCODES_NAME[0xb0+0x09] = "CJNE"
-	OPCODES_NAME[0xb0+0x0a] = "CJNE"
-	OPCODES_NAME[0xb0+0x0b] = "CJNE"
-	OPCODES_NAME[0xb0+0x0c] = "CJNE"
-	OPCODES_NAME[0xb0+0x0d] = "CJNE"
-	OPCODES_NAME[0xb0+0x0e] = "CJNE"
-	OPCODES_NAME[0xb0+0x0f] = "CJNE"
+	OPCODES_NAME[0xb0+0x04] = "CJNE A,#data,reladdr"
+	OPCODES_NAME[0xb0+0x05] = "CJNE A,iram addr,reladdr"
+	OPCODES_NAME[0xb0+0x06] = "CJNE @R0,#data,reladdr"
+	OPCODES_NAME[0xb0+0x07] = "CJNE @R1,#data,reladdr"
+	OPCODES_NAME[0xb0+0x08] = "CJNE R0,#data,reladdr"
+	OPCODES_NAME[0xb0+0x09] = "CJNE R1,#data,reladdr"
+	OPCODES_NAME[0xb0+0x0a] = "CJNE R2,#data,reladdr"
+	OPCODES_NAME[0xb0+0x0b] = "CJNE R3,#data,reladdr"
+	OPCODES_NAME[0xb0+0x0c] = "CJNE R4,#data,reladdr"
+	OPCODES_NAME[0xb0+0x0d] = "CJNE R5,#data,reladdr"
+	OPCODES_NAME[0xb0+0x0e] = "CJNE R6,#data,reladdr"
+	OPCODES_NAME[0xb0+0x0f] = "CJNE R7,#data,reladdr"
 
 	OPCODES_NAME[0xc0+0x00] = "PUSH"
 	OPCODES_NAME[0xc0+0x01] = "AJMP"
@@ -375,14 +375,18 @@ func main() {
 		return 1
 	}
 
-	// AJMP
+	// AJMP codeaddr
 	OPCODES[0x00+0x01] = func(program []byte, pos int) int {
-		return 1
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
+		return 2
 	}
 
 	// LJMP
 	OPCODES[0x00+0x02] = func(program []byte, pos int) int {
-		return 1
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+		return 3
 	}
 
 	// RR
@@ -397,7 +401,8 @@ func main() {
 
 	// INC
 	OPCODES[0x00+0x05] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// INC
@@ -450,19 +455,26 @@ func main() {
 		return 1
 	}
 
+	//---atas semua ok
+
 	// JBC
 	OPCODES[0x10+0x00] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 3
 	}
 
 	// ACALL
 	OPCODES[0x10+0x01] = func(program []byte, pos int) int {
-		return 1
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
+		return 2
 	}
 
-	// LCALL
+	// LCALL codeaddr
 	OPCODES[0x10+0x02] = func(program []byte, pos int) int {
-		return 1
+		operand := program[1:3]
+		fmt.Printf("operand: %02x\n", operand)
+		return 3
 	}
 
 	// RRC
@@ -477,7 +489,8 @@ func main() {
 
 	// DEC
 	OPCODES[0x10+0x05] = func(program []byte, pos int) int {
-		return 1
+		// TODO oper
+		return 2
 	}
 
 	// DEC
@@ -530,14 +543,18 @@ func main() {
 		return 1
 	}
 
+	// -- semua ok
+
 	// JB
 	OPCODES[0x20+0x00] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 3
 	}
 
 	// AJMP
 	OPCODES[0x20+0x01] = func(program []byte, pos int) int {
-		return 1
+		// TODO
+		return 2
 	}
 
 	// RET
@@ -552,12 +569,14 @@ func main() {
 
 	// ADD
 	OPCODES[0x20+0x04] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// ADD
 	OPCODES[0x20+0x05] = func(program []byte, pos int) int {
-		return 1
+		// todo: oper
+		return 2
 	}
 
 	// ADD
@@ -610,14 +629,18 @@ func main() {
 		return 1
 	}
 
+	// -- ok
+
 	// JNB
 	OPCODES[0x30+0x00] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 3
 	}
 
 	// ACALL
 	OPCODES[0x30+0x01] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// RETI
@@ -632,12 +655,14 @@ func main() {
 
 	// ADDC
 	OPCODES[0x30+0x04] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// ADDC
 	OPCODES[0x30+0x05] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// ADDC
@@ -690,34 +715,42 @@ func main() {
 		return 1
 	}
 
-	// JC
+	// -- ok
+
+	// JC reladdr
 	OPCODES[0x40+0x00] = func(program []byte, pos int) int {
-		return 1
+		// TODO: operand
+		return 2
 	}
 
 	// AJMP
 	OPCODES[0x40+0x01] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// ORL
 	OPCODES[0x40+0x02] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// ORL
 	OPCODES[0x40+0x03] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 3
 	}
 
 	// ORL
 	OPCODES[0x40+0x04] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// ORL
 	OPCODES[0x40+0x05] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// ORL
@@ -770,34 +803,37 @@ func main() {
 		return 1
 	}
 
-	// JNC
+	// JNC reladdr
 	OPCODES[0x50+0x00] = func(program []byte, pos int) int {
-		return 1
+		// TODO: operand
+		return 2
 	}
 
 	// ACALL
 	OPCODES[0x50+0x01] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// ANL
 	OPCODES[0x50+0x02] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// ANL
 	OPCODES[0x50+0x03] = func(program []byte, pos int) int {
-		return 1
+		return 3
 	}
 
 	// ANL
 	OPCODES[0x50+0x04] = func(program []byte, pos int) int {
-		return 1
+		return 2
 	}
 
 	// ANL
 	OPCODES[0x50+0x05] = func(program []byte, pos int) int {
-		return 1
+		return 2
 	}
 
 	// ANL
@@ -852,32 +888,39 @@ func main() {
 
 	// JZ
 	OPCODES[0x60+0x00] = func(program []byte, pos int) int {
-		return 1
+		operand := program[1]
+		fmt.Printf("operand: %02x\n", operand)
+		return 2
 	}
 
 	// AJMP
 	OPCODES[0x60+0x01] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// XRL
 	OPCODES[0x60+0x02] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// XRL
 	OPCODES[0x60+0x03] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 3
 	}
 
 	// XRL
 	OPCODES[0x60+0x04] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// XRL
 	OPCODES[0x60+0x05] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// XRL
@@ -930,19 +973,22 @@ func main() {
 		return 1
 	}
 
-	// JNZ
+	// JNZ reladdr
 	OPCODES[0x70+0x00] = func(program []byte, pos int) int {
-		return 1
+		// TODO: operand
+		return 2
 	}
 
 	// ACALL
 	OPCODES[0x70+0x01] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// ORL
 	OPCODES[0x70+0x02] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// JMP
@@ -952,27 +998,32 @@ func main() {
 
 	// MOV
 	OPCODES[0x70+0x04] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0x70+0x05] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 3
 	}
 
 	// MOV
 	OPCODES[0x70+0x06] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0x70+0x07] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0x70+0x08] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
@@ -1000,22 +1051,26 @@ func main() {
 
 	// MOV
 	OPCODES[0x70+0x0C] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0x70+0x0D] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0x70+0x0E] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0x70+0x0F] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// SJMP reladdr
@@ -1027,12 +1082,14 @@ func main() {
 
 	// AJMP
 	OPCODES[0x80+0x01] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// ANL
 	OPCODES[0x80+0x02] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOVC
@@ -1047,72 +1104,85 @@ func main() {
 
 	// MOV
 	OPCODES[0x80+0x05] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 3
 	}
 
 	// MOV
 	OPCODES[0x80+0x06] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0x80+0x07] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0x80+0x08] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0x80+0x09] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0x80+0x0A] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0x80+0x0B] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0x80+0x0C] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0x80+0x0D] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0x80+0x0E] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0x80+0x0F] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0x90+0x00] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 3
 	}
 
 	// ACALL
 	OPCODES[0x90+0x01] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0x90+0x02] = func(program []byte, pos int) int {
-		return 1
+		return 2
 	}
 
 	// MOVC
@@ -1122,12 +1192,14 @@ func main() {
 
 	// SUBB
 	OPCODES[0x90+0x04] = func(program []byte, pos int) int {
-		return 1
+		// todo: oper
+		return 2
 	}
 
 	// SUBB
 	OPCODES[0x90+0x05] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// SUBB
@@ -1182,17 +1254,20 @@ func main() {
 
 	// ORL
 	OPCODES[0xA0+0x00] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// AJMP
 	OPCODES[0xA0+0x01] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x02] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// INC
@@ -1212,62 +1287,74 @@ func main() {
 
 	// MOV
 	OPCODES[0xA0+0x06] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x07] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x08] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x09] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x0A] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x0B] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x0C] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x0D] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x0E] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
 	OPCODES[0xA0+0x0F] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// ANL
 	OPCODES[0xB0+0x00] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// ACALL
 	OPCODES[0xB0+0x01] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// CPL bitaddr
@@ -1282,79 +1369,94 @@ func main() {
 		return 1
 	}
 
-	// CJNE
+	// CJNE A,#data,reladdr
 	OPCODES[0xB0+0x04] = func(program []byte, pos int) int {
-		return 1
+		// TODO: operand
+		return 3
 	}
 
-	// CJNE
+	// CJNE A,iram addr,reladdr
 	OPCODES[0xB0+0x05] = func(program []byte, pos int) int {
-		return 1
+		// TODO: operand
+		return 3
 	}
 
 	// CJNE
 	OPCODES[0xB0+0x06] = func(program []byte, pos int) int {
-		return 1
+		// TODO: operand
+		return 3
 	}
 
 	// CJNE
 	OPCODES[0xB0+0x07] = func(program []byte, pos int) int {
-		return 1
+		// TODO: operand
+		return 3
 	}
 
-	// CJNE
+	// CJNE R0,#data,reladdr
 	OPCODES[0xB0+0x08] = func(program []byte, pos int) int {
-		return 1
+		// TODO: operand
+		return 3
 	}
 
 	// CJNE
 	OPCODES[0xB0+0x09] = func(program []byte, pos int) int {
-		return 1
+		// TODO: operand
+		return 3
 	}
 
 	// CJNE
 	OPCODES[0xB0+0x0A] = func(program []byte, pos int) int {
-		return 1
+		// TODO: operand
+		return 3
 	}
 
 	// CJNE
 	OPCODES[0xB0+0x0B] = func(program []byte, pos int) int {
-		return 1
+		// TODO: operand
+		return 3
 	}
 
 	// CJNE
 	OPCODES[0xB0+0x0C] = func(program []byte, pos int) int {
-		return 1
+		// TODO: operand
+		return 3
 	}
 
 	// CJNE
 	OPCODES[0xB0+0x0D] = func(program []byte, pos int) int {
-		return 1
+		// TODO: operand
+		return 3
 	}
 
 	// CJNE
 	OPCODES[0xB0+0x0E] = func(program []byte, pos int) int {
-		return 1
+		// TODO: operand
+		return 3
 	}
 
 	// CJNE
 	OPCODES[0xB0+0x0F] = func(program []byte, pos int) int {
-		return 1
+		// TODO: operand
+		return 3
 	}
 
 	// PUSH
 	OPCODES[0xC0+0x00] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// AJMP
 	OPCODES[0xC0+0x01] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// CLR
 	OPCODES[0xC0+0x02] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// CLR
@@ -1369,7 +1471,8 @@ func main() {
 
 	// XCH
 	OPCODES[0xC0+0x05] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// XCH
@@ -1424,17 +1527,20 @@ func main() {
 
 	// POP
 	OPCODES[0xD0+0x00] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// ACALL
 	OPCODES[0xD0+0x01] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// SETB
 	OPCODES[0xD0+0x02] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// SETB
@@ -1449,7 +1555,8 @@ func main() {
 
 	// DJNZ
 	OPCODES[0xD0+0x05] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 3
 	}
 
 	// XCHD
@@ -1464,7 +1571,8 @@ func main() {
 
 	// DJNZ R0,reladdr
 	OPCODES[0xD0+0x08] = func(program []byte, pos int) int {
-		return 1
+		// TODO
+		return 2
 	}
 
 	// DJNZ R1,reladdr
@@ -1490,22 +1598,26 @@ func main() {
 
 	// DJNZ R4,reladdr
 	OPCODES[0xD0+0x0C] = func(program []byte, pos int) int {
-		return 1
+		// TODO
+		return 2
 	}
 
 	// DJNZ R5,reladdr
 	OPCODES[0xD0+0x0D] = func(program []byte, pos int) int {
-		return 1
+		// TODO
+		return 2
 	}
 
 	// DJNZ R6,reladdr
 	OPCODES[0xD0+0x0E] = func(program []byte, pos int) int {
-		return 1
+		// TODO
+		return 2
 	}
 
 	// DJNZ R7,reladdr
 	OPCODES[0xD0+0x0F] = func(program []byte, pos int) int {
-		return 1
+		// TODO
+		return 2
 	}
 
 	// MOVX
@@ -1515,7 +1627,8 @@ func main() {
 
 	// AJMP
 	OPCODES[0xE0+0x01] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOVX
@@ -1535,7 +1648,8 @@ func main() {
 
 	// MOV
 	OPCODES[0xE0+0x05] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
@@ -1595,7 +1709,8 @@ func main() {
 
 	// ACALL
 	OPCODES[0xF0+0x01] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOVX
@@ -1615,7 +1730,8 @@ func main() {
 
 	// MOV
 	OPCODES[0xF0+0x05] = func(program []byte, pos int) int {
-		return 1
+		// TODO: oper
+		return 2
 	}
 
 	// MOV
@@ -1689,6 +1805,8 @@ func main() {
 	if err != nil && err != io.EOF {
 		log.Fatalf("error when reading file: %s\n", err)
 	}
+
+	log.Printf("File %s is %d bytes\n", fileName, stat.Size())
 
 	for pos := 0; pos < len(program); {
 		opcode := program[pos]
