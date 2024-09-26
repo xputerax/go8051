@@ -74,12 +74,18 @@ func PSW_P(psw byte) bool {
 	return (psw & PSW_P_MASK) == PSW_P_MASK
 }
 
-var OPCODE_LOOKUP map[byte]EvalOperation = operationTable()
-var OPCODE_NAMES map[byte]string = opcodeNames()
-
 type Machine struct {
 	Registers Register
 }
+
+type EvalOperation func(vm *Machine, operands []byte) error
+
+type Opcode struct {
+	Name string
+	Eval EvalOperation
+}
+
+var OPCODES map[byte]Opcode = operationTable()
 
 // []byte{op, oper1, oper2}
 func (m *Machine) Feed(instructions []byte) error {
@@ -89,21 +95,17 @@ func (m *Machine) Feed(instructions []byte) error {
 
 	opcode := instructions[0]
 	operands := instructions[1:]
-	eval, ok := OPCODE_LOOKUP[opcode]
+
+	op, ok := OPCODES[opcode]
 	if !ok {
-		return fmt.Errorf("opcode '%d' does not exist in OPCODE_LOOKUP", opcode)
+		return fmt.Errorf("opcode '%02x' does not exist in OPCODES")
 	}
 
-	name, ok := OPCODE_NAMES[opcode]
-	if !ok {
-		return fmt.Errorf("opcode '%d' does not exist in OPCODE_NAMES", opcode)
-	}
-
-	log.Printf("executing instruction '%02X' (%s) with operand '%v'", opcode, name, operands)
+	log.Printf("executing instruction '%02X' (%s) with operand '%v'", opcode, op.Name, operands)
 
 	log.Printf("BEFORE: %+v\n", m.Registers)
 
-	evalErr := eval(m, operands)
+	evalErr := op.Eval(m, operands)
 	if evalErr != nil {
 		return fmt.Errorf("VM eval error: %s", evalErr)
 	}
@@ -126,31 +128,20 @@ func main() {
 	}
 }
 
-type EvalOperation func(vm *Machine, operands []byte) error
-
-func operationTable() map[byte]EvalOperation {
-	tbl := make(map[byte]EvalOperation)
-	tbl[0x00+0x00] = func(vm *Machine, operands []byte) error {
+func operationTable() map[byte]Opcode {
+	tbl := make(map[byte]Opcode)
+	tbl[0x00+0x00] = Opcode{Name: "NOP", Eval: func(vm *Machine, operands []byte) error {
 		fmt.Println("PERFORMING NOP")
 		return nil
-	}
+	}}
 
-	tbl[0x24] = func(vm *Machine, operands []byte) error {
+	tbl[0x24] = Opcode{Name: "ADD A,#data", Eval: func(vm *Machine, operands []byte) error {
 		log.Println("performing ADD A,#data")
 		A := vm.Registers.ACC
 		A += operands[0]
 		vm.Registers.ACC = A
 		return nil
-	}
-
-	return tbl
-}
-
-func opcodeNames() map[byte]string {
-	tbl := make(map[byte]string)
-
-	tbl[0x00] = "NOP"
-	tbl[0x24] = "ADD A,#data"
+	}}
 
 	return tbl
 }
