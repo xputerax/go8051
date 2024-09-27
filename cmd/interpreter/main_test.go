@@ -98,3 +98,36 @@ func TestOp0x04(t *testing.T) {
 		}
 	}
 }
+
+func TestOp0x13(t *testing.T) {
+	cases := []struct {
+		Original      byte
+		ExpectedAcc   byte
+		ExpectedCarry byte
+	}{
+		{Original: 0b00000000, ExpectedAcc: 0b00000000, ExpectedCarry: 0},
+		{Original: 0b11111111, ExpectedAcc: 0b11111111, ExpectedCarry: 1},
+		{Original: 0b10000001, ExpectedAcc: 0b11000000, ExpectedCarry: 1},
+	}
+
+	for _, tc := range cases {
+		vm := Machine{Registers: Register{ACC: tc.Original}}
+		vm.Feed([]byte{0x13})
+
+		actualAcc := vm.Registers.ACC
+		var actualCarry byte
+		if vm.Registers.PSW&PSW_C_MASK > 0 {
+			actualCarry = 1
+		} else {
+			actualCarry = 0
+		}
+
+		if actualAcc != tc.ExpectedAcc {
+			t.Errorf("expected A register to be %#08b, got %#08b", tc.ExpectedAcc, actualAcc)
+		}
+
+		if actualCarry != tc.ExpectedCarry {
+			t.Errorf("expected Carry register to be %#08b, got %#08b", tc.ExpectedCarry, actualCarry)
+		}
+	}
+}
