@@ -145,7 +145,7 @@ func operationTable() map[byte]Opcode {
 		return nil
 	}}
 
-	tbl[0x03] = Opcode{Name: "RR", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x03] = Opcode{Name: "RR A", Eval: func(vm *Machine, operands []byte) error {
 		A := vm.Registers.ACC
 		lsb := A & 0b00000001
 		lsbToMsb := (lsb << 7)
