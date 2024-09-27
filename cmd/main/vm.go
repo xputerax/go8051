@@ -16,22 +16,25 @@ import (
 // @return sz - size of the instruction (opcode + operands)
 // so that the next loop iteration will know
 // how many elements to skip
-type OpcodeParser func(program []byte, pos int) int
+//
+// @return operands - slice of operands for the instruction
+//
+// @return error - error encountered during parsing
+type OpcodeParser func(program []byte, pos int) (int, []byte, error)
 
-func oneByteOp(program []byte, pos int) int {
-	return 1
+func oneByteOp(program []byte, pos int) (int, []byte, error) {
+	return 1, []byte{}, nil
 }
 
-func twoByteOp(program []byte, pos int) int {
+func twoByteOp(program []byte, pos int) (int, []byte, error) {
 	operand := program[1]
-	fmt.Printf("operand: %02x\n", operand)
-	return 2
+	return 2, []byte{operand}, nil
 }
 
-func threeByteOp(program []byte, pos int) int {
-	operand := program[1:3]
-	fmt.Printf("operand: %02x\n", operand)
-	return 3
+func threeByteOp(program []byte, pos int) (int, []byte, error) {
+	operand1 := program[1]
+	operand2 := program[2]
+	return 3, []byte{operand1, operand2}, nil
 }
 
 type Opcode struct {
@@ -345,11 +348,25 @@ func main() {
 			continue
 		}
 
-		fmt.Printf("pos %d op %d (0x%02X) = %s\n", pos, byteCode, byteCode, op.Name)
+		sz, operands, err := op.Parse(program[pos:], pos)
+		if err != nil {
+			fmt.Printf("error encountered when parsing opcode 0x%02X: %s", err)
+			continue
+		}
 
-		sz := op.Parse(program[pos:], pos)
+		if len(operands) == 0 {
+			fmt.Printf("pos %d op %d (0x%02X) = %s\n", pos, byteCode, byteCode, op.Name)
+		} else {
+			operandsStr := ""
+			for i, operand := range operands {
+				operandsStr += fmt.Sprintf("0x%02X", operand)
+				if i != len(operands)-1 { // not the last operand, append space
+					operandsStr += " "
+				}
+			}
 
-		fmt.Println()
+			fmt.Printf("pos %d op %d (0x%02X) %s = %s\n", pos, byteCode, byteCode, operandsStr, op.Name)
+		}
 
 		pos = pos + sz
 	}
