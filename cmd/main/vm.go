@@ -18,6 +18,22 @@ import (
 // how many elements to skip
 type Operation func(program []byte, pos int) int
 
+func oneByteOp(program []byte, pos int) int {
+	return 1
+}
+
+func twoByteOp(program []byte, pos int) int {
+	operand := program[1]
+	fmt.Printf("operand: %02x\n", operand)
+	return 2
+}
+
+func threeByteOp(program []byte, pos int) int {
+	operand := program[1:3]
+	fmt.Printf("operand: %02x\n", operand)
+	return 3
+}
+
 func main() {
 
 	if len(os.Args) < 2 {
@@ -302,1533 +318,772 @@ func main() {
 	OPCODES := make(map[byte]Operation)
 
 	// NOP
-	OPCODES[0x00+0x00] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x00+0x00] = oneByteOp
 
 	// AJMP codeaddr
-	OPCODES[0x00+0x01] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x00+0x01] = twoByteOp
 
 	// LJMP
-	OPCODES[0x00+0x02] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-		return 3
-	}
+	OPCODES[0x00+0x02] = threeByteOp
 
 	// RR
-	OPCODES[0x00+0x03] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x00+0x03] = oneByteOp
 
 	// INC
-	OPCODES[0x00+0x04] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x00+0x04] = oneByteOp
 
 	// INC
-	OPCODES[0x00+0x05] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x00+0x05] = twoByteOp
 
 	// INC
-	OPCODES[0x00+0x06] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x00+0x06] = oneByteOp
 
 	// INC
-	OPCODES[0x00+0x07] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x00+0x07] = oneByteOp
 
 	// INC
-	OPCODES[0x00+0x08] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x00+0x08] = oneByteOp
 
 	// INC
-	OPCODES[0x00+0x09] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x00+0x09] = oneByteOp
 
 	// INC
-	OPCODES[0x00+0x0A] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x00+0x0A] = oneByteOp
 
 	// INC
-	OPCODES[0x00+0x0B] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x00+0x0B] = oneByteOp
 
 	// INC
-	OPCODES[0x00+0x0C] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x00+0x0C] = oneByteOp
 
 	// INC
-	OPCODES[0x00+0x0D] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x00+0x0D] = oneByteOp
 
 	// INC
-	OPCODES[0x00+0x0E] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x00+0x0E] = oneByteOp
 
 	// INC
-	OPCODES[0x00+0x0F] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x00+0x0F] = oneByteOp
 
 	// JBC
-	OPCODES[0x10+0x00] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0x10+0x00] = threeByteOp
 
 	// ACALL
-	OPCODES[0x10+0x01] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x10+0x01] = twoByteOp
 
 	// LCALL codeaddr
-	OPCODES[0x10+0x02] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-		return 3
-	}
+	OPCODES[0x10+0x02] = threeByteOp
 
 	// RRC
-	OPCODES[0x10+0x03] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x10+0x03] = oneByteOp
 
 	// DEC
-	OPCODES[0x10+0x04] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x10+0x04] = oneByteOp
 
 	// DEC
-	OPCODES[0x10+0x05] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x10+0x05] = twoByteOp
 
 	// DEC
-	OPCODES[0x10+0x06] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x10+0x06] = oneByteOp
 
 	// DEC
-	OPCODES[0x10+0x07] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x10+0x07] = oneByteOp
 
 	// DEC
-	OPCODES[0x10+0x08] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x10+0x08] = oneByteOp
 
 	// DEC
-	OPCODES[0x10+0x09] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x10+0x09] = oneByteOp
 
 	// DEC
-	OPCODES[0x10+0x0A] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x10+0x0A] = oneByteOp
 
 	// DEC
-	OPCODES[0x10+0x0B] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x10+0x0B] = oneByteOp
 
 	// DEC
-	OPCODES[0x10+0x0C] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x10+0x0C] = oneByteOp
 
 	// DEC
-	OPCODES[0x10+0x0D] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x10+0x0D] = oneByteOp
 
 	// DEC
-	OPCODES[0x10+0x0E] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x10+0x0E] = oneByteOp
 
 	// DEC
-	OPCODES[0x10+0x0F] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x10+0x0F] = oneByteOp
 
 	// JB
-	OPCODES[0x20+0x00] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0x20+0x00] = threeByteOp
 
 	// AJMP
-	OPCODES[0x20+0x01] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x20+0x01] = twoByteOp
 
 	// RET
-	OPCODES[0x20+0x02] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x20+0x02] = oneByteOp
 
 	// RL
-	OPCODES[0x20+0x03] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x20+0x03] = oneByteOp
 
 	// ADD
-	OPCODES[0x20+0x04] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x20+0x04] = twoByteOp
 
 	// ADD
-	OPCODES[0x20+0x05] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x20+0x05] = twoByteOp
 
 	// ADD
-	OPCODES[0x20+0x06] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x20+0x06] = oneByteOp
 
 	// ADD
-	OPCODES[0x20+0x07] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x20+0x07] = oneByteOp
 
 	// ADD
-	OPCODES[0x20+0x08] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x20+0x08] = oneByteOp
 
 	// ADD
-	OPCODES[0x20+0x09] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x20+0x09] = oneByteOp
 
 	// ADD
-	OPCODES[0x20+0x0A] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x20+0x0A] = oneByteOp
 
 	// ADD
-	OPCODES[0x20+0x0B] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x20+0x0B] = oneByteOp
 
 	// ADD
-	OPCODES[0x20+0x0C] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x20+0x0C] = oneByteOp
 
 	// ADD
-	OPCODES[0x20+0x0D] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x20+0x0D] = oneByteOp
 
 	// ADD
-	OPCODES[0x20+0x0E] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x20+0x0E] = oneByteOp
 
 	// ADD
-	OPCODES[0x20+0x0F] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x20+0x0F] = oneByteOp
 
 	// JNB
-	OPCODES[0x30+0x00] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0x30+0x00] = threeByteOp
 
 	// ACALL
-	OPCODES[0x30+0x01] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x30+0x01] = twoByteOp
 
 	// RETI
-	OPCODES[0x30+0x02] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x30+0x02] = oneByteOp
 
 	// RLC
-	OPCODES[0x30+0x03] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x30+0x03] = oneByteOp
 
 	// ADDC
-	OPCODES[0x30+0x04] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x30+0x04] = twoByteOp
 
 	// ADDC
-	OPCODES[0x30+0x05] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x30+0x05] = twoByteOp
 
 	// ADDC
-	OPCODES[0x30+0x06] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x30+0x06] = oneByteOp
 
 	// ADDC
-	OPCODES[0x30+0x07] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x30+0x07] = oneByteOp
 
 	// ADDC
-	OPCODES[0x30+0x08] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x30+0x08] = oneByteOp
 
 	// ADDC
-	OPCODES[0x30+0x09] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x30+0x09] = oneByteOp
 
 	// ADDC
-	OPCODES[0x30+0x0A] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x30+0x0A] = oneByteOp
 
 	// ADDC
-	OPCODES[0x30+0x0B] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x30+0x0B] = oneByteOp
 
 	// ADDC
-	OPCODES[0x30+0x0C] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x30+0x0C] = oneByteOp
 
 	// ADDC
-	OPCODES[0x30+0x0D] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x30+0x0D] = oneByteOp
 
 	// ADDC
-	OPCODES[0x30+0x0E] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x30+0x0E] = oneByteOp
 
 	// ADDC
-	OPCODES[0x30+0x0F] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x30+0x0F] = oneByteOp
 
 	// JC reladdr
-	OPCODES[0x40+0x00] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x40+0x00] = twoByteOp
 
 	// AJMP
-	OPCODES[0x40+0x01] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x40+0x01] = twoByteOp
 
 	// ORL
-	OPCODES[0x40+0x02] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x40+0x02] = twoByteOp
 
 	// ORL
-	OPCODES[0x40+0x03] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0x40+0x03] = threeByteOp
 
 	// ORL
-	OPCODES[0x40+0x04] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x40+0x04] = twoByteOp
 
 	// ORL
-	OPCODES[0x40+0x05] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x40+0x05] = twoByteOp
 
 	// ORL
-	OPCODES[0x40+0x06] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x40+0x06] = oneByteOp
 
 	// ORL
-	OPCODES[0x40+0x07] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x40+0x07] = oneByteOp
 
 	// ORL
-	OPCODES[0x40+0x08] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x40+0x08] = oneByteOp
 
 	// ORL
-	OPCODES[0x40+0x09] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x40+0x09] = oneByteOp
 
 	// ORL
-	OPCODES[0x40+0x0A] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x40+0x0A] = oneByteOp
 
 	// ORL
-	OPCODES[0x40+0x0B] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x40+0x0B] = oneByteOp
 
 	// ORL
-	OPCODES[0x40+0x0C] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x40+0x0C] = oneByteOp
 
 	// ORL
-	OPCODES[0x40+0x0D] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x40+0x0D] = oneByteOp
 
 	// ORL
-	OPCODES[0x40+0x0E] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x40+0x0E] = oneByteOp
 
 	// ORL
-	OPCODES[0x40+0x0F] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x40+0x0F] = oneByteOp
 
 	// JNC reladdr
-	OPCODES[0x50+0x00] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x50+0x00] = twoByteOp
 
 	// ACALL
-	OPCODES[0x50+0x01] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x50+0x01] = twoByteOp
 
 	// ANL
-	OPCODES[0x50+0x02] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x50+0x02] = twoByteOp
 
 	// ANL
-	OPCODES[0x50+0x03] = func(program []byte, pos int) int {
-		return 3
-	}
+	OPCODES[0x50+0x03] = threeByteOp
 
 	// ANL
-	OPCODES[0x50+0x04] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x50+0x04] = twoByteOp
 
 	// ANL
-	OPCODES[0x50+0x05] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x50+0x05] = twoByteOp
 
 	// ANL
-	OPCODES[0x50+0x06] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x50+0x06] = oneByteOp
 
 	// ANL
-	OPCODES[0x50+0x07] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x50+0x07] = oneByteOp
 
 	// ANL
-	OPCODES[0x50+0x08] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x50+0x08] = oneByteOp
 
 	// ANL
-	OPCODES[0x50+0x09] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x50+0x09] = oneByteOp
 
 	// ANL
-	OPCODES[0x50+0x0A] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x50+0x0A] = oneByteOp
 
 	// ANL
-	OPCODES[0x50+0x0B] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x50+0x0B] = oneByteOp
 
 	// ANL
-	OPCODES[0x50+0x0C] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x50+0x0C] = oneByteOp
 
 	// ANL
-	OPCODES[0x50+0x0D] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x50+0x0D] = oneByteOp
 
 	// ANL
-	OPCODES[0x50+0x0E] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x50+0x0E] = oneByteOp
 
 	// ANL
-	OPCODES[0x50+0x0F] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x50+0x0F] = oneByteOp
 
 	// JZ
-	OPCODES[0x60+0x00] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x60+0x00] = twoByteOp
 
 	// AJMP
-	OPCODES[0x60+0x01] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x60+0x01] = twoByteOp
 
 	// XRL
-	OPCODES[0x60+0x02] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x60+0x02] = twoByteOp
 
 	// XRL
-	OPCODES[0x60+0x03] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0x60+0x03] = threeByteOp
 
 	// XRL
-	OPCODES[0x60+0x04] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x60+0x04] = twoByteOp
 
 	// XRL
-	OPCODES[0x60+0x05] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x60+0x05] = twoByteOp
 
 	// XRL
-	OPCODES[0x60+0x06] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x60+0x06] = oneByteOp
 
 	// XRL
-	OPCODES[0x60+0x07] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x60+0x07] = oneByteOp
 
 	// XRL
-	OPCODES[0x60+0x08] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x60+0x08] = oneByteOp
 
 	// XRL
-	OPCODES[0x60+0x09] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x60+0x09] = oneByteOp
 
 	// XRL
-	OPCODES[0x60+0x0A] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x60+0x0A] = oneByteOp
 
 	// XRL
-	OPCODES[0x60+0x0B] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x60+0x0B] = oneByteOp
 
 	// XRL
-	OPCODES[0x60+0x0C] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x60+0x0C] = oneByteOp
 
 	// XRL
-	OPCODES[0x60+0x0D] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x60+0x0D] = oneByteOp
 
 	// XRL
-	OPCODES[0x60+0x0E] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x60+0x0E] = oneByteOp
 
 	// XRL
-	OPCODES[0x60+0x0F] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x60+0x0F] = oneByteOp
 
 	// JNZ reladdr
-	OPCODES[0x70+0x00] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x70+0x00] = twoByteOp
 
 	// ACALL
-	OPCODES[0x70+0x01] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x70+0x01] = twoByteOp
 
 	// ORL
-	OPCODES[0x70+0x02] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x70+0x02] = twoByteOp
 
 	// JMP
-	OPCODES[0x70+0x03] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x70+0x03] = oneByteOp
 
 	// MOV
-	OPCODES[0x70+0x04] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x70+0x04] = twoByteOp
 
 	// MOV
-	OPCODES[0x70+0x05] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0x70+0x05] = threeByteOp
 
 	// MOV
-	OPCODES[0x70+0x06] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x70+0x06] = twoByteOp
 
 	// MOV
-	OPCODES[0x70+0x07] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x70+0x07] = twoByteOp
 
 	// MOV
-	OPCODES[0x70+0x08] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x70+0x08] = twoByteOp
 
 	// MOV
-	OPCODES[0x70+0x09] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x70+0x09] = twoByteOp
 
 	// MOV
-	OPCODES[0x70+0x0A] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x70+0x0A] = twoByteOp
 
 	// MOV
-	OPCODES[0x70+0x0B] = func(program []byte, pos int) int {
-		// program[0] is the instruction
-		// therefore, the index 1 is the operand
-		operand := program[1]
-		fmt.Printf("operand:  %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x70+0x0B] = twoByteOp
 
 	// MOV
-	OPCODES[0x70+0x0C] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x70+0x0C] = twoByteOp
 
 	// MOV
-	OPCODES[0x70+0x0D] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x70+0x0D] = twoByteOp
 
 	// MOV
-	OPCODES[0x70+0x0E] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x70+0x0E] = twoByteOp
 
 	// MOV
-	OPCODES[0x70+0x0F] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x70+0x0F] = twoByteOp
 
 	// SJMP reladdr
-	OPCODES[0x80+0x00] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x80+0x00] = twoByteOp
 
 	// AJMP
-	OPCODES[0x80+0x01] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x80+0x01] = twoByteOp
 
 	// ANL
-	OPCODES[0x80+0x02] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x80+0x02] = twoByteOp
 
 	// MOVC
-	OPCODES[0x80+0x03] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x80+0x03] = oneByteOp
 
 	// DIV
-	OPCODES[0x80+0x04] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x80+0x04] = oneByteOp
 
 	// MOV
-	OPCODES[0x80+0x05] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0x80+0x05] = threeByteOp
 
 	// MOV
-	OPCODES[0x80+0x06] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x80+0x06] = twoByteOp
 
 	// MOV
-	OPCODES[0x80+0x07] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x80+0x07] = twoByteOp
 
 	// MOV
-	OPCODES[0x80+0x08] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x80+0x08] = twoByteOp
 
 	// MOV
-	OPCODES[0x80+0x09] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x80+0x09] = twoByteOp
 
 	// MOV
-	OPCODES[0x80+0x0A] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x80+0x0A] = twoByteOp
 
 	// MOV
-	OPCODES[0x80+0x0B] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x80+0x0B] = twoByteOp
 
 	// MOV
-	OPCODES[0x80+0x0C] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x80+0x0C] = twoByteOp
 
 	// MOV
-	OPCODES[0x80+0x0D] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x80+0x0D] = twoByteOp
 
 	// MOV
-	OPCODES[0x80+0x0E] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x80+0x0E] = twoByteOp
 
 	// MOV
-	OPCODES[0x80+0x0F] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x80+0x0F] = twoByteOp
 
 	// MOV
-	OPCODES[0x90+0x00] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0x90+0x00] = threeByteOp
 
 	// ACALL
-	OPCODES[0x90+0x01] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x90+0x01] = twoByteOp
 
 	// MOV
-	OPCODES[0x90+0x02] = func(program []byte, pos int) int {
-		return 2
-	}
+	OPCODES[0x90+0x02] = twoByteOp
 
 	// MOVC
-	OPCODES[0x90+0x03] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x90+0x03] = oneByteOp
 
 	// SUBB
-	OPCODES[0x90+0x04] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x90+0x04] = twoByteOp
 
 	// SUBB
-	OPCODES[0x90+0x05] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0x90+0x05] = twoByteOp
 
 	// SUBB
-	OPCODES[0x90+0x06] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x90+0x06] = oneByteOp
 
 	// SUBB
-	OPCODES[0x90+0x07] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x90+0x07] = oneByteOp
 
 	// SUBB
-	OPCODES[0x90+0x08] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x90+0x08] = oneByteOp
 
 	// SUBB
-	OPCODES[0x90+0x09] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x90+0x09] = oneByteOp
 
 	// SUBB
-	OPCODES[0x90+0x0A] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x90+0x0A] = oneByteOp
 
 	// SUBB
-	OPCODES[0x90+0x0B] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x90+0x0B] = oneByteOp
 
 	// SUBB
-	OPCODES[0x90+0x0C] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x90+0x0C] = oneByteOp
 
 	// SUBB
-	OPCODES[0x90+0x0D] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x90+0x0D] = oneByteOp
 
 	// SUBB
-	OPCODES[0x90+0x0E] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x90+0x0E] = oneByteOp
 
 	// SUBB
-	OPCODES[0x90+0x0F] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0x90+0x0F] = oneByteOp
 
 	// ORL
-	OPCODES[0xA0+0x00] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xA0+0x00] = twoByteOp
 
 	// AJMP
-	OPCODES[0xA0+0x01] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xA0+0x01] = twoByteOp
 
 	// MOV
-	OPCODES[0xA0+0x02] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xA0+0x02] = twoByteOp
 
 	// INC
-	OPCODES[0xA0+0x03] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xA0+0x03] = oneByteOp
 
 	// MUL
-	OPCODES[0xA0+0x04] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xA0+0x04] = oneByteOp
 
 	// ?
-	OPCODES[0xA0+0x05] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xA0+0x05] = oneByteOp
 
 	// MOV
-	OPCODES[0xA0+0x06] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xA0+0x06] = twoByteOp
 
 	// MOV
-	OPCODES[0xA0+0x07] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xA0+0x07] = twoByteOp
 
 	// MOV
-	OPCODES[0xA0+0x08] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xA0+0x08] = twoByteOp
 
 	// MOV
-	OPCODES[0xA0+0x09] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xA0+0x09] = twoByteOp
 
 	// MOV
-	OPCODES[0xA0+0x0A] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xA0+0x0A] = twoByteOp
 
 	// MOV
-	OPCODES[0xA0+0x0B] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xA0+0x0B] = twoByteOp
 
 	// MOV
-	OPCODES[0xA0+0x0C] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xA0+0x0C] = twoByteOp
 
 	// MOV
-	OPCODES[0xA0+0x0D] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xA0+0x0D] = twoByteOp
 
 	// MOV
-	OPCODES[0xA0+0x0E] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xA0+0x0E] = twoByteOp
 
 	// MOV
-	OPCODES[0xA0+0x0F] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xA0+0x0F] = twoByteOp
 
 	// ANL
-	OPCODES[0xB0+0x00] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xB0+0x00] = twoByteOp
 
 	// ACALL
-	OPCODES[0xB0+0x01] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xB0+0x01] = twoByteOp
 
 	// CPL bitaddr
-	OPCODES[0xB0+0x02] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xB0+0x02] = twoByteOp
 
 	// CPL
-	OPCODES[0xB0+0x03] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xB0+0x03] = oneByteOp
 
 	// CJNE A,#data,reladdr
-	OPCODES[0xB0+0x04] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0xB0+0x04] = threeByteOp
 
 	// CJNE A,iram addr,reladdr
-	OPCODES[0xB0+0x05] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0xB0+0x05] = threeByteOp
 
 	// CJNE
-	OPCODES[0xB0+0x06] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0xB0+0x06] = threeByteOp
 
 	// CJNE
-	OPCODES[0xB0+0x07] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0xB0+0x07] = threeByteOp
 
 	// CJNE R0,#data,reladdr
-	OPCODES[0xB0+0x08] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0xB0+0x08] = threeByteOp
 
 	// CJNE
-	OPCODES[0xB0+0x09] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0xB0+0x09] = threeByteOp
 
 	// CJNE
-	OPCODES[0xB0+0x0A] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0xB0+0x0A] = threeByteOp
 
 	// CJNE
-	OPCODES[0xB0+0x0B] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0xB0+0x0B] = threeByteOp
 
 	// CJNE
-	OPCODES[0xB0+0x0C] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0xB0+0x0C] = threeByteOp
 
 	// CJNE
-	OPCODES[0xB0+0x0D] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0xB0+0x0D] = threeByteOp
 
 	// CJNE
-	OPCODES[0xB0+0x0E] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0xB0+0x0E] = threeByteOp
 
 	// CJNE
-	OPCODES[0xB0+0x0F] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0xB0+0x0F] = threeByteOp
 
 	// PUSH
-	OPCODES[0xC0+0x00] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xC0+0x00] = twoByteOp
 
 	// AJMP
-	OPCODES[0xC0+0x01] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xC0+0x01] = twoByteOp
 
 	// CLR
-	OPCODES[0xC0+0x02] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xC0+0x02] = twoByteOp
 
 	// CLR
-	OPCODES[0xC0+0x03] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xC0+0x03] = oneByteOp
 
 	// SWAP
-	OPCODES[0xC0+0x04] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xC0+0x04] = oneByteOp
 
 	// XCH
-	OPCODES[0xC0+0x05] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xC0+0x05] = twoByteOp
 
 	// XCH
-	OPCODES[0xC0+0x06] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xC0+0x06] = oneByteOp
 
 	// XCH
-	OPCODES[0xC0+0x07] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xC0+0x07] = oneByteOp
 
 	// XCH
-	OPCODES[0xC0+0x08] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xC0+0x08] = oneByteOp
 
 	// XCH
-	OPCODES[0xC0+0x09] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xC0+0x09] = oneByteOp
 
 	// XCH
-	OPCODES[0xC0+0x0A] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xC0+0x0A] = oneByteOp
 
 	// XCH
-	OPCODES[0xC0+0x0B] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xC0+0x0B] = oneByteOp
 
 	// XCH
-	OPCODES[0xC0+0x0C] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xC0+0x0C] = oneByteOp
 
 	// XCH
-	OPCODES[0xC0+0x0D] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xC0+0x0D] = oneByteOp
 
 	// XCH
-	OPCODES[0xC0+0x0E] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xC0+0x0E] = oneByteOp
 
 	// XCH
-	OPCODES[0xC0+0x0F] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xC0+0x0F] = oneByteOp
 
 	// POP
-	OPCODES[0xD0+0x00] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xD0+0x00] = twoByteOp
 
 	// ACALL
-	OPCODES[0xD0+0x01] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xD0+0x01] = twoByteOp
 
 	// SETB
-	OPCODES[0xD0+0x02] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xD0+0x02] = twoByteOp
 
 	// SETB
-	OPCODES[0xD0+0x03] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xD0+0x03] = oneByteOp
 
 	// DA
-	OPCODES[0xD0+0x04] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xD0+0x04] = oneByteOp
 
 	// DJNZ
-	OPCODES[0xD0+0x05] = func(program []byte, pos int) int {
-		operand := program[1:3]
-		fmt.Printf("operand: %02x\n", operand)
-
-		return 3
-	}
+	OPCODES[0xD0+0x05] = threeByteOp
 
 	// XCHD
-	OPCODES[0xD0+0x06] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xD0+0x06] = oneByteOp
 
 	// XCHD
-	OPCODES[0xD0+0x07] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xD0+0x07] = oneByteOp
 
 	// DJNZ R0,reladdr
-	OPCODES[0xD0+0x08] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xD0+0x08] = twoByteOp
 
 	// DJNZ R1,reladdr
-	OPCODES[0xD0+0x09] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xD0+0x09] = twoByteOp
 
 	// DJNZ R2,reladdr
-	OPCODES[0xD0+0x0A] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xD0+0x0A] = twoByteOp
 
 	// DJNZ R3,reladdr
-	OPCODES[0xD0+0x0B] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xD0+0x0B] = twoByteOp
 
 	// DJNZ R4,reladdr
-	OPCODES[0xD0+0x0C] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xD0+0x0C] = twoByteOp
 
 	// DJNZ R5,reladdr
-	OPCODES[0xD0+0x0D] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xD0+0x0D] = twoByteOp
 
 	// DJNZ R6,reladdr
-	OPCODES[0xD0+0x0E] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xD0+0x0E] = twoByteOp
 
 	// DJNZ R7,reladdr
-	OPCODES[0xD0+0x0F] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xD0+0x0F] = twoByteOp
 
 	// MOVX
-	OPCODES[0xE0+0x00] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xE0+0x00] = oneByteOp
 
 	// AJMP
-	OPCODES[0xE0+0x01] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xE0+0x01] = twoByteOp
 
 	// MOVX
-	OPCODES[0xE0+0x02] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xE0+0x02] = oneByteOp
 
 	// MOVX
-	OPCODES[0xE0+0x03] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xE0+0x03] = oneByteOp
 
 	// CLR
-	OPCODES[0xE0+0x04] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xE0+0x04] = oneByteOp
 
 	// MOV
-	OPCODES[0xE0+0x05] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xE0+0x05] = twoByteOp
 
 	// MOV
-	OPCODES[0xE0+0x06] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xE0+0x06] = oneByteOp
 
 	// MOV
-	OPCODES[0xE0+0x07] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xE0+0x07] = oneByteOp
 
 	// MOV
-	OPCODES[0xE0+0x08] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xE0+0x08] = oneByteOp
 
 	// MOV
-	OPCODES[0xE0+0x09] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xE0+0x09] = oneByteOp
 
 	// MOV
-	OPCODES[0xE0+0x0A] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xE0+0x0A] = oneByteOp
 
 	// MOV
-	OPCODES[0xE0+0x0B] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xE0+0x0B] = oneByteOp
 
 	// MOV
-	OPCODES[0xE0+0x0C] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xE0+0x0C] = oneByteOp
 
 	// MOV
-	OPCODES[0xE0+0x0D] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xE0+0x0D] = oneByteOp
 
 	// MOV
-	OPCODES[0xE0+0x0E] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xE0+0x0E] = oneByteOp
 
 	// MOV
-	OPCODES[0xE0+0x0F] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xE0+0x0F] = oneByteOp
 
 	// MOVX
-	OPCODES[0xF0+0x00] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xF0+0x00] = oneByteOp
 
 	// ACALL
-	OPCODES[0xF0+0x01] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xF0+0x01] = twoByteOp
 
 	// MOVX
-	OPCODES[0xF0+0x02] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xF0+0x02] = oneByteOp
 
 	// MOVX
-	OPCODES[0xF0+0x03] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xF0+0x03] = oneByteOp
 
 	// CPL
-	OPCODES[0xF0+0x04] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xF0+0x04] = oneByteOp
 
 	// MOV
-	OPCODES[0xF0+0x05] = func(program []byte, pos int) int {
-		operand := program[1]
-		fmt.Printf("operand: %02x\n", operand)
-		return 2
-	}
+	OPCODES[0xF0+0x05] = twoByteOp
 
 	// MOV
-	OPCODES[0xF0+0x06] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xF0+0x06] = oneByteOp
 
 	// MOV
-	OPCODES[0xF0+0x07] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xF0+0x07] = oneByteOp
 
 	// MOV
-	OPCODES[0xF0+0x08] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xF0+0x08] = oneByteOp
 
 	// MOV
-	OPCODES[0xF0+0x09] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xF0+0x09] = oneByteOp
 
 	// MOV
-	OPCODES[0xF0+0x0A] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xF0+0x0A] = oneByteOp
 
 	// MOV
-	OPCODES[0xF0+0x0B] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xF0+0x0B] = oneByteOp
 
 	// MOV
-	OPCODES[0xF0+0x0C] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xF0+0x0C] = oneByteOp
 
 	// MOV
-	OPCODES[0xF0+0x0D] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xF0+0x0D] = oneByteOp
 
 	// MOV
-	OPCODES[0xF0+0x0E] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xF0+0x0E] = oneByteOp
 
 	// MOV
-	OPCODES[0xF0+0x0F] = func(program []byte, pos int) int {
-		return 1
-	}
+	OPCODES[0xF0+0x0F] = oneByteOp
 
 	fileName := os.Args[1]
 
