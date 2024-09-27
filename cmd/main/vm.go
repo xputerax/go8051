@@ -16,7 +16,7 @@ import (
 // @return sz - size of the instruction (opcode + operands)
 // so that the next loop iteration will know
 // how many elements to skip
-type Operation func(program []byte, pos int) int
+type OpcodeParser func(program []byte, pos int) int
 
 func oneByteOp(program []byte, pos int) int {
 	return 1
@@ -34,6 +34,276 @@ func threeByteOp(program []byte, pos int) int {
 	return 3
 }
 
+type Opcode struct {
+	Name  string
+	Parse OpcodeParser
+}
+
+func getLookupTable() map[byte]Opcode {
+	tbl := make(map[byte]Opcode)
+
+	tbl[0x00] = Opcode{Name: "NOP", Parse: oneByteOp}
+	tbl[0x01] = Opcode{Name: "AJMP codeaddr", Parse: twoByteOp}
+	tbl[0x02] = Opcode{Name: "LJMP codeaddr", Parse: threeByteOp}
+	tbl[0x03] = Opcode{Name: "RR", Parse: oneByteOp}
+	tbl[0x04] = Opcode{Name: "INC", Parse: oneByteOp}
+	tbl[0x05] = Opcode{Name: "INC", Parse: twoByteOp}
+	tbl[0x06] = Opcode{Name: "INC", Parse: oneByteOp}
+	tbl[0x07] = Opcode{Name: "INC", Parse: oneByteOp}
+	tbl[0x08] = Opcode{Name: "INC", Parse: oneByteOp}
+	tbl[0x09] = Opcode{Name: "INC", Parse: oneByteOp}
+	tbl[0x0a] = Opcode{Name: "INC", Parse: oneByteOp}
+	tbl[0x0b] = Opcode{Name: "INC", Parse: oneByteOp}
+	tbl[0x0c] = Opcode{Name: "INC", Parse: oneByteOp}
+	tbl[0x0d] = Opcode{Name: "INC", Parse: oneByteOp}
+	tbl[0x0e] = Opcode{Name: "INC", Parse: oneByteOp}
+	tbl[0x0f] = Opcode{Name: "INC", Parse: oneByteOp}
+	tbl[0x10] = Opcode{Name: "JBC", Parse: threeByteOp}
+	tbl[0x11] = Opcode{Name: "ACALL page0", Parse: twoByteOp}
+	tbl[0x12] = Opcode{Name: "LCALL codeaddr", Parse: threeByteOp}
+	tbl[0x13] = Opcode{Name: "RRC", Parse: oneByteOp}
+	tbl[0x14] = Opcode{Name: "DEC", Parse: oneByteOp}
+	tbl[0x15] = Opcode{Name: "DEC", Parse: twoByteOp}
+	tbl[0x16] = Opcode{Name: "DEC", Parse: oneByteOp}
+	tbl[0x17] = Opcode{Name: "DEC", Parse: oneByteOp}
+	tbl[0x18] = Opcode{Name: "DEC", Parse: oneByteOp}
+	tbl[0x19] = Opcode{Name: "DEC", Parse: oneByteOp}
+	tbl[0x1a] = Opcode{Name: "DEC", Parse: oneByteOp}
+	tbl[0x1b] = Opcode{Name: "DEC", Parse: oneByteOp}
+	tbl[0x1c] = Opcode{Name: "DEC", Parse: oneByteOp}
+	tbl[0x1d] = Opcode{Name: "DEC", Parse: oneByteOp}
+	tbl[0x1e] = Opcode{Name: "DEC", Parse: oneByteOp}
+	tbl[0x1f] = Opcode{Name: "DEC", Parse: oneByteOp}
+	tbl[0x20] = Opcode{Name: "JB", Parse: threeByteOp}
+	tbl[0x21] = Opcode{Name: "AJMP", Parse: twoByteOp}
+	tbl[0x22] = Opcode{Name: "RET", Parse: oneByteOp}
+	tbl[0x23] = Opcode{Name: "RL", Parse: oneByteOp}
+	tbl[0x24] = Opcode{Name: "ADD", Parse: twoByteOp}
+	tbl[0x25] = Opcode{Name: "ADD", Parse: twoByteOp}
+	tbl[0x26] = Opcode{Name: "ADD", Parse: oneByteOp}
+	tbl[0x27] = Opcode{Name: "ADD", Parse: oneByteOp}
+	tbl[0x28] = Opcode{Name: "ADD", Parse: oneByteOp}
+	tbl[0x29] = Opcode{Name: "ADD", Parse: oneByteOp}
+	tbl[0x2a] = Opcode{Name: "ADD", Parse: oneByteOp}
+	tbl[0x2b] = Opcode{Name: "ADD", Parse: oneByteOp}
+	tbl[0x2c] = Opcode{Name: "ADD", Parse: oneByteOp}
+	tbl[0x2d] = Opcode{Name: "ADD", Parse: oneByteOp}
+	tbl[0x2e] = Opcode{Name: "ADD", Parse: oneByteOp}
+	tbl[0x2f] = Opcode{Name: "ADD", Parse: oneByteOp}
+	tbl[0x30] = Opcode{Name: "JNB", Parse: threeByteOp}
+	tbl[0x31] = Opcode{Name: "ACALL", Parse: twoByteOp}
+	tbl[0x32] = Opcode{Name: "RETI", Parse: oneByteOp}
+	tbl[0x33] = Opcode{Name: "RLC", Parse: oneByteOp}
+	tbl[0x34] = Opcode{Name: "ADDC", Parse: twoByteOp}
+	tbl[0x35] = Opcode{Name: "ADDC", Parse: twoByteOp}
+	tbl[0x36] = Opcode{Name: "ADDC", Parse: oneByteOp}
+	tbl[0x37] = Opcode{Name: "ADDC", Parse: oneByteOp}
+	tbl[0x38] = Opcode{Name: "ADDC", Parse: oneByteOp}
+	tbl[0x39] = Opcode{Name: "ADDC", Parse: oneByteOp}
+	tbl[0x3a] = Opcode{Name: "ADDC", Parse: oneByteOp}
+	tbl[0x3b] = Opcode{Name: "ADDC", Parse: oneByteOp}
+	tbl[0x3c] = Opcode{Name: "ADDC", Parse: oneByteOp}
+	tbl[0x3d] = Opcode{Name: "ADDC", Parse: oneByteOp}
+	tbl[0x3e] = Opcode{Name: "ADDC", Parse: oneByteOp}
+	tbl[0x3f] = Opcode{Name: "ADDC", Parse: oneByteOp}
+	tbl[0x40] = Opcode{Name: "JC reladdr", Parse: twoByteOp}
+	tbl[0x41] = Opcode{Name: "AJMP", Parse: twoByteOp}
+	tbl[0x42] = Opcode{Name: "ORL", Parse: twoByteOp}
+	tbl[0x43] = Opcode{Name: "ORL", Parse: threeByteOp}
+	tbl[0x44] = Opcode{Name: "ORL", Parse: twoByteOp}
+	tbl[0x45] = Opcode{Name: "ORL", Parse: twoByteOp}
+	tbl[0x46] = Opcode{Name: "ORL", Parse: oneByteOp}
+	tbl[0x47] = Opcode{Name: "ORL", Parse: oneByteOp}
+	tbl[0x48] = Opcode{Name: "ORL", Parse: oneByteOp}
+	tbl[0x49] = Opcode{Name: "ORL", Parse: oneByteOp}
+	tbl[0x4a] = Opcode{Name: "ORL", Parse: oneByteOp}
+	tbl[0x4b] = Opcode{Name: "ORL", Parse: oneByteOp}
+	tbl[0x4c] = Opcode{Name: "ORL", Parse: oneByteOp}
+	tbl[0x4d] = Opcode{Name: "ORL", Parse: oneByteOp}
+	tbl[0x4e] = Opcode{Name: "ORL", Parse: oneByteOp}
+	tbl[0x4f] = Opcode{Name: "ORL", Parse: oneByteOp}
+	tbl[0x50] = Opcode{Name: "JNC reladdr", Parse: twoByteOp}
+	tbl[0x51] = Opcode{Name: "ACALL", Parse: twoByteOp}
+	tbl[0x52] = Opcode{Name: "ANL", Parse: twoByteOp}
+	tbl[0x53] = Opcode{Name: "ANL", Parse: threeByteOp}
+	tbl[0x54] = Opcode{Name: "ANL", Parse: twoByteOp}
+	tbl[0x55] = Opcode{Name: "ANL", Parse: twoByteOp}
+	tbl[0x56] = Opcode{Name: "ANL", Parse: oneByteOp}
+	tbl[0x57] = Opcode{Name: "ANL", Parse: oneByteOp}
+	tbl[0x58] = Opcode{Name: "ANL", Parse: oneByteOp}
+	tbl[0x59] = Opcode{Name: "ANL", Parse: oneByteOp}
+	tbl[0x5a] = Opcode{Name: "ANL", Parse: oneByteOp}
+	tbl[0x5b] = Opcode{Name: "ANL", Parse: oneByteOp}
+	tbl[0x5c] = Opcode{Name: "ANL", Parse: oneByteOp}
+	tbl[0x5d] = Opcode{Name: "ANL", Parse: oneByteOp}
+	tbl[0x5e] = Opcode{Name: "ANL", Parse: oneByteOp}
+	tbl[0x5f] = Opcode{Name: "ANL", Parse: oneByteOp}
+	tbl[0x60] = Opcode{Name: "JZ reladdr", Parse: twoByteOp}
+	tbl[0x61] = Opcode{Name: "AJMP", Parse: twoByteOp}
+	tbl[0x62] = Opcode{Name: "XRL", Parse: twoByteOp}
+	tbl[0x63] = Opcode{Name: "XRL", Parse: threeByteOp}
+	tbl[0x64] = Opcode{Name: "XRL", Parse: twoByteOp}
+	tbl[0x65] = Opcode{Name: "XRL", Parse: twoByteOp}
+	tbl[0x66] = Opcode{Name: "XRL", Parse: oneByteOp}
+	tbl[0x67] = Opcode{Name: "XRL", Parse: oneByteOp}
+	tbl[0x68] = Opcode{Name: "XRL", Parse: oneByteOp}
+	tbl[0x69] = Opcode{Name: "XRL", Parse: oneByteOp}
+	tbl[0x6a] = Opcode{Name: "XRL", Parse: oneByteOp}
+	tbl[0x6b] = Opcode{Name: "XRL", Parse: oneByteOp}
+	tbl[0x6c] = Opcode{Name: "XRL", Parse: oneByteOp}
+	tbl[0x6d] = Opcode{Name: "XRL", Parse: oneByteOp}
+	tbl[0x6e] = Opcode{Name: "XRL", Parse: oneByteOp}
+	tbl[0x6f] = Opcode{Name: "XRL", Parse: oneByteOp}
+	tbl[0x70] = Opcode{Name: "JNZ reladdr", Parse: twoByteOp}
+	tbl[0x71] = Opcode{Name: "ACALL", Parse: twoByteOp}
+	tbl[0x72] = Opcode{Name: "ORL", Parse: twoByteOp}
+	tbl[0x73] = Opcode{Name: "JMP", Parse: oneByteOp}
+	tbl[0x74] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x75] = Opcode{Name: "MOV", Parse: threeByteOp}
+	tbl[0x76] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x77] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x78] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x79] = Opcode{Name: "MOV R1,#data", Parse: twoByteOp}
+	tbl[0x7a] = Opcode{Name: "MOV R2,#data", Parse: twoByteOp}
+	tbl[0x7b] = Opcode{Name: "MOV R3,#data", Parse: twoByteOp}
+	tbl[0x7c] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x7d] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x7e] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x7f] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x80] = Opcode{Name: "SJMP reladdr", Parse: twoByteOp}
+	tbl[0x81] = Opcode{Name: "AJMP", Parse: twoByteOp}
+	tbl[0x82] = Opcode{Name: "ANL", Parse: twoByteOp}
+	tbl[0x83] = Opcode{Name: "MOVC", Parse: oneByteOp}
+	tbl[0x84] = Opcode{Name: "DIV", Parse: oneByteOp}
+	tbl[0x85] = Opcode{Name: "MOV", Parse: threeByteOp}
+	tbl[0x86] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x87] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x88] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x89] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x8a] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x8b] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x8c] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x8d] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x8e] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x8f] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x90] = Opcode{Name: "MOV", Parse: threeByteOp}
+	tbl[0x91] = Opcode{Name: "ACALL", Parse: twoByteOp}
+	tbl[0x92] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0x93] = Opcode{Name: "MOVC", Parse: oneByteOp}
+	tbl[0x94] = Opcode{Name: "SUBB", Parse: twoByteOp}
+	tbl[0x95] = Opcode{Name: "SUBB", Parse: twoByteOp}
+	tbl[0x96] = Opcode{Name: "SUBB", Parse: oneByteOp}
+	tbl[0x97] = Opcode{Name: "SUBB", Parse: oneByteOp}
+	tbl[0x98] = Opcode{Name: "SUBB", Parse: oneByteOp}
+	tbl[0x99] = Opcode{Name: "SUBB", Parse: oneByteOp}
+	tbl[0x9a] = Opcode{Name: "SUBB", Parse: oneByteOp}
+	tbl[0x9b] = Opcode{Name: "SUBB", Parse: oneByteOp}
+	tbl[0x9c] = Opcode{Name: "SUBB", Parse: oneByteOp}
+	tbl[0x9d] = Opcode{Name: "SUBB", Parse: oneByteOp}
+	tbl[0x9e] = Opcode{Name: "SUBB", Parse: oneByteOp}
+	tbl[0x9f] = Opcode{Name: "SUBB", Parse: oneByteOp}
+	tbl[0xa0] = Opcode{Name: "ORL", Parse: twoByteOp}
+	tbl[0xa1] = Opcode{Name: "AJMP", Parse: twoByteOp}
+	tbl[0xa2] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0xa3] = Opcode{Name: "INC", Parse: oneByteOp}
+	tbl[0xa4] = Opcode{Name: "MUL", Parse: oneByteOp}
+	tbl[0xa5] = Opcode{Name: "?", Parse: oneByteOp}
+	tbl[0xa6] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0xa7] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0xa8] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0xa9] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0xaa] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0xab] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0xac] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0xad] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0xae] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0xaf] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0xb0] = Opcode{Name: "ANL", Parse: twoByteOp}
+	tbl[0xb1] = Opcode{Name: "ACALL", Parse: twoByteOp}
+	tbl[0xb2] = Opcode{Name: "CPL bitaddr", Parse: twoByteOp}
+	tbl[0xb3] = Opcode{Name: "CPL", Parse: oneByteOp}
+	tbl[0xb4] = Opcode{Name: "CJNE A,#data,reladdr", Parse: threeByteOp}
+	tbl[0xb5] = Opcode{Name: "CJNE A,iram addr,reladdr", Parse: threeByteOp}
+	tbl[0xb6] = Opcode{Name: "CJNE @R0,#data,reladdr", Parse: threeByteOp}
+	tbl[0xb7] = Opcode{Name: "CJNE @R1,#data,reladdr", Parse: threeByteOp}
+	tbl[0xb8] = Opcode{Name: "CJNE R0,#data,reladdr", Parse: threeByteOp}
+	tbl[0xb9] = Opcode{Name: "CJNE R1,#data,reladdr", Parse: threeByteOp}
+	tbl[0xba] = Opcode{Name: "CJNE R2,#data,reladdr", Parse: threeByteOp}
+	tbl[0xbb] = Opcode{Name: "CJNE R3,#data,reladdr", Parse: threeByteOp}
+	tbl[0xbc] = Opcode{Name: "CJNE R4,#data,reladdr", Parse: threeByteOp}
+	tbl[0xbd] = Opcode{Name: "CJNE R5,#data,reladdr", Parse: threeByteOp}
+	tbl[0xbe] = Opcode{Name: "CJNE R6,#data,reladdr", Parse: threeByteOp}
+	tbl[0xbf] = Opcode{Name: "CJNE R7,#data,reladdr", Parse: threeByteOp}
+	tbl[0xc0] = Opcode{Name: "PUSH", Parse: twoByteOp}
+	tbl[0xc1] = Opcode{Name: "AJMP", Parse: twoByteOp}
+	tbl[0xc2] = Opcode{Name: "CLR", Parse: twoByteOp}
+	tbl[0xc3] = Opcode{Name: "CLR", Parse: oneByteOp}
+	tbl[0xc4] = Opcode{Name: "SWAP", Parse: oneByteOp}
+	tbl[0xc5] = Opcode{Name: "XCH", Parse: twoByteOp}
+	tbl[0xc6] = Opcode{Name: "XCH", Parse: oneByteOp}
+	tbl[0xc7] = Opcode{Name: "XCH", Parse: oneByteOp}
+	tbl[0xc8] = Opcode{Name: "XCH", Parse: oneByteOp}
+	tbl[0xc9] = Opcode{Name: "XCH", Parse: oneByteOp}
+	tbl[0xca] = Opcode{Name: "XCH", Parse: oneByteOp}
+	tbl[0xcb] = Opcode{Name: "XCH", Parse: oneByteOp}
+	tbl[0xcc] = Opcode{Name: "XCH", Parse: oneByteOp}
+	tbl[0xcd] = Opcode{Name: "XCH", Parse: oneByteOp}
+	tbl[0xce] = Opcode{Name: "XCH", Parse: oneByteOp}
+	tbl[0xcf] = Opcode{Name: "XCH", Parse: oneByteOp}
+	tbl[0xd0] = Opcode{Name: "POP", Parse: twoByteOp}
+	tbl[0xd1] = Opcode{Name: "ACALL", Parse: twoByteOp}
+	tbl[0xd2] = Opcode{Name: "SETB", Parse: twoByteOp}
+	tbl[0xd3] = Opcode{Name: "SETB", Parse: oneByteOp}
+	tbl[0xd4] = Opcode{Name: "DA", Parse: oneByteOp}
+	tbl[0xd5] = Opcode{Name: "DJNZ", Parse: threeByteOp}
+	tbl[0xd6] = Opcode{Name: "XCHD", Parse: oneByteOp}
+	tbl[0xd7] = Opcode{Name: "XCHD", Parse: oneByteOp}
+	tbl[0xd8] = Opcode{Name: "DJNZ R0,reladdr", Parse: twoByteOp}
+	tbl[0xd9] = Opcode{Name: "DJNZ R1,reladdr", Parse: twoByteOp}
+	tbl[0xda] = Opcode{Name: "DJNZ R2,reladdr", Parse: twoByteOp}
+	tbl[0xdb] = Opcode{Name: "DJNZ R3,reladdr", Parse: twoByteOp}
+	tbl[0xdc] = Opcode{Name: "DJNZ R4,reladdr", Parse: twoByteOp}
+	tbl[0xdd] = Opcode{Name: "DJNZ R5,reladdr", Parse: twoByteOp}
+	tbl[0xde] = Opcode{Name: "DJNZ R6,reladdr", Parse: twoByteOp}
+	tbl[0xdf] = Opcode{Name: "DJNZ R7,reladdr", Parse: twoByteOp}
+	tbl[0xe0] = Opcode{Name: "MOVX", Parse: oneByteOp}
+	tbl[0xe1] = Opcode{Name: "AJMP", Parse: twoByteOp}
+	tbl[0xe2] = Opcode{Name: "MOVX", Parse: oneByteOp}
+	tbl[0xe3] = Opcode{Name: "MOVX", Parse: oneByteOp}
+	tbl[0xe4] = Opcode{Name: "CLR", Parse: oneByteOp}
+	tbl[0xe5] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0xe6] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xe7] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xe8] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xe9] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xea] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xeb] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xec] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xed] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xee] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xef] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xf0] = Opcode{Name: "MOVX", Parse: oneByteOp}
+	tbl[0xf1] = Opcode{Name: "ACALL", Parse: twoByteOp}
+	tbl[0xf2] = Opcode{Name: "MOVX", Parse: oneByteOp}
+	tbl[0xf3] = Opcode{Name: "MOVX", Parse: oneByteOp}
+	tbl[0xf4] = Opcode{Name: "CPL", Parse: oneByteOp}
+	tbl[0xf5] = Opcode{Name: "MOV", Parse: twoByteOp}
+	tbl[0xf6] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xf7] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xf8] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xf9] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xfa] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xfb] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xfc] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xfd] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xfe] = Opcode{Name: "MOV", Parse: oneByteOp}
+	tbl[0xff] = Opcode{Name: "MOV", Parse: oneByteOp}
+
+	return tbl
+}
+
+var LOOKUP_TABLE map[byte]Opcode = getLookupTable()
+
 func main() {
 
 	if len(os.Args) < 2 {
@@ -41,1049 +311,6 @@ func main() {
 		fmt.Println("usage: ./vm examples/blink.bin")
 		return
 	}
-
-	OPCODES_NAME := make(map[byte]string)
-	OPCODES_NAME[0x00+0x00] = "NOP"
-	OPCODES_NAME[0x00+0x01] = "AJMP codeaddr"
-	OPCODES_NAME[0x00+0x02] = "LJMP codeaddr"
-	OPCODES_NAME[0x00+0x03] = "RR"
-	OPCODES_NAME[0x00+0x04] = "INC"
-	OPCODES_NAME[0x00+0x05] = "INC"
-	OPCODES_NAME[0x00+0x06] = "INC"
-	OPCODES_NAME[0x00+0x07] = "INC"
-	OPCODES_NAME[0x00+0x08] = "INC"
-	OPCODES_NAME[0x00+0x09] = "INC"
-	OPCODES_NAME[0x00+0x0a] = "INC"
-	OPCODES_NAME[0x00+0x0b] = "INC"
-	OPCODES_NAME[0x00+0x0c] = "INC"
-	OPCODES_NAME[0x00+0x0d] = "INC"
-	OPCODES_NAME[0x00+0x0e] = "INC"
-	OPCODES_NAME[0x00+0x0f] = "INC"
-
-	OPCODES_NAME[0x10+0x00] = "JBC"
-	OPCODES_NAME[0x10+0x01] = "ACALL page0"
-	OPCODES_NAME[0x10+0x02] = "LCALL codeaddr"
-	OPCODES_NAME[0x10+0x03] = "RRC"
-	OPCODES_NAME[0x10+0x04] = "DEC"
-	OPCODES_NAME[0x10+0x05] = "DEC"
-	OPCODES_NAME[0x10+0x06] = "DEC"
-	OPCODES_NAME[0x10+0x07] = "DEC"
-	OPCODES_NAME[0x10+0x08] = "DEC"
-	OPCODES_NAME[0x10+0x09] = "DEC"
-	OPCODES_NAME[0x10+0x0a] = "DEC"
-	OPCODES_NAME[0x10+0x0b] = "DEC"
-	OPCODES_NAME[0x10+0x0c] = "DEC"
-	OPCODES_NAME[0x10+0x0d] = "DEC"
-	OPCODES_NAME[0x10+0x0e] = "DEC"
-	OPCODES_NAME[0x10+0x0f] = "DEC"
-
-	OPCODES_NAME[0x20+0x00] = "JB"
-	OPCODES_NAME[0x20+0x01] = "AJMP"
-	OPCODES_NAME[0x20+0x02] = "RET"
-	OPCODES_NAME[0x20+0x03] = "RL"
-	OPCODES_NAME[0x20+0x04] = "ADD"
-	OPCODES_NAME[0x20+0x05] = "ADD"
-	OPCODES_NAME[0x20+0x06] = "ADD"
-	OPCODES_NAME[0x20+0x07] = "ADD"
-	OPCODES_NAME[0x20+0x08] = "ADD"
-	OPCODES_NAME[0x20+0x09] = "ADD"
-	OPCODES_NAME[0x20+0x0a] = "ADD"
-	OPCODES_NAME[0x20+0x0b] = "ADD"
-	OPCODES_NAME[0x20+0x0c] = "ADD"
-	OPCODES_NAME[0x20+0x0d] = "ADD"
-	OPCODES_NAME[0x20+0x0e] = "ADD"
-	OPCODES_NAME[0x20+0x0f] = "ADD"
-
-	OPCODES_NAME[0x30+0x00] = "JNB"
-	OPCODES_NAME[0x30+0x01] = "ACALL"
-	OPCODES_NAME[0x30+0x02] = "RETI"
-	OPCODES_NAME[0x30+0x03] = "RLC"
-	OPCODES_NAME[0x30+0x04] = "ADDC"
-	OPCODES_NAME[0x30+0x05] = "ADDC"
-	OPCODES_NAME[0x30+0x06] = "ADDC"
-	OPCODES_NAME[0x30+0x07] = "ADDC"
-	OPCODES_NAME[0x30+0x08] = "ADDC"
-	OPCODES_NAME[0x30+0x09] = "ADDC"
-	OPCODES_NAME[0x30+0x0a] = "ADDC"
-	OPCODES_NAME[0x30+0x0b] = "ADDC"
-	OPCODES_NAME[0x30+0x0c] = "ADDC"
-	OPCODES_NAME[0x30+0x0d] = "ADDC"
-	OPCODES_NAME[0x30+0x0e] = "ADDC"
-	OPCODES_NAME[0x30+0x0f] = "ADDC"
-
-	OPCODES_NAME[0x40+0x00] = "JC reladdr"
-	OPCODES_NAME[0x40+0x01] = "AJMP"
-	OPCODES_NAME[0x40+0x02] = "ORL"
-	OPCODES_NAME[0x40+0x03] = "ORL"
-	OPCODES_NAME[0x40+0x04] = "ORL"
-	OPCODES_NAME[0x40+0x05] = "ORL"
-	OPCODES_NAME[0x40+0x06] = "ORL"
-	OPCODES_NAME[0x40+0x07] = "ORL"
-	OPCODES_NAME[0x40+0x08] = "ORL"
-	OPCODES_NAME[0x40+0x09] = "ORL"
-	OPCODES_NAME[0x40+0x0a] = "ORL"
-	OPCODES_NAME[0x40+0x0b] = "ORL"
-	OPCODES_NAME[0x40+0x0c] = "ORL"
-	OPCODES_NAME[0x40+0x0d] = "ORL"
-	OPCODES_NAME[0x40+0x0e] = "ORL"
-	OPCODES_NAME[0x40+0x0f] = "ORL"
-
-	OPCODES_NAME[0x50+0x00] = "JNC reladdr"
-	OPCODES_NAME[0x50+0x01] = "ACALL"
-	OPCODES_NAME[0x50+0x02] = "ANL"
-	OPCODES_NAME[0x50+0x03] = "ANL"
-	OPCODES_NAME[0x50+0x04] = "ANL"
-	OPCODES_NAME[0x50+0x05] = "ANL"
-	OPCODES_NAME[0x50+0x06] = "ANL"
-	OPCODES_NAME[0x50+0x07] = "ANL"
-	OPCODES_NAME[0x50+0x08] = "ANL"
-	OPCODES_NAME[0x50+0x09] = "ANL"
-	OPCODES_NAME[0x50+0x0a] = "ANL"
-	OPCODES_NAME[0x50+0x0b] = "ANL"
-	OPCODES_NAME[0x50+0x0c] = "ANL"
-	OPCODES_NAME[0x50+0x0d] = "ANL"
-	OPCODES_NAME[0x50+0x0e] = "ANL"
-	OPCODES_NAME[0x50+0x0f] = "ANL"
-
-	OPCODES_NAME[0x60+0x00] = "JZ reladdr"
-	OPCODES_NAME[0x60+0x01] = "AJMP"
-	OPCODES_NAME[0x60+0x02] = "XRL"
-	OPCODES_NAME[0x60+0x03] = "XRL"
-	OPCODES_NAME[0x60+0x04] = "XRL"
-	OPCODES_NAME[0x60+0x05] = "XRL"
-	OPCODES_NAME[0x60+0x06] = "XRL"
-	OPCODES_NAME[0x60+0x07] = "XRL"
-	OPCODES_NAME[0x60+0x08] = "XRL"
-	OPCODES_NAME[0x60+0x09] = "XRL"
-	OPCODES_NAME[0x60+0x0a] = "XRL"
-	OPCODES_NAME[0x60+0x0b] = "XRL"
-	OPCODES_NAME[0x60+0x0c] = "XRL"
-	OPCODES_NAME[0x60+0x0d] = "XRL"
-	OPCODES_NAME[0x60+0x0e] = "XRL"
-	OPCODES_NAME[0x60+0x0f] = "XRL"
-
-	OPCODES_NAME[0x70+0x00] = "JNZ reladdr"
-	OPCODES_NAME[0x70+0x01] = "ACALL"
-	OPCODES_NAME[0x70+0x02] = "ORL"
-	OPCODES_NAME[0x70+0x03] = "JMP"
-	OPCODES_NAME[0x70+0x04] = "MOV"
-	OPCODES_NAME[0x70+0x05] = "MOV"
-	OPCODES_NAME[0x70+0x06] = "MOV"
-	OPCODES_NAME[0x70+0x07] = "MOV"
-	OPCODES_NAME[0x70+0x08] = "MOV"
-	OPCODES_NAME[0x70+0x09] = "MOV R1,#data"
-	OPCODES_NAME[0x70+0x0a] = "MOV R2,#data"
-	OPCODES_NAME[0x70+0x0b] = "MOV R3,#data"
-	OPCODES_NAME[0x70+0x0c] = "MOV"
-	OPCODES_NAME[0x70+0x0d] = "MOV"
-	OPCODES_NAME[0x70+0x0e] = "MOV"
-	OPCODES_NAME[0x70+0x0f] = "MOV"
-
-	OPCODES_NAME[0x80+0x00] = "SJMP reladdr"
-	OPCODES_NAME[0x80+0x01] = "AJMP"
-	OPCODES_NAME[0x80+0x02] = "ANL"
-	OPCODES_NAME[0x80+0x03] = "MOVC"
-	OPCODES_NAME[0x80+0x04] = "DIV"
-	OPCODES_NAME[0x80+0x05] = "MOV"
-	OPCODES_NAME[0x80+0x06] = "MOV"
-	OPCODES_NAME[0x80+0x07] = "MOV"
-	OPCODES_NAME[0x80+0x08] = "MOV"
-	OPCODES_NAME[0x80+0x09] = "MOV"
-	OPCODES_NAME[0x80+0x0a] = "MOV"
-	OPCODES_NAME[0x80+0x0b] = "MOV"
-	OPCODES_NAME[0x80+0x0c] = "MOV"
-	OPCODES_NAME[0x80+0x0d] = "MOV"
-	OPCODES_NAME[0x80+0x0e] = "MOV"
-	OPCODES_NAME[0x80+0x0f] = "MOV"
-
-	OPCODES_NAME[0x90+0x01] = "ACALL"
-	OPCODES_NAME[0x90+0x02] = "MOV"
-	OPCODES_NAME[0x90+0x00] = "MOV"
-	OPCODES_NAME[0x90+0x03] = "MOVC"
-	OPCODES_NAME[0x90+0x04] = "SUBB"
-	OPCODES_NAME[0x90+0x05] = "SUBB"
-	OPCODES_NAME[0x90+0x06] = "SUBB"
-	OPCODES_NAME[0x90+0x07] = "SUBB"
-	OPCODES_NAME[0x90+0x08] = "SUBB"
-	OPCODES_NAME[0x90+0x09] = "SUBB"
-	OPCODES_NAME[0x90+0x0a] = "SUBB"
-	OPCODES_NAME[0x90+0x0b] = "SUBB"
-	OPCODES_NAME[0x90+0x0c] = "SUBB"
-	OPCODES_NAME[0x90+0x0d] = "SUBB"
-	OPCODES_NAME[0x90+0x0e] = "SUBB"
-	OPCODES_NAME[0x90+0x0f] = "SUBB"
-
-	OPCODES_NAME[0xa0+0x00] = "ORL"
-	OPCODES_NAME[0xa0+0x01] = "AJMP"
-	OPCODES_NAME[0xa0+0x02] = "MOV"
-	OPCODES_NAME[0xa0+0x03] = "INC"
-	OPCODES_NAME[0xa0+0x04] = "MUL"
-	OPCODES_NAME[0xa0+0x05] = "?"
-	OPCODES_NAME[0xa0+0x06] = "MOV"
-	OPCODES_NAME[0xa0+0x07] = "MOV"
-	OPCODES_NAME[0xa0+0x08] = "MOV"
-	OPCODES_NAME[0xa0+0x09] = "MOV"
-	OPCODES_NAME[0xa0+0x0a] = "MOV"
-	OPCODES_NAME[0xa0+0x0b] = "MOV"
-	OPCODES_NAME[0xa0+0x0c] = "MOV"
-	OPCODES_NAME[0xa0+0x0d] = "MOV"
-	OPCODES_NAME[0xa0+0x0e] = "MOV"
-	OPCODES_NAME[0xa0+0x0f] = "MOV"
-
-	OPCODES_NAME[0xb0+0x00] = "ANL"
-	OPCODES_NAME[0xb0+0x01] = "ACALL"
-	OPCODES_NAME[0xb0+0x02] = "CPL bitaddr"
-	OPCODES_NAME[0xb0+0x03] = "CPL"
-	OPCODES_NAME[0xb0+0x04] = "CJNE A,#data,reladdr"
-	OPCODES_NAME[0xb0+0x05] = "CJNE A,iram addr,reladdr"
-	OPCODES_NAME[0xb0+0x06] = "CJNE @R0,#data,reladdr"
-	OPCODES_NAME[0xb0+0x07] = "CJNE @R1,#data,reladdr"
-	OPCODES_NAME[0xb0+0x08] = "CJNE R0,#data,reladdr"
-	OPCODES_NAME[0xb0+0x09] = "CJNE R1,#data,reladdr"
-	OPCODES_NAME[0xb0+0x0a] = "CJNE R2,#data,reladdr"
-	OPCODES_NAME[0xb0+0x0b] = "CJNE R3,#data,reladdr"
-	OPCODES_NAME[0xb0+0x0c] = "CJNE R4,#data,reladdr"
-	OPCODES_NAME[0xb0+0x0d] = "CJNE R5,#data,reladdr"
-	OPCODES_NAME[0xb0+0x0e] = "CJNE R6,#data,reladdr"
-	OPCODES_NAME[0xb0+0x0f] = "CJNE R7,#data,reladdr"
-
-	OPCODES_NAME[0xc0+0x00] = "PUSH"
-	OPCODES_NAME[0xc0+0x01] = "AJMP"
-	OPCODES_NAME[0xc0+0x02] = "CLR"
-	OPCODES_NAME[0xc0+0x03] = "CLR"
-	OPCODES_NAME[0xc0+0x04] = "SWAP"
-	OPCODES_NAME[0xc0+0x05] = "XCH"
-	OPCODES_NAME[0xc0+0x06] = "XCH"
-	OPCODES_NAME[0xc0+0x07] = "XCH"
-	OPCODES_NAME[0xc0+0x08] = "XCH"
-	OPCODES_NAME[0xc0+0x09] = "XCH"
-	OPCODES_NAME[0xc0+0x0a] = "XCH"
-	OPCODES_NAME[0xc0+0x0b] = "XCH"
-	OPCODES_NAME[0xc0+0x0c] = "XCH"
-	OPCODES_NAME[0xc0+0x0d] = "XCH"
-	OPCODES_NAME[0xc0+0x0e] = "XCH"
-	OPCODES_NAME[0xc0+0x0f] = "XCH"
-
-	OPCODES_NAME[0xd0+0x00] = "POP"
-	OPCODES_NAME[0xd0+0x01] = "ACALL"
-	OPCODES_NAME[0xd0+0x02] = "SETB"
-	OPCODES_NAME[0xd0+0x03] = "SETB"
-	OPCODES_NAME[0xd0+0x04] = "DA"
-	OPCODES_NAME[0xd0+0x05] = "DJNZ"
-	OPCODES_NAME[0xd0+0x06] = "XCHD"
-	OPCODES_NAME[0xd0+0x07] = "XCHD"
-	OPCODES_NAME[0xd0+0x08] = "DJNZ R0,reladdr"
-	OPCODES_NAME[0xd0+0x09] = "DJNZ R1,reladdr"
-	OPCODES_NAME[0xd0+0x0a] = "DJNZ R2,reladdr"
-	OPCODES_NAME[0xd0+0x0b] = "DJNZ R3,reladdr"
-	OPCODES_NAME[0xd0+0x0c] = "DJNZ R4,reladdr"
-	OPCODES_NAME[0xd0+0x0d] = "DJNZ R5,reladdr"
-	OPCODES_NAME[0xd0+0x0e] = "DJNZ R6,reladdr"
-	OPCODES_NAME[0xd0+0x0f] = "DJNZ R7,reladdr"
-
-	OPCODES_NAME[0xe0+0x00] = "MOVX"
-	OPCODES_NAME[0xe0+0x01] = "AJMP"
-	OPCODES_NAME[0xe0+0x02] = "MOVX"
-	OPCODES_NAME[0xe0+0x03] = "MOVX"
-	OPCODES_NAME[0xe0+0x04] = "CLR"
-	OPCODES_NAME[0xe0+0x05] = "MOV"
-	OPCODES_NAME[0xe0+0x06] = "MOV"
-	OPCODES_NAME[0xe0+0x07] = "MOV"
-	OPCODES_NAME[0xe0+0x08] = "MOV"
-	OPCODES_NAME[0xe0+0x09] = "MOV"
-	OPCODES_NAME[0xe0+0x0a] = "MOV"
-	OPCODES_NAME[0xe0+0x0b] = "MOV"
-	OPCODES_NAME[0xe0+0x0c] = "MOV"
-	OPCODES_NAME[0xe0+0x0d] = "MOV"
-	OPCODES_NAME[0xe0+0x0e] = "MOV"
-	OPCODES_NAME[0xe0+0x0f] = "MOV"
-
-	OPCODES_NAME[0xf0+0x00] = "MOVX"
-	OPCODES_NAME[0xf0+0x01] = "ACALL"
-	OPCODES_NAME[0xf0+0x02] = "MOVX"
-	OPCODES_NAME[0xf0+0x03] = "MOVX"
-	OPCODES_NAME[0xf0+0x04] = "CPL"
-	OPCODES_NAME[0xf0+0x05] = "MOV"
-	OPCODES_NAME[0xf0+0x06] = "MOV"
-	OPCODES_NAME[0xf0+0x07] = "MOV"
-	OPCODES_NAME[0xf0+0x08] = "MOV"
-	OPCODES_NAME[0xf0+0x09] = "MOV"
-	OPCODES_NAME[0xf0+0x0a] = "MOV"
-	OPCODES_NAME[0xf0+0x0b] = "MOV"
-	OPCODES_NAME[0xf0+0x0c] = "MOV"
-	OPCODES_NAME[0xf0+0x0d] = "MOV"
-	OPCODES_NAME[0xf0+0x0e] = "MOV"
-	OPCODES_NAME[0xf0+0x0f] = "MOV"
-
-	OPCODES := make(map[byte]Operation)
-
-	// NOP
-	OPCODES[0x00+0x00] = oneByteOp
-
-	// AJMP codeaddr
-	OPCODES[0x00+0x01] = twoByteOp
-
-	// LJMP
-	OPCODES[0x00+0x02] = threeByteOp
-
-	// RR
-	OPCODES[0x00+0x03] = oneByteOp
-
-	// INC
-	OPCODES[0x00+0x04] = oneByteOp
-
-	// INC
-	OPCODES[0x00+0x05] = twoByteOp
-
-	// INC
-	OPCODES[0x00+0x06] = oneByteOp
-
-	// INC
-	OPCODES[0x00+0x07] = oneByteOp
-
-	// INC
-	OPCODES[0x00+0x08] = oneByteOp
-
-	// INC
-	OPCODES[0x00+0x09] = oneByteOp
-
-	// INC
-	OPCODES[0x00+0x0A] = oneByteOp
-
-	// INC
-	OPCODES[0x00+0x0B] = oneByteOp
-
-	// INC
-	OPCODES[0x00+0x0C] = oneByteOp
-
-	// INC
-	OPCODES[0x00+0x0D] = oneByteOp
-
-	// INC
-	OPCODES[0x00+0x0E] = oneByteOp
-
-	// INC
-	OPCODES[0x00+0x0F] = oneByteOp
-
-	// JBC
-	OPCODES[0x10+0x00] = threeByteOp
-
-	// ACALL
-	OPCODES[0x10+0x01] = twoByteOp
-
-	// LCALL codeaddr
-	OPCODES[0x10+0x02] = threeByteOp
-
-	// RRC
-	OPCODES[0x10+0x03] = oneByteOp
-
-	// DEC
-	OPCODES[0x10+0x04] = oneByteOp
-
-	// DEC
-	OPCODES[0x10+0x05] = twoByteOp
-
-	// DEC
-	OPCODES[0x10+0x06] = oneByteOp
-
-	// DEC
-	OPCODES[0x10+0x07] = oneByteOp
-
-	// DEC
-	OPCODES[0x10+0x08] = oneByteOp
-
-	// DEC
-	OPCODES[0x10+0x09] = oneByteOp
-
-	// DEC
-	OPCODES[0x10+0x0A] = oneByteOp
-
-	// DEC
-	OPCODES[0x10+0x0B] = oneByteOp
-
-	// DEC
-	OPCODES[0x10+0x0C] = oneByteOp
-
-	// DEC
-	OPCODES[0x10+0x0D] = oneByteOp
-
-	// DEC
-	OPCODES[0x10+0x0E] = oneByteOp
-
-	// DEC
-	OPCODES[0x10+0x0F] = oneByteOp
-
-	// JB
-	OPCODES[0x20+0x00] = threeByteOp
-
-	// AJMP
-	OPCODES[0x20+0x01] = twoByteOp
-
-	// RET
-	OPCODES[0x20+0x02] = oneByteOp
-
-	// RL
-	OPCODES[0x20+0x03] = oneByteOp
-
-	// ADD
-	OPCODES[0x20+0x04] = twoByteOp
-
-	// ADD
-	OPCODES[0x20+0x05] = twoByteOp
-
-	// ADD
-	OPCODES[0x20+0x06] = oneByteOp
-
-	// ADD
-	OPCODES[0x20+0x07] = oneByteOp
-
-	// ADD
-	OPCODES[0x20+0x08] = oneByteOp
-
-	// ADD
-	OPCODES[0x20+0x09] = oneByteOp
-
-	// ADD
-	OPCODES[0x20+0x0A] = oneByteOp
-
-	// ADD
-	OPCODES[0x20+0x0B] = oneByteOp
-
-	// ADD
-	OPCODES[0x20+0x0C] = oneByteOp
-
-	// ADD
-	OPCODES[0x20+0x0D] = oneByteOp
-
-	// ADD
-	OPCODES[0x20+0x0E] = oneByteOp
-
-	// ADD
-	OPCODES[0x20+0x0F] = oneByteOp
-
-	// JNB
-	OPCODES[0x30+0x00] = threeByteOp
-
-	// ACALL
-	OPCODES[0x30+0x01] = twoByteOp
-
-	// RETI
-	OPCODES[0x30+0x02] = oneByteOp
-
-	// RLC
-	OPCODES[0x30+0x03] = oneByteOp
-
-	// ADDC
-	OPCODES[0x30+0x04] = twoByteOp
-
-	// ADDC
-	OPCODES[0x30+0x05] = twoByteOp
-
-	// ADDC
-	OPCODES[0x30+0x06] = oneByteOp
-
-	// ADDC
-	OPCODES[0x30+0x07] = oneByteOp
-
-	// ADDC
-	OPCODES[0x30+0x08] = oneByteOp
-
-	// ADDC
-	OPCODES[0x30+0x09] = oneByteOp
-
-	// ADDC
-	OPCODES[0x30+0x0A] = oneByteOp
-
-	// ADDC
-	OPCODES[0x30+0x0B] = oneByteOp
-
-	// ADDC
-	OPCODES[0x30+0x0C] = oneByteOp
-
-	// ADDC
-	OPCODES[0x30+0x0D] = oneByteOp
-
-	// ADDC
-	OPCODES[0x30+0x0E] = oneByteOp
-
-	// ADDC
-	OPCODES[0x30+0x0F] = oneByteOp
-
-	// JC reladdr
-	OPCODES[0x40+0x00] = twoByteOp
-
-	// AJMP
-	OPCODES[0x40+0x01] = twoByteOp
-
-	// ORL
-	OPCODES[0x40+0x02] = twoByteOp
-
-	// ORL
-	OPCODES[0x40+0x03] = threeByteOp
-
-	// ORL
-	OPCODES[0x40+0x04] = twoByteOp
-
-	// ORL
-	OPCODES[0x40+0x05] = twoByteOp
-
-	// ORL
-	OPCODES[0x40+0x06] = oneByteOp
-
-	// ORL
-	OPCODES[0x40+0x07] = oneByteOp
-
-	// ORL
-	OPCODES[0x40+0x08] = oneByteOp
-
-	// ORL
-	OPCODES[0x40+0x09] = oneByteOp
-
-	// ORL
-	OPCODES[0x40+0x0A] = oneByteOp
-
-	// ORL
-	OPCODES[0x40+0x0B] = oneByteOp
-
-	// ORL
-	OPCODES[0x40+0x0C] = oneByteOp
-
-	// ORL
-	OPCODES[0x40+0x0D] = oneByteOp
-
-	// ORL
-	OPCODES[0x40+0x0E] = oneByteOp
-
-	// ORL
-	OPCODES[0x40+0x0F] = oneByteOp
-
-	// JNC reladdr
-	OPCODES[0x50+0x00] = twoByteOp
-
-	// ACALL
-	OPCODES[0x50+0x01] = twoByteOp
-
-	// ANL
-	OPCODES[0x50+0x02] = twoByteOp
-
-	// ANL
-	OPCODES[0x50+0x03] = threeByteOp
-
-	// ANL
-	OPCODES[0x50+0x04] = twoByteOp
-
-	// ANL
-	OPCODES[0x50+0x05] = twoByteOp
-
-	// ANL
-	OPCODES[0x50+0x06] = oneByteOp
-
-	// ANL
-	OPCODES[0x50+0x07] = oneByteOp
-
-	// ANL
-	OPCODES[0x50+0x08] = oneByteOp
-
-	// ANL
-	OPCODES[0x50+0x09] = oneByteOp
-
-	// ANL
-	OPCODES[0x50+0x0A] = oneByteOp
-
-	// ANL
-	OPCODES[0x50+0x0B] = oneByteOp
-
-	// ANL
-	OPCODES[0x50+0x0C] = oneByteOp
-
-	// ANL
-	OPCODES[0x50+0x0D] = oneByteOp
-
-	// ANL
-	OPCODES[0x50+0x0E] = oneByteOp
-
-	// ANL
-	OPCODES[0x50+0x0F] = oneByteOp
-
-	// JZ
-	OPCODES[0x60+0x00] = twoByteOp
-
-	// AJMP
-	OPCODES[0x60+0x01] = twoByteOp
-
-	// XRL
-	OPCODES[0x60+0x02] = twoByteOp
-
-	// XRL
-	OPCODES[0x60+0x03] = threeByteOp
-
-	// XRL
-	OPCODES[0x60+0x04] = twoByteOp
-
-	// XRL
-	OPCODES[0x60+0x05] = twoByteOp
-
-	// XRL
-	OPCODES[0x60+0x06] = oneByteOp
-
-	// XRL
-	OPCODES[0x60+0x07] = oneByteOp
-
-	// XRL
-	OPCODES[0x60+0x08] = oneByteOp
-
-	// XRL
-	OPCODES[0x60+0x09] = oneByteOp
-
-	// XRL
-	OPCODES[0x60+0x0A] = oneByteOp
-
-	// XRL
-	OPCODES[0x60+0x0B] = oneByteOp
-
-	// XRL
-	OPCODES[0x60+0x0C] = oneByteOp
-
-	// XRL
-	OPCODES[0x60+0x0D] = oneByteOp
-
-	// XRL
-	OPCODES[0x60+0x0E] = oneByteOp
-
-	// XRL
-	OPCODES[0x60+0x0F] = oneByteOp
-
-	// JNZ reladdr
-	OPCODES[0x70+0x00] = twoByteOp
-
-	// ACALL
-	OPCODES[0x70+0x01] = twoByteOp
-
-	// ORL
-	OPCODES[0x70+0x02] = twoByteOp
-
-	// JMP
-	OPCODES[0x70+0x03] = oneByteOp
-
-	// MOV
-	OPCODES[0x70+0x04] = twoByteOp
-
-	// MOV
-	OPCODES[0x70+0x05] = threeByteOp
-
-	// MOV
-	OPCODES[0x70+0x06] = twoByteOp
-
-	// MOV
-	OPCODES[0x70+0x07] = twoByteOp
-
-	// MOV
-	OPCODES[0x70+0x08] = twoByteOp
-
-	// MOV
-	OPCODES[0x70+0x09] = twoByteOp
-
-	// MOV
-	OPCODES[0x70+0x0A] = twoByteOp
-
-	// MOV
-	OPCODES[0x70+0x0B] = twoByteOp
-
-	// MOV
-	OPCODES[0x70+0x0C] = twoByteOp
-
-	// MOV
-	OPCODES[0x70+0x0D] = twoByteOp
-
-	// MOV
-	OPCODES[0x70+0x0E] = twoByteOp
-
-	// MOV
-	OPCODES[0x70+0x0F] = twoByteOp
-
-	// SJMP reladdr
-	OPCODES[0x80+0x00] = twoByteOp
-
-	// AJMP
-	OPCODES[0x80+0x01] = twoByteOp
-
-	// ANL
-	OPCODES[0x80+0x02] = twoByteOp
-
-	// MOVC
-	OPCODES[0x80+0x03] = oneByteOp
-
-	// DIV
-	OPCODES[0x80+0x04] = oneByteOp
-
-	// MOV
-	OPCODES[0x80+0x05] = threeByteOp
-
-	// MOV
-	OPCODES[0x80+0x06] = twoByteOp
-
-	// MOV
-	OPCODES[0x80+0x07] = twoByteOp
-
-	// MOV
-	OPCODES[0x80+0x08] = twoByteOp
-
-	// MOV
-	OPCODES[0x80+0x09] = twoByteOp
-
-	// MOV
-	OPCODES[0x80+0x0A] = twoByteOp
-
-	// MOV
-	OPCODES[0x80+0x0B] = twoByteOp
-
-	// MOV
-	OPCODES[0x80+0x0C] = twoByteOp
-
-	// MOV
-	OPCODES[0x80+0x0D] = twoByteOp
-
-	// MOV
-	OPCODES[0x80+0x0E] = twoByteOp
-
-	// MOV
-	OPCODES[0x80+0x0F] = twoByteOp
-
-	// MOV
-	OPCODES[0x90+0x00] = threeByteOp
-
-	// ACALL
-	OPCODES[0x90+0x01] = twoByteOp
-
-	// MOV
-	OPCODES[0x90+0x02] = twoByteOp
-
-	// MOVC
-	OPCODES[0x90+0x03] = oneByteOp
-
-	// SUBB
-	OPCODES[0x90+0x04] = twoByteOp
-
-	// SUBB
-	OPCODES[0x90+0x05] = twoByteOp
-
-	// SUBB
-	OPCODES[0x90+0x06] = oneByteOp
-
-	// SUBB
-	OPCODES[0x90+0x07] = oneByteOp
-
-	// SUBB
-	OPCODES[0x90+0x08] = oneByteOp
-
-	// SUBB
-	OPCODES[0x90+0x09] = oneByteOp
-
-	// SUBB
-	OPCODES[0x90+0x0A] = oneByteOp
-
-	// SUBB
-	OPCODES[0x90+0x0B] = oneByteOp
-
-	// SUBB
-	OPCODES[0x90+0x0C] = oneByteOp
-
-	// SUBB
-	OPCODES[0x90+0x0D] = oneByteOp
-
-	// SUBB
-	OPCODES[0x90+0x0E] = oneByteOp
-
-	// SUBB
-	OPCODES[0x90+0x0F] = oneByteOp
-
-	// ORL
-	OPCODES[0xA0+0x00] = twoByteOp
-
-	// AJMP
-	OPCODES[0xA0+0x01] = twoByteOp
-
-	// MOV
-	OPCODES[0xA0+0x02] = twoByteOp
-
-	// INC
-	OPCODES[0xA0+0x03] = oneByteOp
-
-	// MUL
-	OPCODES[0xA0+0x04] = oneByteOp
-
-	// ?
-	OPCODES[0xA0+0x05] = oneByteOp
-
-	// MOV
-	OPCODES[0xA0+0x06] = twoByteOp
-
-	// MOV
-	OPCODES[0xA0+0x07] = twoByteOp
-
-	// MOV
-	OPCODES[0xA0+0x08] = twoByteOp
-
-	// MOV
-	OPCODES[0xA0+0x09] = twoByteOp
-
-	// MOV
-	OPCODES[0xA0+0x0A] = twoByteOp
-
-	// MOV
-	OPCODES[0xA0+0x0B] = twoByteOp
-
-	// MOV
-	OPCODES[0xA0+0x0C] = twoByteOp
-
-	// MOV
-	OPCODES[0xA0+0x0D] = twoByteOp
-
-	// MOV
-	OPCODES[0xA0+0x0E] = twoByteOp
-
-	// MOV
-	OPCODES[0xA0+0x0F] = twoByteOp
-
-	// ANL
-	OPCODES[0xB0+0x00] = twoByteOp
-
-	// ACALL
-	OPCODES[0xB0+0x01] = twoByteOp
-
-	// CPL bitaddr
-	OPCODES[0xB0+0x02] = twoByteOp
-
-	// CPL
-	OPCODES[0xB0+0x03] = oneByteOp
-
-	// CJNE A,#data,reladdr
-	OPCODES[0xB0+0x04] = threeByteOp
-
-	// CJNE A,iram addr,reladdr
-	OPCODES[0xB0+0x05] = threeByteOp
-
-	// CJNE
-	OPCODES[0xB0+0x06] = threeByteOp
-
-	// CJNE
-	OPCODES[0xB0+0x07] = threeByteOp
-
-	// CJNE R0,#data,reladdr
-	OPCODES[0xB0+0x08] = threeByteOp
-
-	// CJNE
-	OPCODES[0xB0+0x09] = threeByteOp
-
-	// CJNE
-	OPCODES[0xB0+0x0A] = threeByteOp
-
-	// CJNE
-	OPCODES[0xB0+0x0B] = threeByteOp
-
-	// CJNE
-	OPCODES[0xB0+0x0C] = threeByteOp
-
-	// CJNE
-	OPCODES[0xB0+0x0D] = threeByteOp
-
-	// CJNE
-	OPCODES[0xB0+0x0E] = threeByteOp
-
-	// CJNE
-	OPCODES[0xB0+0x0F] = threeByteOp
-
-	// PUSH
-	OPCODES[0xC0+0x00] = twoByteOp
-
-	// AJMP
-	OPCODES[0xC0+0x01] = twoByteOp
-
-	// CLR
-	OPCODES[0xC0+0x02] = twoByteOp
-
-	// CLR
-	OPCODES[0xC0+0x03] = oneByteOp
-
-	// SWAP
-	OPCODES[0xC0+0x04] = oneByteOp
-
-	// XCH
-	OPCODES[0xC0+0x05] = twoByteOp
-
-	// XCH
-	OPCODES[0xC0+0x06] = oneByteOp
-
-	// XCH
-	OPCODES[0xC0+0x07] = oneByteOp
-
-	// XCH
-	OPCODES[0xC0+0x08] = oneByteOp
-
-	// XCH
-	OPCODES[0xC0+0x09] = oneByteOp
-
-	// XCH
-	OPCODES[0xC0+0x0A] = oneByteOp
-
-	// XCH
-	OPCODES[0xC0+0x0B] = oneByteOp
-
-	// XCH
-	OPCODES[0xC0+0x0C] = oneByteOp
-
-	// XCH
-	OPCODES[0xC0+0x0D] = oneByteOp
-
-	// XCH
-	OPCODES[0xC0+0x0E] = oneByteOp
-
-	// XCH
-	OPCODES[0xC0+0x0F] = oneByteOp
-
-	// POP
-	OPCODES[0xD0+0x00] = twoByteOp
-
-	// ACALL
-	OPCODES[0xD0+0x01] = twoByteOp
-
-	// SETB
-	OPCODES[0xD0+0x02] = twoByteOp
-
-	// SETB
-	OPCODES[0xD0+0x03] = oneByteOp
-
-	// DA
-	OPCODES[0xD0+0x04] = oneByteOp
-
-	// DJNZ
-	OPCODES[0xD0+0x05] = threeByteOp
-
-	// XCHD
-	OPCODES[0xD0+0x06] = oneByteOp
-
-	// XCHD
-	OPCODES[0xD0+0x07] = oneByteOp
-
-	// DJNZ R0,reladdr
-	OPCODES[0xD0+0x08] = twoByteOp
-
-	// DJNZ R1,reladdr
-	OPCODES[0xD0+0x09] = twoByteOp
-
-	// DJNZ R2,reladdr
-	OPCODES[0xD0+0x0A] = twoByteOp
-
-	// DJNZ R3,reladdr
-	OPCODES[0xD0+0x0B] = twoByteOp
-
-	// DJNZ R4,reladdr
-	OPCODES[0xD0+0x0C] = twoByteOp
-
-	// DJNZ R5,reladdr
-	OPCODES[0xD0+0x0D] = twoByteOp
-
-	// DJNZ R6,reladdr
-	OPCODES[0xD0+0x0E] = twoByteOp
-
-	// DJNZ R7,reladdr
-	OPCODES[0xD0+0x0F] = twoByteOp
-
-	// MOVX
-	OPCODES[0xE0+0x00] = oneByteOp
-
-	// AJMP
-	OPCODES[0xE0+0x01] = twoByteOp
-
-	// MOVX
-	OPCODES[0xE0+0x02] = oneByteOp
-
-	// MOVX
-	OPCODES[0xE0+0x03] = oneByteOp
-
-	// CLR
-	OPCODES[0xE0+0x04] = oneByteOp
-
-	// MOV
-	OPCODES[0xE0+0x05] = twoByteOp
-
-	// MOV
-	OPCODES[0xE0+0x06] = oneByteOp
-
-	// MOV
-	OPCODES[0xE0+0x07] = oneByteOp
-
-	// MOV
-	OPCODES[0xE0+0x08] = oneByteOp
-
-	// MOV
-	OPCODES[0xE0+0x09] = oneByteOp
-
-	// MOV
-	OPCODES[0xE0+0x0A] = oneByteOp
-
-	// MOV
-	OPCODES[0xE0+0x0B] = oneByteOp
-
-	// MOV
-	OPCODES[0xE0+0x0C] = oneByteOp
-
-	// MOV
-	OPCODES[0xE0+0x0D] = oneByteOp
-
-	// MOV
-	OPCODES[0xE0+0x0E] = oneByteOp
-
-	// MOV
-	OPCODES[0xE0+0x0F] = oneByteOp
-
-	// MOVX
-	OPCODES[0xF0+0x00] = oneByteOp
-
-	// ACALL
-	OPCODES[0xF0+0x01] = twoByteOp
-
-	// MOVX
-	OPCODES[0xF0+0x02] = oneByteOp
-
-	// MOVX
-	OPCODES[0xF0+0x03] = oneByteOp
-
-	// CPL
-	OPCODES[0xF0+0x04] = oneByteOp
-
-	// MOV
-	OPCODES[0xF0+0x05] = twoByteOp
-
-	// MOV
-	OPCODES[0xF0+0x06] = oneByteOp
-
-	// MOV
-	OPCODES[0xF0+0x07] = oneByteOp
-
-	// MOV
-	OPCODES[0xF0+0x08] = oneByteOp
-
-	// MOV
-	OPCODES[0xF0+0x09] = oneByteOp
-
-	// MOV
-	OPCODES[0xF0+0x0A] = oneByteOp
-
-	// MOV
-	OPCODES[0xF0+0x0B] = oneByteOp
-
-	// MOV
-	OPCODES[0xF0+0x0C] = oneByteOp
-
-	// MOV
-	OPCODES[0xF0+0x0D] = oneByteOp
-
-	// MOV
-	OPCODES[0xF0+0x0E] = oneByteOp
-
-	// MOV
-	OPCODES[0xF0+0x0F] = oneByteOp
 
 	fileName := os.Args[1]
 
@@ -1110,23 +337,17 @@ func main() {
 	log.Printf("File %s is %d bytes\n", fileName, stat.Size())
 
 	for pos := 0; pos < len(program); {
-		opcode := program[pos]
+		byteCode := program[pos]
 
-		name, ok := OPCODES_NAME[opcode]
+		op, ok := LOOKUP_TABLE[byteCode]
 		if !ok {
-			fmt.Printf("op %d not in OPCODES_NAME\n", opcode)
+			fmt.Printf("op %d not in LOOKUP_TABLE\n", byteCode)
 			continue
 		}
 
-		parseFn, ok := OPCODES[opcode]
-		if !ok {
-			fmt.Printf("op %d not in OPCODES\n", opcode)
-			continue
-		}
+		fmt.Printf("pos %d op %d (0x%02X) = %s\n", pos, byteCode, byteCode, op.Name)
 
-		fmt.Printf("pos %d op %d (0x%02X) = %s\n", pos, opcode, opcode, name)
-
-		sz := parseFn(program[pos:], pos)
+		sz := op.Parse(program[pos:], pos)
 
 		fmt.Println()
 
