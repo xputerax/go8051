@@ -268,57 +268,57 @@ func operationTable() map[byte]Opcode {
 		return nil
 	}}
 
-	tbl[0x15] = Opcode{Name: "DEC", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x15] = Opcode{Name: "DEC ramaddr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x16] = Opcode{Name: "DEC", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x16] = Opcode{Name: "DEC @R0", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x17] = Opcode{Name: "DEC", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x17] = Opcode{Name: "DEC @R1", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x18] = Opcode{Name: "DEC", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x18] = Opcode{Name: "DEC R0", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x19] = Opcode{Name: "DEC", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x19] = Opcode{Name: "DEC R1", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x1a] = Opcode{Name: "DEC", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x1a] = Opcode{Name: "DEC R2", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x1b] = Opcode{Name: "DEC", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x1b] = Opcode{Name: "DEC R3", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x1c] = Opcode{Name: "DEC", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x1c] = Opcode{Name: "DEC R4", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x1d] = Opcode{Name: "DEC", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x1d] = Opcode{Name: "DEC R5", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x1e] = Opcode{Name: "DEC", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x1e] = Opcode{Name: "DEC R6", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x1f] = Opcode{Name: "DEC", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x1f] = Opcode{Name: "DEC R7", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
