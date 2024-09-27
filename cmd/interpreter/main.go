@@ -263,8 +263,8 @@ func operationTable() map[byte]Opcode {
 		return nil
 	}}
 
-	tbl[0x14] = Opcode{Name: "DEC", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
+	tbl[0x14] = Opcode{Name: "DEC A", Eval: func(vm *Machine, operands []byte) error {
+		vm.Registers.ACC -= 1
 		return nil
 	}}
 
