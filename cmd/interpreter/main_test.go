@@ -26,3 +26,23 @@ func TestOp0x03(t *testing.T) {
 		}
 	}
 }
+
+func TestOp0x04(t *testing.T) {
+	cases := []struct {
+		Original byte
+		Expected byte
+	}{
+		{Original: 0b00000000, Expected: 0b00000001},
+		{Original: 0xFF, Expected: 0x00},
+	}
+
+	for _, tc := range cases {
+		vm := Machine{Registers: Register{ACC: tc.Original}}
+
+		vm.Feed([]byte{0x04})
+
+		if vm.Registers.ACC != tc.Expected {
+			t.Errorf("expected A register to be %#08b, got %#08b", tc.Expected, vm.Registers.ACC)
+		}
+	}
+}
