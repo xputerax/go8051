@@ -74,6 +74,14 @@ func PSW_P(psw byte) bool {
 	return (psw & PSW_P_MASK) == PSW_P_MASK
 }
 
+func PSW_SET(psw byte, mask byte) byte {
+	return (psw | mask)
+}
+
+func PSW_UNSET(psw byte, mask byte) byte {
+	return (psw & ^mask)
+}
+
 type Machine struct {
 	Registers Register
 }

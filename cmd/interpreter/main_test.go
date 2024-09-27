@@ -4,6 +4,58 @@ import (
 	"testing"
 )
 
+func TestPSW_SET(t *testing.T) {
+	cases := []struct {
+		Mask     byte
+		Original byte
+		Expected byte
+	}{
+		{Mask: 0b00000000, Original: 0b00000000, Expected: 0b00000000},
+		{Mask: (1 << 0), Original: 0x00, Expected: (1 << 0)},
+		{Mask: (1 << 1), Original: 0x00, Expected: (1 << 1)},
+		{Mask: (1 << 2), Original: 0x00, Expected: (1 << 2)},
+		{Mask: (1 << 3), Original: 0x00, Expected: (1 << 3)},
+		{Mask: (1 << 4), Original: 0x00, Expected: (1 << 4)},
+		{Mask: (1 << 5), Original: 0x00, Expected: (1 << 5)},
+		{Mask: (1 << 6), Original: 0x00, Expected: (1 << 6)},
+		{Mask: (1 << 7), Original: 0x00, Expected: (1 << 7)},
+	}
+
+	for _, tc := range cases {
+		actual := PSW_SET(tc.Original, tc.Mask)
+
+		if actual != tc.Expected {
+			t.Errorf("expected %#08b got %#08b", tc.Expected, actual)
+		}
+	}
+}
+
+func TestPSW_UNSET(t *testing.T) {
+	cases := []struct {
+		Mask     byte
+		Original byte
+		Expected byte
+	}{
+		{Mask: 0b00000000, Original: 0b00000000, Expected: 0b00000000},
+		{Mask: (1 << 0), Original: 0xFF, Expected: 0b11111110},
+		{Mask: (1 << 1), Original: 0xFF, Expected: 0b11111101},
+		{Mask: (1 << 2), Original: 0xFF, Expected: 0b11111011},
+		{Mask: (1 << 3), Original: 0xFF, Expected: 0b11110111},
+		{Mask: (1 << 4), Original: 0xFF, Expected: 0b11101111},
+		{Mask: (1 << 5), Original: 0xFF, Expected: 0b11011111},
+		{Mask: (1 << 6), Original: 0xFF, Expected: 0b10111111},
+		{Mask: (1 << 7), Original: 0xFF, Expected: 0b01111111},
+	}
+
+	for _, tc := range cases {
+		actual := PSW_UNSET(tc.Original, tc.Mask)
+
+		if actual != tc.Expected {
+			t.Errorf("expected %#08b got %#08b", tc.Expected, actual)
+		}
+	}
+}
+
 func TestOp0x03(t *testing.T) {
 	cases := []struct {
 		Original byte
