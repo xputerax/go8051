@@ -344,28 +344,28 @@ func main() {
 
 		op, ok := LOOKUP_TABLE[byteCode]
 		if !ok {
-			fmt.Printf("op %d not in LOOKUP_TABLE\n", byteCode)
+			fmt.Printf("op %#02x not in LOOKUP_TABLE\n", byteCode)
 			continue
 		}
 
 		sz, operands, err := op.Parse(program[pos:], pos)
 		if err != nil {
-			fmt.Printf("error encountered when parsing opcode 0x%02X: %s", err)
+			fmt.Printf("error encountered when parsing opcode %#02x: %s", err)
 			continue
 		}
 
 		if len(operands) == 0 {
-			fmt.Printf("pos %d op %d (0x%02X) = %s\n", pos, byteCode, byteCode, op.Name)
+			fmt.Printf("pos %d op %d (%#02x) = %s\n", pos, byteCode, byteCode, op.Name)
 		} else {
 			operandsStr := ""
 			for i, operand := range operands {
-				operandsStr += fmt.Sprintf("0x%02X", operand)
+				operandsStr += fmt.Sprintf("%#02x", operand)
 				if i != len(operands)-1 { // not the last operand, append space
 					operandsStr += " "
 				}
 			}
 
-			fmt.Printf("pos %d op %d (0x%02X) %s = %s\n", pos, byteCode, byteCode, operandsStr, op.Name)
+			fmt.Printf("pos %d op %d (%#02x) %s = %s\n", pos, byteCode, byteCode, operandsStr, op.Name)
 		}
 
 		pos = pos + sz

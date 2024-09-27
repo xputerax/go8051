@@ -98,7 +98,7 @@ func (m *Machine) Feed(instructions []byte) error {
 
 	op, ok := OPCODES[opcode]
 	if !ok {
-		return fmt.Errorf("opcode '%02x' does not exist in OPCODES")
+		return fmt.Errorf("opcode '%02x' does not exist in OPCODES", opcode)
 	}
 
 	log.Printf("executing instruction '%02X' (%s) with operand '%v'", opcode, op.Name, operands)
