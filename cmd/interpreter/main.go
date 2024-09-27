@@ -162,17 +162,17 @@ func operationTable() map[byte]Opcode {
 		return nil
 	}}
 
-	tbl[0x05] = Opcode{Name: "INC", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x05] = Opcode{Name: "INC ramaddr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x06] = Opcode{Name: "INC", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x06] = Opcode{Name: "INC @R0", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x07] = Opcode{Name: "INC", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x07] = Opcode{Name: "INC @R1", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
