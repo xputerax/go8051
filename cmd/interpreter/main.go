@@ -402,12 +402,12 @@ func operationTable() map[byte]Opcode {
 		return nil
 	}}
 
-	tbl[0x30] = Opcode{Name: "JNB", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x30] = Opcode{Name: "JNB bit addr,code addr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x31] = Opcode{Name: "ACALL", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x31] = Opcode{Name: "ACALL code addr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
