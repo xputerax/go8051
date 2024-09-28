@@ -417,8 +417,14 @@ func operationTable() map[byte]Opcode {
 		return nil
 	}}
 
-	tbl[0x33] = Opcode{Name: "RLC", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
+	tbl[0x33] = Opcode{Name: "RLC A", Eval: func(vm *Machine, operands []byte) error {
+		msb := vm.Registers.ACC & 0b10000000
+		if msb == 0b10000000 {
+			vm.Registers.PSW = PSW_SET(vm.Registers.PSW, PSW_C_MASK)
+		} else {
+			vm.Registers.PSW = PSW_UNSET(vm.Registers.PSW, PSW_C_MASK)
+		}
+		vm.Registers.ACC <<= 1
 		return nil
 	}}
 
