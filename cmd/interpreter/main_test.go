@@ -106,8 +106,9 @@ func TestOp0x13(t *testing.T) {
 		ExpectedCarry byte
 	}{
 		{Original: 0b00000000, ExpectedAcc: 0b00000000, ExpectedCarry: 0},
-		{Original: 0b11111111, ExpectedAcc: 0b11111111, ExpectedCarry: 1},
-		{Original: 0b10000001, ExpectedAcc: 0b11000000, ExpectedCarry: 1},
+		{Original: 0b11111111, ExpectedAcc: 0b01111111, ExpectedCarry: 1},
+		{Original: 0b10000001, ExpectedAcc: 0b01000000, ExpectedCarry: 1},
+		{Original: 0b11000101, ExpectedAcc: 0b01100010, ExpectedCarry: 1},
 	}
 
 	for _, tc := range cases {

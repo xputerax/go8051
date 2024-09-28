@@ -241,11 +241,8 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0x13] = Opcode{Name: "RRC A", Eval: func(vm *Machine, operands []byte) error {
-		A := vm.Registers.ACC
-		lsb := A & 0b00000001
+		lsb := vm.Registers.ACC & 0b00000001
 		newCarry := lsb
-
-		A >>= 1
 
 		if newCarry == 0 {
 			vm.Registers.PSW = PSW_UNSET(vm.Registers.PSW, PSW_C_MASK)
@@ -255,10 +252,7 @@ func operationTable() map[byte]Opcode {
 			return fmt.Errorf("unexpected value %#08b for new carry value", newCarry)
 		}
 
-		lsbRollover := lsb << 7
-		A |= lsbRollover
-
-		vm.Registers.ACC = A
+		vm.Registers.ACC >>= 1
 
 		return nil
 	}}
