@@ -498,72 +498,72 @@ func operationTable() map[byte]Opcode {
 		return nil
 	}}
 
-	tbl[0x42] = Opcode{Name: "ORL", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x42] = Opcode{Name: "ORL data addr,A", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x43] = Opcode{Name: "ORL", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x43] = Opcode{Name: "ORL data addr,#data", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x44] = Opcode{Name: "ORL", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x44] = Opcode{Name: "ORL A,#data", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x45] = Opcode{Name: "ORL", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x45] = Opcode{Name: "ORL A,data add", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x46] = Opcode{Name: "ORL", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x46] = Opcode{Name: "ORL A,@R0", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x47] = Opcode{Name: "ORL", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x47] = Opcode{Name: "ORL A,@R1", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x48] = Opcode{Name: "ORL", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x48] = Opcode{Name: "ORL A,R0", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x49] = Opcode{Name: "ORL", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x49] = Opcode{Name: "ORL A,R1", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x4a] = Opcode{Name: "ORL", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x4a] = Opcode{Name: "ORL A,R2", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x4b] = Opcode{Name: "ORL", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x4b] = Opcode{Name: "ORL A,R3", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x4c] = Opcode{Name: "ORL", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x4c] = Opcode{Name: "ORL A,R4", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x4d] = Opcode{Name: "ORL", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x4d] = Opcode{Name: "ORL A,R5", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x4e] = Opcode{Name: "ORL", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x4e] = Opcode{Name: "ORL A,R6", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
 
-	tbl[0x4f] = Opcode{Name: "ORL", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x4f] = Opcode{Name: "ORL A,R7", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
