@@ -439,7 +439,6 @@ func operationTable() map[byte]Opcode {
 		return err
 	}}
 
-	// TODO: check for overflow?
 	tbl[0x05] = Opcode{Name: "INC ramaddr", Eval: func(vm *Machine, operands []byte) error {
 		addr := operands[0]
 		val, err := vm.ReadMem(addr)
@@ -452,7 +451,6 @@ func operationTable() map[byte]Opcode {
 		return err
 	}}
 
-	// TODO: check for overflow?
 	tbl[0x06] = Opcode{Name: "INC @R0", Eval: func(vm *Machine, operands []byte) error {
 		loc := LOC_R0 // TODO: take into account memory bank
 		val, err := vm.DerefMem(loc)
@@ -465,7 +463,6 @@ func operationTable() map[byte]Opcode {
 		return err
 	}}
 
-	// TODO: check for overflow?
 	tbl[0x07] = Opcode{Name: "INC @R1", Eval: func(vm *Machine, operands []byte) error {
 		loc := LOC_R1 // TODO: take into account memory bank
 		val, err := vm.DerefMem(loc)
@@ -478,7 +475,6 @@ func operationTable() map[byte]Opcode {
 		return err
 	}}
 
-	// TODO: check for overflow?
 	tbl[0x08] = Opcode{Name: "INC R0", Eval: func(vm *Machine, operands []byte) error {
 		loc := LOC_R0 // TODO: take into account memory bank
 		val, err := vm.ReadMem(loc)
@@ -491,7 +487,6 @@ func operationTable() map[byte]Opcode {
 		return err
 	}}
 
-	// TODO: check for overflow?
 	tbl[0x09] = Opcode{Name: "INC R1", Eval: func(vm *Machine, operands []byte) error {
 		loc := LOC_R1 // TODO: take into account memory bank
 		val, err := vm.ReadMem(loc)
@@ -504,7 +499,6 @@ func operationTable() map[byte]Opcode {
 		return err
 	}}
 
-	// TODO: check for overflow?
 	tbl[0x0a] = Opcode{Name: "INC R2", Eval: func(vm *Machine, operands []byte) error {
 		loc := LOC_R2 // TODO: take into account memory bank
 		val, err := vm.ReadMem(loc)
@@ -517,7 +511,6 @@ func operationTable() map[byte]Opcode {
 		return err
 	}}
 
-	// TODO: check for overflow?
 	tbl[0x0b] = Opcode{Name: "INC R3", Eval: func(vm *Machine, operands []byte) error {
 		loc := LOC_R3 // TODO: take into account memory bank
 		val, err := vm.ReadMem(loc)
@@ -530,7 +523,6 @@ func operationTable() map[byte]Opcode {
 		return err
 	}}
 
-	// TODO: check for overflow?
 	tbl[0x0c] = Opcode{Name: "INC R4", Eval: func(vm *Machine, operands []byte) error {
 		loc := LOC_R4 // TODO: take into account memory bank
 		val, err := vm.ReadMem(loc)
@@ -543,7 +535,6 @@ func operationTable() map[byte]Opcode {
 		return err
 	}}
 
-	// TODO: check for overflow?
 	tbl[0x0d] = Opcode{Name: "INC R5", Eval: func(vm *Machine, operands []byte) error {
 		loc := LOC_R5 // TODO: take into account memory bank
 		val, err := vm.ReadMem(loc)
@@ -556,7 +547,6 @@ func operationTable() map[byte]Opcode {
 		return err
 	}}
 
-	// TODO: check for overflow?
 	tbl[0x0e] = Opcode{Name: "INC R6", Eval: func(vm *Machine, operands []byte) error {
 		loc := LOC_R6 // TODO: take into account memory bank
 		val, err := vm.ReadMem(loc)
@@ -569,7 +559,6 @@ func operationTable() map[byte]Opcode {
 		return err
 	}}
 
-	// TODO: check for overflow?
 	tbl[0x0f] = Opcode{Name: "INC R7", Eval: func(vm *Machine, operands []byte) error {
 		loc := LOC_R7 // TODO: take into account memory bank
 		val, err := vm.ReadMem(loc)
