@@ -104,6 +104,15 @@ const SFR_TH0 uint8 = 0x8C
 const SFR_TL1 uint8 = 0x8B
 const SFR_TH1 uint8 = 0x8D
 
+const LOC_R0 uint8 = 0
+const LOC_R1 uint8 = 1
+const LOC_R2 uint8 = 2
+const LOC_R3 uint8 = 3
+const LOC_R4 uint8 = 4
+const LOC_R5 uint8 = 5
+const LOC_R6 uint8 = 6
+const LOC_R7 uint8 = 7
+
 // Why uint16: https://stackoverflow.com/questions/57535586/why-does-the-program-counter-in-8051-is-16-bit-and-stack-pointer-is-8-bit-in-805
 type Machine struct {
 	registers Register
@@ -430,6 +439,7 @@ func operationTable() map[byte]Opcode {
 		return err
 	}}
 
+	// TODO: check for overflow?
 	tbl[0x05] = Opcode{Name: "INC ramaddr", Eval: func(vm *Machine, operands []byte) error {
 		addr := operands[0]
 		val, err := vm.ReadMem(addr)
@@ -442,54 +452,134 @@ func operationTable() map[byte]Opcode {
 		return err
 	}}
 
+	// TODO: check for overflow?
 	tbl[0x06] = Opcode{Name: "INC @R0", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		loc := LOC_R0 // TODO: take into account memory bank
+		val, err := vm.DerefMem(loc)
+		if err != nil {
+			return err
+		}
+
+		val += 1
+		err = vm.SetrefMem(loc, val)
+		return err
 	}}
 
+	// TODO: check for overflow?
 	tbl[0x07] = Opcode{Name: "INC @R1", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		loc := LOC_R1 // TODO: take into account memory bank
+		val, err := vm.DerefMem(loc)
+		if err != nil {
+			return err
+		}
+
+		val += 1
+		err = vm.SetrefMem(loc, val)
+		return err
 	}}
 
+	// TODO: check for overflow?
 	tbl[0x08] = Opcode{Name: "INC R0", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		loc := LOC_R0 // TODO: take into account memory bank
+		val, err := vm.ReadMem(loc)
+		if err != nil {
+			return err
+		}
+
+		val += 1
+		err = vm.WriteMem(loc, val)
+		return err
 	}}
 
+	// TODO: check for overflow?
 	tbl[0x09] = Opcode{Name: "INC R1", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		loc := LOC_R1 // TODO: take into account memory bank
+		val, err := vm.ReadMem(loc)
+		if err != nil {
+			return err
+		}
+
+		val += 1
+		err = vm.WriteMem(loc, val)
+		return err
 	}}
 
+	// TODO: check for overflow?
 	tbl[0x0a] = Opcode{Name: "INC R2", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		loc := LOC_R2 // TODO: take into account memory bank
+		val, err := vm.ReadMem(loc)
+		if err != nil {
+			return err
+		}
+
+		val += 1
+		err = vm.WriteMem(loc, val)
+		return err
 	}}
 
+	// TODO: check for overflow?
 	tbl[0x0b] = Opcode{Name: "INC R3", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		loc := LOC_R3 // TODO: take into account memory bank
+		val, err := vm.ReadMem(loc)
+		if err != nil {
+			return err
+		}
+
+		val += 1
+		err = vm.WriteMem(loc, val)
+		return err
 	}}
 
+	// TODO: check for overflow?
 	tbl[0x0c] = Opcode{Name: "INC R4", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		loc := LOC_R4 // TODO: take into account memory bank
+		val, err := vm.ReadMem(loc)
+		if err != nil {
+			return err
+		}
+
+		val += 1
+		err = vm.WriteMem(loc, val)
+		return err
 	}}
 
+	// TODO: check for overflow?
 	tbl[0x0d] = Opcode{Name: "INC R5", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		loc := LOC_R5 // TODO: take into account memory bank
+		val, err := vm.ReadMem(loc)
+		if err != nil {
+			return err
+		}
+
+		val += 1
+		err = vm.WriteMem(loc, val)
+		return err
 	}}
 
+	// TODO: check for overflow?
 	tbl[0x0e] = Opcode{Name: "INC R6", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		loc := LOC_R6 // TODO: take into account memory bank
+		val, err := vm.ReadMem(loc)
+		if err != nil {
+			return err
+		}
+
+		val += 1
+		err = vm.WriteMem(loc, val)
+		return err
 	}}
 
+	// TODO: check for overflow?
 	tbl[0x0f] = Opcode{Name: "INC R7", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		loc := LOC_R7 // TODO: take into account memory bank
+		val, err := vm.ReadMem(loc)
+		if err != nil {
+			return err
+		}
+
+		val += 1
+		err = vm.WriteMem(loc, val)
+		return err
 	}}
 
 	tbl[0x10] = Opcode{Name: "JBC bit,rel", Eval: func(vm *Machine, operands []byte) error {

@@ -149,6 +149,93 @@ func TestOp0x05(t *testing.T) {
 	}
 }
 
+func TestOp0x06_0x07(t *testing.T) {
+	cases := []struct {
+		Opcode       byte
+		Name         string
+		Addr         uint8
+		Ptr          uint8
+		InitialValue byte
+	}{
+		{Opcode: 0x06, Name: "@R0", Addr: LOC_R0, Ptr: 1, InitialValue: 0x00}, // value of R0 is 1, value at address 1 is 0x00
+		{Opcode: 0x07, Name: "@R1", Addr: LOC_R1, Ptr: 2, InitialValue: 0xA0},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		if err := vm.WriteMem(tc.Addr, tc.Ptr); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.WriteMem(tc.Ptr, tc.InitialValue); err != nil {
+			t.Fatal(err)
+		}
+
+		vm.Feed([]byte{tc.Opcode})
+
+		directRead, err := vm.ReadMem(tc.Ptr)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		indirectRead, err := vm.DerefMem(tc.Addr)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		expectedValue := tc.InitialValue + 1
+		if directRead != expectedValue {
+			t.Errorf("expected %s to be %#02x, got %#02x", tc.Name, expectedValue, directRead)
+		}
+
+		if indirectRead != expectedValue {
+			t.Errorf("expected %s to be %#02x, got %#02x", tc.Name, expectedValue, indirectRead)
+		}
+	}
+}
+
+// INC R0-R7 (direct addressing)
+func TestOp0x08_0x0f(t *testing.T) {
+	cases := []struct {
+		Name         string
+		Opcode       byte
+		Addr         uint8
+		InitialValue byte
+	}{
+		{Name: "R0", Opcode: 0x08, Addr: LOC_R0, InitialValue: 0x00},
+		{Name: "R0", Opcode: 0x08, Addr: LOC_R0, InitialValue: 0xFF},
+		{Name: "R1", Opcode: 0x09, Addr: LOC_R1, InitialValue: 0x01},
+		{Name: "R2", Opcode: 0x0a, Addr: LOC_R2, InitialValue: 0x02},
+		{Name: "R3", Opcode: 0x0b, Addr: LOC_R3, InitialValue: 0x03},
+		{Name: "R4", Opcode: 0x0c, Addr: LOC_R4, InitialValue: 0x04},
+		{Name: "R5", Opcode: 0x0d, Addr: LOC_R5, InitialValue: 0x05},
+		{Name: "R6", Opcode: 0x0e, Addr: LOC_R6, InitialValue: 0x06},
+		{Name: "R7", Opcode: 0x0f, Addr: LOC_R7, InitialValue: 0x07},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		if err := vm.WriteMem(tc.Addr, tc.InitialValue); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.Feed([]byte{tc.Opcode}); err != nil {
+			t.Fatal(err)
+		}
+
+		actualValue, err := vm.ReadMem(tc.Addr)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		expectedValue := tc.InitialValue + 1
+		if actualValue != expectedValue {
+			t.Errorf("expected value in register %s to be %#02x, got %02x (opcode %#02x)",
+				tc.Name, expectedValue, actualValue, tc.Opcode)
+		}
+	}
+}
+
 func TestOp0x13(t *testing.T) {
 	cases := []struct {
 		Original      byte
