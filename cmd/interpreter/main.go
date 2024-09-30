@@ -639,7 +639,7 @@ func operationTable() map[byte]Opcode {
 		return err
 	}}
 
-	tbl[0x25] = Opcode{Name: "A, dataaddr", Eval: func(vm *Machine, operands []byte) error {
+	tbl[0x25] = Opcode{Name: "ADD A,dataaddr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
 		return nil
 	}}
