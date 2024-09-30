@@ -333,6 +333,35 @@ func (m *Machine) ReadMem(loc uint8) (byte, error) {
 	return value, nil
 }
 
+func (m *Machine) DerefMem(loc uint8) (byte, error) {
+	// TODO: take into account memory banks
+	ptr, err := m.ReadMem(loc)
+	if err != nil {
+		return 0, fmt.Errorf("failed to read memory location %#02x: %s", loc, err)
+	}
+
+	val, err := m.ReadMem(ptr)
+	if err != nil {
+		return 0, fmt.Errorf("dereference error at address %02x: %s", ptr, err)
+	}
+
+	return val, nil
+}
+
+// Indirect assignment to specified address
+// TLDR: int a = 0; int *b = &a; *b = 0xAA;
+// Now, a will be 0xAA
+func (m *Machine) SetrefMem(loc uint8, value byte) error {
+	ptr, err := m.ReadMem(loc)
+	if err != nil {
+		return err
+	}
+
+	err = m.WriteMem(ptr, value)
+
+	return err
+}
+
 func main() {
 	m := Machine{
 		registers: Register{},

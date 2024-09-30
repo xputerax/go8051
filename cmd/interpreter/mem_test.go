@@ -68,3 +68,73 @@ func TestWriteMemAllOk(t *testing.T) {
 		}
 	}
 }
+
+func TestDerefMem(t *testing.T) {
+	cases := []struct {
+		Addr     uint8
+		Ptr      uint8
+		PtrValue byte
+	}{
+		{Addr: 0x00, Ptr: 0x01, PtrValue: 0xAD},
+		{Addr: 0x01, Ptr: 0x02, PtrValue: 0xFF},
+		{Addr: 0xBB, Ptr: 0xAA, PtrValue: 0x69},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		if err := vm.WriteMem(tc.Addr, tc.Ptr); err != nil {
+			t.Fatalf("failed to write to memory address %#02x: %s", tc.Addr, err)
+		}
+
+		if err := vm.WriteMem(tc.Ptr, tc.PtrValue); err != nil {
+			t.Fatalf("failed to write to memory address %#02x: %s", tc.Ptr, err)
+		}
+
+		if actualValue, err := vm.DerefMem(tc.Addr); err != nil {
+			t.Fatalf("deref error: %s", err)
+		} else {
+			if actualValue != tc.PtrValue {
+				t.Fatalf("expected value at address %#02x to be %#02b, got %#02b", tc.Ptr, tc.PtrValue, actualValue)
+			}
+		}
+	}
+}
+
+func TestSetrefMem(t *testing.T) {
+	cases := []struct {
+		Addr          uint8
+		Ptr           uint8
+		ExpectedValue byte
+	}{
+		{Addr: 0, Ptr: 1, ExpectedValue: 0xAD},
+		{Addr: 1, Ptr: 0, ExpectedValue: 0xFF},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		vm.WriteMem(tc.Addr, tc.Ptr)
+		vm.SetrefMem(tc.Addr, tc.ExpectedValue)
+
+		directRead, err := vm.ReadMem(tc.Ptr)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		indirectRead, err := vm.DerefMem(tc.Addr)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if directRead != indirectRead {
+			t.Fatalf("directRead and indirectRead returns different value: %#02x, %#02x", directRead, indirectRead)
+		}
+
+		if directRead != tc.ExpectedValue {
+			t.Fatalf("expected directRead to be %#02x, got %#02x", tc.ExpectedValue, directRead)
+		}
+
+		if indirectRead != tc.ExpectedValue {
+			t.Fatalf("expected indirectRead to be %#02x, got %#02x", tc.ExpectedValue, indirectRead)
+		}
+	}
+}
