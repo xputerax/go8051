@@ -420,8 +420,15 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0x05] = Opcode{Name: "INC ramaddr", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		addr := operands[0]
+		val, err := vm.ReadMem(addr)
+		if err != nil {
+			return err
+		}
+
+		val += 1
+		err = vm.WriteMem(addr, val)
+		return err
 	}}
 
 	tbl[0x06] = Opcode{Name: "INC @R0", Eval: func(vm *Machine, operands []byte) error {

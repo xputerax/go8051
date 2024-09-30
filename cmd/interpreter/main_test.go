@@ -116,6 +116,39 @@ func TestOp0x04(t *testing.T) {
 	}
 }
 
+func TestOp0x05(t *testing.T) {
+	cases := []struct {
+		Addr         uint8
+		InitialValue byte
+	}{
+		{Addr: 0, InitialValue: 10},
+		{Addr: 1, InitialValue: 20},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		err := vm.WriteMem(tc.Addr, tc.InitialValue)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		err = vm.Feed([]byte{0x05, tc.Addr})
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		actualValue, err := vm.ReadMem(tc.Addr)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		expectedValue := tc.InitialValue + 1
+		if actualValue != expectedValue {
+			t.Errorf("expected value at address %#02x to be %#02x, got %#02x", tc.Addr, expectedValue, actualValue)
+		}
+	}
+}
+
 func TestOp0x13(t *testing.T) {
 	cases := []struct {
 		Original      byte
