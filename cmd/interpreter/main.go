@@ -82,8 +82,42 @@ func PSW_UNSET(psw byte, mask byte) byte {
 	return (psw & ^mask)
 }
 
+const SFR_ACC uint8 = 0xE0
+const SFR_B uint8 = 0xF0
+const SFR_DPH uint8 = 0x83
+const SFR_DPL uint8 = 0x82
+const SFR_IE uint8 = 0xA8
+const SFR_IP uint8 = 0xB8
+const SFR_P0 uint8 = 0x80
+const SFR_P1 uint8 = 0x90
+const SFR_P2 uint8 = 0xA0
+const SFR_P3 uint8 = 0xB0
+const SFR_PCON uint8 = 0x87
+const SFR_PSW uint8 = 0xD0
+const SFR_SCON uint8 = 0x98
+const SFR_SBUF uint8 = 0x99
+const SFR_SP uint8 = 0x81
+const SFR_TMOD uint8 = 0x89
+const SFR_TCON uint8 = 0x88
+const SFR_TL0 uint8 = 0x8A
+const SFR_TH0 uint8 = 0x8C
+const SFR_TL1 uint8 = 0x8B
+const SFR_TH1 uint8 = 0x8D
+
 type Machine struct {
 	Registers Register
+	Program   []byte
+	Data      []byte
+}
+
+func NewMachine() *Machine {
+	vm := Machine{
+		Registers: Register{},
+		Program:   make([]byte, 4*1024, 4*1024), // pre-allocate 4KB ROM
+		Data:      make([]byte, 256, 4*1024),    // pre-allocate 256B RAM
+	}
+
+	return &vm
 }
 
 type EvalOperation func(vm *Machine, operands []byte) error
@@ -121,6 +155,182 @@ func (m *Machine) Feed(instructions []byte) error {
 	log.Printf("AFTER: %+v\n", m.Registers)
 
 	return nil
+}
+
+// TODO: 8051 has 256B of memory
+// but technically it can be extended, so should the location be byte or int?
+func (m *Machine) WriteMem(loc uint8, value byte) error {
+	if int(loc) >= len(m.Data) {
+		return fmt.Errorf("location %#02x exceeds memory capacity of %#02x (%dB)", loc, cap(m.Data), cap(m.Data))
+	}
+
+	m.Data[loc] = value
+
+	// these registers are accessible by memory, so we also have to write to it
+	// TODO: ada problem kalau write to register directly, nanti value dia tak tally dengan memory
+	// TODO: maybe kena validate value for certain registers??
+	switch loc {
+	case SFR_ACC:
+		m.Registers.ACC = value
+	case SFR_B:
+		m.Registers.B = value
+	case SFR_DPH:
+		m.Registers.DPH = value
+	case SFR_DPL:
+		m.Registers.DPL = value
+	case SFR_IE:
+		m.Registers.IE = value
+	case SFR_IP:
+		m.Registers.IP = value
+	case SFR_P0:
+		m.Registers.P0 = value
+	case SFR_P1:
+		m.Registers.P1 = value
+	case SFR_P2:
+		m.Registers.P2 = value
+	case SFR_P3:
+		m.Registers.P3 = value
+	case SFR_PCON:
+		m.Registers.PCON = value
+	case SFR_PSW:
+		m.Registers.PSW = value
+	case SFR_SCON:
+		m.Registers.SCON = value
+	case SFR_SBUF:
+		m.Registers.SBUF = value
+	case SFR_SP:
+		m.Registers.SP = value
+	case SFR_TMOD:
+		m.Registers.TMOD = value
+	case SFR_TCON:
+		m.Registers.TCON = value
+	case SFR_TL0:
+		m.Registers.TL0 = value
+	case SFR_TH0:
+		m.Registers.TH0 = value
+	case SFR_TL1:
+		m.Registers.TL1 = value
+	case SFR_TH1:
+		m.Registers.TH1 = value
+	}
+
+	return nil
+}
+
+func (m *Machine) ReadMem(loc uint8) (byte, error) {
+	var value byte = m.Data[loc]
+
+	var registerValue byte
+
+	switch loc {
+	case SFR_ACC:
+		registerValue = m.Registers.ACC
+		if registerValue != value {
+			fmt.Printf("ACC register value '%#02x' does not match memory at location %#02x", registerValue, SFR_ACC)
+		}
+	case SFR_B:
+		registerValue = m.Registers.B
+		if registerValue != value {
+			fmt.Printf("B register value '%#02x' does not match memory at location %#02x", registerValue, SFR_B)
+		}
+	case SFR_DPH:
+		registerValue = m.Registers.DPH
+		if registerValue != value {
+			fmt.Printf("DPH register value '%#02x' does not match memory at location %#02x", registerValue, SFR_DPH)
+		}
+	case SFR_DPL:
+		registerValue = m.Registers.DPL
+		if registerValue != value {
+			fmt.Printf("DPL register value '%#02x' does not match memory at location %#02x", registerValue, SFR_DPL)
+		}
+	case SFR_IE:
+		registerValue = m.Registers.IE
+		if registerValue != value {
+			fmt.Printf("IE register value '%#02x' does not match memory at location %#02x", registerValue, SFR_IE)
+		}
+	case SFR_IP:
+		registerValue = m.Registers.IP
+		if registerValue != value {
+			fmt.Printf("IP register value '%#02x' does not match memory at location %#02x", registerValue, SFR_IP)
+		}
+	case SFR_P0:
+		registerValue = m.Registers.P0
+		if registerValue != value {
+			fmt.Printf("P0 register value '%#02x' does not match memory at location %#02x", registerValue, SFR_P0)
+		}
+	case SFR_P1:
+		registerValue = m.Registers.P1
+		if registerValue != value {
+			fmt.Printf("P1 register value '%#02x' does not match memory at location %#02x", registerValue, SFR_P1)
+		}
+	case SFR_P2:
+		registerValue = m.Registers.P2
+		if registerValue != value {
+			fmt.Printf("P2 register value '%#02x' does not match memory at location %#02x", registerValue, SFR_P2)
+		}
+	case SFR_P3:
+		registerValue = m.Registers.P3
+		if registerValue != value {
+			fmt.Printf("P3 register value '%#02x' does not match memory at location %#02x", registerValue, SFR_P3)
+		}
+	case SFR_PCON:
+		registerValue = m.Registers.PCON
+		if registerValue != value {
+			fmt.Printf("PCON register value '%#02x' does not match memory at location %#02x", registerValue, SFR_PCON)
+		}
+	case SFR_PSW:
+		registerValue = m.Registers.PSW
+		if registerValue != value {
+			fmt.Printf("PSW register value '%#02x' does not match memory at location %#02x", registerValue, SFR_PSW)
+		}
+	case SFR_SCON:
+		registerValue = m.Registers.SCON
+		if registerValue != value {
+			fmt.Printf("SCON register value '%#02x' does not match memory at location %#02x", registerValue, SFR_SCON)
+		}
+	case SFR_SBUF:
+		registerValue = m.Registers.SBUF
+		if registerValue != value {
+			fmt.Printf("SBUF register value '%#02x' does not match memory at location %#02x", registerValue, SFR_SBUF)
+		}
+	case SFR_SP:
+		registerValue = m.Registers.SP
+		if registerValue != value {
+			fmt.Printf("SP register value '%#02x' does not match memory at location %#02x", registerValue, SFR_SP)
+		}
+	case SFR_TMOD:
+		registerValue = m.Registers.TMOD
+		if registerValue != value {
+			fmt.Printf("TMOD register value '%#02x' does not match memory at location %#02x", registerValue, SFR_TMOD)
+		}
+	case SFR_TCON:
+		registerValue = m.Registers.TCON
+		if registerValue != value {
+			fmt.Printf("TCON register value '%#02x' does not match memory at location %#02x", registerValue, SFR_TCON)
+		}
+	case SFR_TL0:
+		registerValue = m.Registers.TL0
+		if registerValue != value {
+			fmt.Printf("TL0 register value '%#02x' does not match memory at location %#02x", registerValue, SFR_TL0)
+		}
+	case SFR_TH0:
+		registerValue = m.Registers.TH0
+		if registerValue != value {
+			fmt.Printf("TH0 register value '%#02x' does not match memory at location %#02x", registerValue, SFR_TH0)
+		}
+	case SFR_TL1:
+		registerValue = m.Registers.TL1
+		if registerValue != value {
+			fmt.Printf("TL1 register value '%#02x' does not match memory at location %#02x", registerValue, SFR_TL1)
+		}
+	case SFR_TH1:
+		registerValue = m.Registers.TH1
+		if registerValue != value {
+			fmt.Printf("TH1 register value '%#02x' does not match memory at location %#02x", registerValue, SFR_TH1)
+		}
+	}
+
+	return value, nil
 }
 
 func main() {
