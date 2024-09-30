@@ -104,10 +104,12 @@ const SFR_TH0 uint8 = 0x8C
 const SFR_TL1 uint8 = 0x8B
 const SFR_TH1 uint8 = 0x8D
 
+// Why uint16: https://stackoverflow.com/questions/57535586/why-does-the-program-counter-in-8051-is-16-bit-and-stack-pointer-is-8-bit-in-805
 type Machine struct {
 	registers Register
 	Program   []byte
 	Data      []byte
+	PC        uint16 // Program counter / instruction pointer
 }
 
 func NewMachine() *Machine {
@@ -115,6 +117,7 @@ func NewMachine() *Machine {
 		registers: Register{},
 		Program:   make([]byte, 4*1024, 4*1024), // pre-allocate 4KB ROM
 		Data:      make([]byte, 256, 256),       // pre-allocate 256B RAM
+		PC:        0,
 	}
 
 	return &vm
@@ -143,6 +146,12 @@ func (m *Machine) Feed(instructions []byte) error {
 		return fmt.Errorf("opcode '%02x' does not exist in OPCODES", opcode)
 	}
 
+	// we know that the instruction will be 3 bytes at most
+	// so we can cast the length to uint16
+	if m.PC > uint16(0xFFFF)-uint16(len(instructions)) {
+		return fmt.Errorf("cannot execute instruction because program counter exceeds 0xFFFF (65535)")
+	}
+
 	log.Printf("executing instruction '%02X' (%s) with operand '%v'", opcode, op.Name, operands)
 
 	log.Printf("BEFORE: %+v\n", m.registers)
@@ -153,6 +162,8 @@ func (m *Machine) Feed(instructions []byte) error {
 	}
 
 	log.Printf("AFTER: %+v\n", m.registers)
+
+	m.PC += uint16(len(instructions))
 
 	return nil
 }
