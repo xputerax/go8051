@@ -226,107 +226,107 @@ func (m *Machine) ReadMem(loc uint8) (byte, error) {
 	case SFR_ACC:
 		registerValue = m.registers.ACC
 		if registerValue != value {
-			fmt.Printf("ACC register value '%#02x' does not match memory at location %#02x", registerValue, SFR_ACC)
+			fmt.Printf("ACC register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_ACC)
 		}
 	case SFR_B:
 		registerValue = m.registers.B
 		if registerValue != value {
-			fmt.Printf("B register value '%#02x' does not match memory at location %#02x", registerValue, SFR_B)
+			fmt.Printf("B register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_B)
 		}
 	case SFR_DPH:
 		registerValue = m.registers.DPH
 		if registerValue != value {
-			fmt.Printf("DPH register value '%#02x' does not match memory at location %#02x", registerValue, SFR_DPH)
+			fmt.Printf("DPH register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_DPH)
 		}
 	case SFR_DPL:
 		registerValue = m.registers.DPL
 		if registerValue != value {
-			fmt.Printf("DPL register value '%#02x' does not match memory at location %#02x", registerValue, SFR_DPL)
+			fmt.Printf("DPL register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_DPL)
 		}
 	case SFR_IE:
 		registerValue = m.registers.IE
 		if registerValue != value {
-			fmt.Printf("IE register value '%#02x' does not match memory at location %#02x", registerValue, SFR_IE)
+			fmt.Printf("IE register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_IE)
 		}
 	case SFR_IP:
 		registerValue = m.registers.IP
 		if registerValue != value {
-			fmt.Printf("IP register value '%#02x' does not match memory at location %#02x", registerValue, SFR_IP)
+			fmt.Printf("IP register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_IP)
 		}
 	case SFR_P0:
 		registerValue = m.registers.P0
 		if registerValue != value {
-			fmt.Printf("P0 register value '%#02x' does not match memory at location %#02x", registerValue, SFR_P0)
+			fmt.Printf("P0 register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_P0)
 		}
 	case SFR_P1:
 		registerValue = m.registers.P1
 		if registerValue != value {
-			fmt.Printf("P1 register value '%#02x' does not match memory at location %#02x", registerValue, SFR_P1)
+			fmt.Printf("P1 register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_P1)
 		}
 	case SFR_P2:
 		registerValue = m.registers.P2
 		if registerValue != value {
-			fmt.Printf("P2 register value '%#02x' does not match memory at location %#02x", registerValue, SFR_P2)
+			fmt.Printf("P2 register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_P2)
 		}
 	case SFR_P3:
 		registerValue = m.registers.P3
 		if registerValue != value {
-			fmt.Printf("P3 register value '%#02x' does not match memory at location %#02x", registerValue, SFR_P3)
+			fmt.Printf("P3 register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_P3)
 		}
 	case SFR_PCON:
 		registerValue = m.registers.PCON
 		if registerValue != value {
-			fmt.Printf("PCON register value '%#02x' does not match memory at location %#02x", registerValue, SFR_PCON)
+			fmt.Printf("PCON register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_PCON)
 		}
 	case SFR_PSW:
 		registerValue = m.registers.PSW
 		if registerValue != value {
-			fmt.Printf("PSW register value '%#02x' does not match memory at location %#02x", registerValue, SFR_PSW)
+			fmt.Printf("PSW register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_PSW)
 		}
 	case SFR_SCON:
 		registerValue = m.registers.SCON
 		if registerValue != value {
-			fmt.Printf("SCON register value '%#02x' does not match memory at location %#02x", registerValue, SFR_SCON)
+			fmt.Printf("SCON register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_SCON)
 		}
 	case SFR_SBUF:
 		registerValue = m.registers.SBUF
 		if registerValue != value {
-			fmt.Printf("SBUF register value '%#02x' does not match memory at location %#02x", registerValue, SFR_SBUF)
+			fmt.Printf("SBUF register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_SBUF)
 		}
 	case SFR_SP:
 		registerValue = m.registers.SP
 		if registerValue != value {
-			fmt.Printf("SP register value '%#02x' does not match memory at location %#02x", registerValue, SFR_SP)
+			fmt.Printf("SP register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_SP)
 		}
 	case SFR_TMOD:
 		registerValue = m.registers.TMOD
 		if registerValue != value {
-			fmt.Printf("TMOD register value '%#02x' does not match memory at location %#02x", registerValue, SFR_TMOD)
+			fmt.Printf("TMOD register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_TMOD)
 		}
 	case SFR_TCON:
 		registerValue = m.registers.TCON
 		if registerValue != value {
-			fmt.Printf("TCON register value '%#02x' does not match memory at location %#02x", registerValue, SFR_TCON)
+			fmt.Printf("TCON register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_TCON)
 		}
 	case SFR_TL0:
 		registerValue = m.registers.TL0
 		if registerValue != value {
-			fmt.Printf("TL0 register value '%#02x' does not match memory at location %#02x", registerValue, SFR_TL0)
+			fmt.Printf("TL0 register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_TL0)
 		}
 	case SFR_TH0:
 		registerValue = m.registers.TH0
 		if registerValue != value {
-			fmt.Printf("TH0 register value '%#02x' does not match memory at location %#02x", registerValue, SFR_TH0)
+			fmt.Printf("TH0 register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_TH0)
 		}
 	case SFR_TL1:
 		registerValue = m.registers.TL1
 		if registerValue != value {
-			fmt.Printf("TL1 register value '%#02x' does not match memory at location %#02x", registerValue, SFR_TL1)
+			fmt.Printf("TL1 register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_TL1)
 		}
 	case SFR_TH1:
 		registerValue = m.registers.TH1
 		if registerValue != value {
-			fmt.Printf("TH1 register value '%#02x' does not match memory at location %#02x", registerValue, SFR_TH1)
+			fmt.Printf("TH1 register value '%#02x' does not match memory at location %#02x\n", registerValue, SFR_TH1)
 		}
 	}
 
@@ -364,20 +364,30 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0x03] = Opcode{Name: "RR A", Eval: func(vm *Machine, operands []byte) error {
-		A := vm.registers.ACC
+		A, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+
 		lsb := A & 0b00000001
 		lsbToMsb := (lsb << 7)
 		ARightShifted := A >> 1
 		retval := lsbToMsb | ARightShifted
-		vm.registers.ACC = retval
-		return nil
+
+		err = vm.WriteMem(SFR_ACC, retval)
+		return err
 	}}
 
 	tbl[0x04] = Opcode{Name: "INC A", Eval: func(vm *Machine, operands []byte) error {
-		A := vm.registers.ACC
+		A, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+
 		A += 1
-		vm.registers.ACC = A
-		return nil
+
+		err = vm.WriteMem(SFR_ACC, A)
+		return err
 	}}
 
 	tbl[0x05] = Opcode{Name: "INC ramaddr", Eval: func(vm *Machine, operands []byte) error {
@@ -451,25 +461,50 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0x13] = Opcode{Name: "RRC A", Eval: func(vm *Machine, operands []byte) error {
-		lsb := vm.registers.ACC & 0b00000001
+		A, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+
+		psw, err := vm.ReadMem(SFR_PSW)
+		if err != nil {
+			return err
+		}
+
+		lsb := A & 0b00000001
 		newCarry := lsb
 
 		if newCarry == 0 {
-			vm.registers.PSW = PSW_UNSET(vm.registers.PSW, PSW_C_MASK)
+			if err := vm.WriteMem(SFR_PSW, PSW_UNSET(psw, PSW_C_MASK)); err != nil {
+				return err
+			}
 		} else if newCarry == 1 {
-			vm.registers.PSW = PSW_SET(vm.registers.PSW, PSW_C_MASK)
+			if err := vm.WriteMem(SFR_PSW, PSW_SET(psw, PSW_C_MASK)); err != nil {
+				return err
+			}
 		} else {
 			return fmt.Errorf("unexpected value %#08b for new carry value", newCarry)
 		}
 
-		vm.registers.ACC >>= 1
+		currentAcc, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
 
-		return nil
+		currentAcc >>= 1
+		err = vm.WriteMem(SFR_ACC, currentAcc)
+		return err
 	}}
 
 	tbl[0x14] = Opcode{Name: "DEC A", Eval: func(vm *Machine, operands []byte) error {
-		vm.registers.ACC -= 1
-		return nil
+		acc, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+
+		acc -= 1
+		err = vm.WriteMem(SFR_ACC, acc)
+		return err
 	}}
 
 	tbl[0x15] = Opcode{Name: "DEC ramaddr", Eval: func(vm *Machine, operands []byte) error {
@@ -543,18 +578,29 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0x23] = Opcode{Name: "RL A", Eval: func(vm *Machine, operands []byte) error {
-		msb := vm.registers.ACC & 0b10000000
-		vm.registers.ACC <<= 1
-		vm.registers.ACC |= (msb >> 7)
-		return nil
+		acc, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+
+		msb := acc & 0b10000000
+		acc <<= 1
+		acc |= (msb >> 7)
+
+		err = vm.WriteMem(SFR_ACC, acc)
+		return err
 	}}
 
 	tbl[0x24] = Opcode{Name: "ADD A,#data", Eval: func(vm *Machine, operands []byte) error {
 		log.Println("performing ADD A,#data")
-		A := vm.registers.ACC
+		A, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+
 		A += operands[0]
-		vm.registers.ACC = A
-		return nil
+		err = vm.WriteMem(SFR_ACC, A)
+		return err
 	}}
 
 	tbl[0x25] = Opcode{Name: "A, dataaddr", Eval: func(vm *Machine, operands []byte) error {
@@ -628,14 +674,32 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0x33] = Opcode{Name: "RLC A", Eval: func(vm *Machine, operands []byte) error {
-		msb := vm.registers.ACC & 0b10000000
-		if msb == 0b10000000 {
-			vm.registers.PSW = PSW_SET(vm.registers.PSW, PSW_C_MASK)
-		} else {
-			vm.registers.PSW = PSW_UNSET(vm.registers.PSW, PSW_C_MASK)
+		acc, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
 		}
-		vm.registers.ACC <<= 1
-		return nil
+
+		psw, err := vm.ReadMem(SFR_PSW)
+		if err != nil {
+			return err
+		}
+
+		msb := acc & 0b10000000
+		if msb == 0b10000000 {
+			err := vm.WriteMem(SFR_PSW, PSW_SET(psw, PSW_C_MASK))
+			if err != nil {
+				return err
+			}
+		} else {
+			err := vm.WriteMem(SFR_PSW, PSW_UNSET(psw, PSW_C_MASK))
+			if err != nil {
+				return err
+			}
+		}
+		acc <<= 1
+
+		err = vm.WriteMem(SFR_ACC, acc)
+		return err
 	}}
 
 	tbl[0x34] = Opcode{Name: "ADDC", Eval: func(vm *Machine, operands []byte) error {

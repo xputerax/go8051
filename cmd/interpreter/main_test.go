@@ -78,8 +78,12 @@ func TestOp0x03(t *testing.T) {
 			t.Fatalf("unexpected error: %s", err)
 		}
 
-		if vm.registers.ACC != tc.Expected {
-			t.Errorf("expected A register to be %#08b, got %#08b", tc.Expected, vm.registers.ACC)
+		if actualAcc, err := vm.ReadMem(SFR_ACC); err != nil {
+			t.Fatalf("unexpected error when reading from memory (%#02x): %s", SFR_ACC, err)
+		} else {
+			if actualAcc != tc.Expected {
+				t.Errorf("expected A register to be %#08b, got %#08b", tc.Expected, actualAcc)
+			}
 		}
 	}
 }
@@ -102,8 +106,12 @@ func TestOp0x04(t *testing.T) {
 
 		vm.Feed([]byte{0x04})
 
-		if vm.registers.ACC != tc.Expected {
-			t.Errorf("expected A register to be %#08b, got %#08b", tc.Expected, vm.registers.ACC)
+		if actualAcc, err := vm.ReadMem(SFR_ACC); err != nil {
+			t.Fatalf("unexpected error when reading from memory (%#02x): %s", SFR_ACC, err)
+		} else {
+			if actualAcc != tc.Expected {
+				t.Errorf("expected A register to be %#08b, got %#08b", tc.Expected, actualAcc)
+			}
 		}
 	}
 }
@@ -129,9 +137,18 @@ func TestOp0x13(t *testing.T) {
 
 		vm.Feed([]byte{0x13})
 
-		actualAcc := vm.registers.ACC
+		actualAcc, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			t.Fatalf("unexpected error when reading from memory (%#02x): %s", SFR_ACC, err)
+		}
+
+		psw, err := vm.ReadMem(SFR_PSW)
+		if err != nil {
+			t.Fatalf("unexpected error when reading PSW register from memory (%#02x): %s", SFR_PSW, err)
+		}
+
 		var actualCarry byte
-		if vm.registers.PSW&PSW_C_MASK > 0 {
+		if psw&PSW_C_MASK > 0 {
 			actualCarry = 1
 		} else {
 			actualCarry = 0
@@ -166,10 +183,12 @@ func TestOp0x14(t *testing.T) {
 
 		vm.Feed([]byte{0x14})
 
-		actualAcc := vm.registers.ACC
-
-		if tc.Expected != actualAcc {
-			t.Errorf("expected A register to be %#08b, got %08b", tc.Expected, actualAcc)
+		if actualAcc, err := vm.ReadMem(SFR_ACC); err != nil {
+			t.Fatalf("unexpected error when reading from memory (%#02x): %s", SFR_ACC, err)
+		} else {
+			if tc.Expected != actualAcc {
+				t.Errorf("expected A register to be %#08b, got %08b", tc.Expected, actualAcc)
+			}
 		}
 	}
 }
@@ -193,8 +212,12 @@ func TestOp0x23(t *testing.T) {
 
 		vm.Feed([]byte{0x23})
 
-		if tc.ExpectedAcc != vm.registers.ACC {
-			t.Errorf("expected A register to be %#08b, got %#08b", tc.ExpectedAcc, vm.registers.ACC)
+		if actualAcc, err := vm.ReadMem(SFR_ACC); err != nil {
+			t.Fatalf("unexpected error when reading from memory (%#02x): %s", SFR_ACC, err)
+		} else {
+			if tc.ExpectedAcc != actualAcc {
+				t.Errorf("expected A register to be %#08b, got %#08b", tc.ExpectedAcc, actualAcc)
+			}
 		}
 	}
 }
@@ -210,14 +233,19 @@ func TestOp0x33(t *testing.T) {
 
 	for _, tc := range cases {
 		vm := NewMachine()
+
 		if err := vm.WriteMem(SFR_ACC, tc.A); err != nil {
 			t.Fatalf("unexpected error when writing to memory: %s", err)
 		}
 
 		vm.Feed([]byte{0x33})
 
-		if vm.registers.ACC != tc.ExpectedA {
-			t.Errorf("expected A register to be %#08b, got %#08b", tc.ExpectedA, vm.registers.ACC)
+		if actualAcc, err := vm.ReadMem(SFR_ACC); err != nil {
+			t.Fatalf("unexpected error when reading from memory (%#02x): %s", SFR_ACC, err)
+		} else {
+			if actualAcc != tc.ExpectedA {
+				t.Errorf("expected A register to be %#08b, got %#08b", tc.ExpectedA, actualAcc)
+			}
 		}
 	}
 }
