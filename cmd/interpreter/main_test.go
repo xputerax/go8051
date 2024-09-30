@@ -67,14 +67,19 @@ func TestOp0x03(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		vm := Machine{Registers: Register{ACC: tc.Original}}
+		vm := NewMachine()
+
+		if err := vm.WriteMem(SFR_ACC, tc.Original); err != nil {
+			t.Fatalf("unexpected error when writing to memory: %s", err)
+		}
+
 		err := vm.Feed([]byte{0x03})
 		if err != nil {
 			t.Fatalf("unexpected error: %s", err)
 		}
 
-		if vm.Registers.ACC != tc.Expected {
-			t.Errorf("expected A register to be %#08b, got %#08b", tc.Expected, vm.Registers.ACC)
+		if vm.registers.ACC != tc.Expected {
+			t.Errorf("expected A register to be %#08b, got %#08b", tc.Expected, vm.registers.ACC)
 		}
 	}
 }
@@ -89,12 +94,16 @@ func TestOp0x04(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		vm := Machine{Registers: Register{ACC: tc.Original}}
+		vm := NewMachine()
+
+		if err := vm.WriteMem(SFR_ACC, tc.Original); err != nil {
+			t.Fatalf("unexpected error when writing to memory: %s", err)
+		}
 
 		vm.Feed([]byte{0x04})
 
-		if vm.Registers.ACC != tc.Expected {
-			t.Errorf("expected A register to be %#08b, got %#08b", tc.Expected, vm.Registers.ACC)
+		if vm.registers.ACC != tc.Expected {
+			t.Errorf("expected A register to be %#08b, got %#08b", tc.Expected, vm.registers.ACC)
 		}
 	}
 }
@@ -112,12 +121,17 @@ func TestOp0x13(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		vm := Machine{Registers: Register{ACC: tc.Original}}
+		vm := NewMachine()
+
+		if err := vm.WriteMem(SFR_ACC, tc.Original); err != nil {
+			t.Fatalf("unexpected error when writing to memory: %s", err)
+		}
+
 		vm.Feed([]byte{0x13})
 
-		actualAcc := vm.Registers.ACC
+		actualAcc := vm.registers.ACC
 		var actualCarry byte
-		if vm.Registers.PSW&PSW_C_MASK > 0 {
+		if vm.registers.PSW&PSW_C_MASK > 0 {
 			actualCarry = 1
 		} else {
 			actualCarry = 0
@@ -144,10 +158,15 @@ func TestOp0x14(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		vm := Machine{Registers: Register{ACC: tc.Original}}
+		vm := NewMachine()
+
+		if err := vm.WriteMem(SFR_ACC, tc.Original); err != nil {
+			t.Fatalf("unexpected error when writing to memory: %s", err)
+		}
+
 		vm.Feed([]byte{0x14})
 
-		actualAcc := vm.Registers.ACC
+		actualAcc := vm.registers.ACC
 
 		if tc.Expected != actualAcc {
 			t.Errorf("expected A register to be %#08b, got %08b", tc.Expected, actualAcc)
@@ -166,11 +185,16 @@ func TestOp0x23(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		vm := Machine{Registers: Register{ACC: tc.Original}}
+		vm := NewMachine()
+
+		if err := vm.WriteMem(SFR_ACC, tc.Original); err != nil {
+			t.Fatalf("unexpected error when writing to memory: %s", err)
+		}
+
 		vm.Feed([]byte{0x23})
 
-		if tc.ExpectedAcc != vm.Registers.ACC {
-			t.Errorf("expected A register to be %#08b, got %#08b", tc.ExpectedAcc, vm.Registers.ACC)
+		if tc.ExpectedAcc != vm.registers.ACC {
+			t.Errorf("expected A register to be %#08b, got %#08b", tc.ExpectedAcc, vm.registers.ACC)
 		}
 	}
 }
@@ -185,11 +209,15 @@ func TestOp0x33(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		vm := Machine{Registers: Register{ACC: tc.A}}
+		vm := NewMachine()
+		if err := vm.WriteMem(SFR_ACC, tc.A); err != nil {
+			t.Fatalf("unexpected error when writing to memory: %s", err)
+		}
+
 		vm.Feed([]byte{0x33})
 
-		if vm.Registers.ACC != tc.ExpectedA {
-			t.Errorf("expected A register to be %#08b, got %#08b", tc.ExpectedA, vm.Registers.ACC)
+		if vm.registers.ACC != tc.ExpectedA {
+			t.Errorf("expected A register to be %#08b, got %#08b", tc.ExpectedA, vm.registers.ACC)
 		}
 	}
 }
