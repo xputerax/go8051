@@ -454,6 +454,162 @@ func TestOp0x23(t *testing.T) {
 	}
 }
 
+func TestOp0x24(t *testing.T) {
+	cases := []struct {
+		InitialValue  byte
+		AddAmount     byte
+		ExpectedValue byte
+	}{
+		{InitialValue: 0x00, AddAmount: 0xFF, ExpectedValue: 0xFF},
+		{InitialValue: 0xFF, AddAmount: 0x1, ExpectedValue: 0},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		if err := vm.WriteMem(SFR_ACC, tc.InitialValue); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.Feed([]byte{0x24, tc.AddAmount}); err != nil {
+			t.Fatal(err)
+		}
+
+		actualValue, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if actualValue != tc.ExpectedValue {
+			t.Errorf("expected A register to be %#02x, got %#02x", tc.ExpectedValue, actualValue)
+		}
+	}
+}
+
+func TestOp0x25(t *testing.T) {
+	cases := []struct {
+		Addr          uint8
+		InitialValue  byte
+		AddAmount     byte
+		ExpectedValue byte
+	}{
+		{Addr: 0x00, InitialValue: 0x01, AddAmount: 0xAA, ExpectedValue: 0xAB},
+		{Addr: 0x01, InitialValue: 0xFF, AddAmount: 0x1, ExpectedValue: 0x0},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+
+		if err := vm.WriteMem(SFR_ACC, tc.InitialValue); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.WriteMem(tc.AddAmount, tc.AddAmount); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.Feed([]byte{0x25, tc.AddAmount}); err != nil {
+			t.Fatal(err)
+		}
+
+		actualValue, err := vm.ReadMem(tc.AddAmount)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if actualValue != tc.ExpectedValue {
+			t.Errorf("expected A register to be %#02x, got %#02x", tc.ExpectedValue, actualValue)
+		}
+	}
+}
+
+func TestOp0x26_0x27(t *testing.T) {
+	cases := []struct {
+		Name          string
+		Opcode        byte
+		Addr          uint8
+		Ptr           uint8
+		InitialValue  byte
+		AddAmount     byte
+		ExpectedValue byte
+	}{
+		{Name: "@R0", Opcode: 0x26, Addr: LOC_R0, Ptr: 0x02, InitialValue: 0xAA, AddAmount: 0x01, ExpectedValue: 0xAB},
+		{Name: "@R1", Opcode: 0x27, Addr: LOC_R1, Ptr: 0xFF, InitialValue: 0xFF, AddAmount: 0x01, ExpectedValue: 0x00},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		if err := vm.WriteMem(SFR_ACC, tc.InitialValue); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.WriteMem(tc.Addr, tc.Ptr); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.WriteMem(tc.Ptr, tc.AddAmount); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.Feed([]byte{tc.Opcode}); err != nil {
+			t.Fatal(err)
+		}
+
+		actualValue, err := vm.DerefMem(tc.Addr)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if actualValue != tc.ExpectedValue {
+			t.Fatalf("expected %s to be %#02x, got %#02x (opcode %#02x)", tc.Name, tc.ExpectedValue, actualValue, tc.Opcode)
+		}
+	}
+}
+
+func TestOp0x28_0x2f(t *testing.T) {
+	cases := []struct {
+		Name            string
+		Opcode          byte
+		Addr            byte
+		AccInitialValue byte
+		AddAmount       byte
+		ExpectedValue   byte
+	}{
+		{Name: "R0", Opcode: 0x28, Addr: LOC_R0, AccInitialValue: 0x01 + 0, AddAmount: 0x02, ExpectedValue: 0x03 + 0},
+		{Name: "R1", Opcode: 0x29, Addr: LOC_R1, AccInitialValue: 0x01 + 1, AddAmount: 0x02, ExpectedValue: 0x03 + 1},
+		{Name: "R2", Opcode: 0x2a, Addr: LOC_R2, AccInitialValue: 0x01 + 2, AddAmount: 0x02, ExpectedValue: 0x03 + 2},
+		{Name: "R3", Opcode: 0x2b, Addr: LOC_R3, AccInitialValue: 0x01 + 3, AddAmount: 0x02, ExpectedValue: 0x03 + 3},
+		{Name: "R4", Opcode: 0x2c, Addr: LOC_R4, AccInitialValue: 0x01 + 4, AddAmount: 0x02, ExpectedValue: 0x03 + 4},
+		{Name: "R5", Opcode: 0x2d, Addr: LOC_R5, AccInitialValue: 0x01 + 5, AddAmount: 0x02, ExpectedValue: 0x03 + 5},
+		{Name: "R6", Opcode: 0x2e, Addr: LOC_R6, AccInitialValue: 0x01 + 6, AddAmount: 0x02, ExpectedValue: 0x03 + 6},
+		{Name: "R7", Opcode: 0x2f, Addr: LOC_R7, AccInitialValue: 0x01 + 7, AddAmount: 0x02, ExpectedValue: 0x03 + 7},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+
+		if err := vm.WriteMem(SFR_ACC, tc.AccInitialValue); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.WriteMem(tc.Addr, tc.AddAmount); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.Feed([]byte{tc.Opcode}); err != nil {
+			t.Fatal(err)
+		}
+
+		actualValue, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if actualValue != tc.ExpectedValue {
+			t.Errorf("expected A+%s (%#02x+%#02x) to be %#02x, got %#02x (opcode %#02x)", tc.Name, tc.AccInitialValue, tc.AddAmount, tc.ExpectedValue, actualValue, tc.Opcode)
+		}
+	}
+}
+
 func TestOp0x33(t *testing.T) {
 	cases := []struct {
 		A             byte

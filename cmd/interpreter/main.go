@@ -794,8 +794,8 @@ func operationTable() map[byte]Opcode {
 		return err
 	}}
 
+	// TODO: flags
 	tbl[0x24] = Opcode{Name: "ADD A,#data", Eval: func(vm *Machine, operands []byte) error {
-		log.Println("performing ADD A,#data")
 		A, err := vm.ReadMem(SFR_ACC)
 		if err != nil {
 			return err
@@ -806,59 +806,183 @@ func operationTable() map[byte]Opcode {
 		return err
 	}}
 
+	// TODO: flags
 	tbl[0x25] = Opcode{Name: "ADD A,dataaddr", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		addr := operands[0]
+
+		A, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+
+		val, err := vm.ReadMem(addr)
+		if err != nil {
+			return err
+		}
+
+		err = vm.WriteMem(addr, A+val)
+		return err
 	}}
 
+	// TODO: flags
 	tbl[0x26] = Opcode{Name: "ADD A,@R0", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		A, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+
+		val, err := vm.DerefMem(LOC_R0) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		err = vm.SetrefMem(LOC_R0, A+val)
+		return err
 	}}
 
+	// TODO: flags
 	tbl[0x27] = Opcode{Name: "ADD A,@R1", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		A, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+
+		val, err := vm.DerefMem(LOC_R1) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		err = vm.SetrefMem(LOC_R1, A+val)
+		return err
 	}}
 
+	// TODO: flags
 	tbl[0x28] = Opcode{Name: "ADD A, R0", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		A, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+
+		val, err := vm.ReadMem(LOC_R0) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		err = vm.WriteMem(SFR_ACC, A+val)
+		return err
 	}}
 
+	// TODO: flags
 	tbl[0x29] = Opcode{Name: "ADD A, R1", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		A, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+
+		val, err := vm.ReadMem(LOC_R1) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		err = vm.WriteMem(SFR_ACC, A+val)
+		return err
 	}}
 
+	// TODO: flags
 	tbl[0x2a] = Opcode{Name: "ADD A, R2", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		A, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+
+		val, err := vm.ReadMem(LOC_R2) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		err = vm.WriteMem(SFR_ACC, A+val)
+		return err
+
 	}}
 
+	// TODO: flags
 	tbl[0x2b] = Opcode{Name: "ADD A, R3", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		A, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+
+		val, err := vm.ReadMem(LOC_R3) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		err = vm.WriteMem(SFR_ACC, A+val)
+		return err
 	}}
 
+	// TODO: flags
 	tbl[0x2c] = Opcode{Name: "ADD A, R4", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		A, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+
+		val, err := vm.ReadMem(LOC_R4) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		err = vm.WriteMem(SFR_ACC, A+val)
+		return err
 	}}
 
+	// TODO: flags
 	tbl[0x2d] = Opcode{Name: "ADD A, R5", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		A, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+
+		val, err := vm.ReadMem(LOC_R5) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		err = vm.WriteMem(SFR_ACC, A+val)
+		return err
 	}}
 
+	// TODO: flags
 	tbl[0x2e] = Opcode{Name: "ADD A, R6", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		A, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+
+		val, err := vm.ReadMem(LOC_R6) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		err = vm.WriteMem(SFR_ACC, A+val)
+		return err
 	}}
 
+	// TODO: flags
 	tbl[0x2f] = Opcode{Name: "ADD A, R7", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		A, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+
+		val, err := vm.ReadMem(LOC_R7) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		err = vm.WriteMem(SFR_ACC, A+val)
+		return err
 	}}
 
 	tbl[0x30] = Opcode{Name: "JNB bit addr,code addr", Eval: func(vm *Machine, operands []byte) error {
