@@ -1514,9 +1514,19 @@ func operationTable() map[byte]Opcode {
 		return nil
 	}}
 
-	tbl[0x85] = Opcode{Name: "MOV", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x85] = Opcode{Name: "MOV addr1,addr2", Eval: func(vm *Machine, operands []byte) error {
+		// Yes, this is in reverse order for whatever reason
+		// https://www.win.tue.nl/~aeb/comp/8051/set8051.html#51mov
+		srcAddr := operands[0]
+		destAddr := operands[1]
+
+		srcVal, err := vm.ReadMem(srcAddr)
+		if err != nil {
+			return err
+		}
+
+		err = vm.WriteMem(destAddr, srcVal)
+		return err
 	}}
 
 	tbl[0x86] = Opcode{Name: "MOV ramaddr,@R0", Eval: func(vm *Machine, operands []byte) error {

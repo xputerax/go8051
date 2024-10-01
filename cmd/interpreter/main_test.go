@@ -1282,3 +1282,8 @@ func TestOp0x6f(t *testing.T) {
 	// TODO: implement
 	t.Skipf("TODO: implement")
 }
+
+func TestOp0x85(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
