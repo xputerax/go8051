@@ -1022,3 +1022,53 @@ func TestOp0xF5(t *testing.T) {
 		}
 	}
 }
+
+func TestOp0xF6(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0xF7(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0xF8(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0xF9(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0xFA(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0xFB(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0xFC(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0xFD(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0xFE(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0xFF(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
