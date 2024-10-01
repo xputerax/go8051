@@ -1349,9 +1349,14 @@ func operationTable() map[byte]Opcode {
 		return nil
 	}}
 
-	tbl[0x74] = Opcode{Name: "MOV", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x74] = Opcode{Name: "MOV A,#data", Eval: func(vm *Machine, operands []byte) error {
+		data := operands[0]
+		A, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+		err = vm.WriteMem(SFR_ACC, A+data)
+		return err
 	}}
 
 	tbl[0x75] = Opcode{Name: "MOV", Eval: func(vm *Machine, operands []byte) error {

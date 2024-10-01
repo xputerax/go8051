@@ -638,6 +638,30 @@ func TestOp0x33(t *testing.T) {
 	}
 }
 
+func TestOp0x74(t *testing.T) {
+	cases := []struct {
+		ExpectedValue byte
+	}{
+		{ExpectedValue: 0xAA},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		if err := vm.Feed([]byte{0x74, tc.ExpectedValue}); err != nil {
+			t.Fatal(err)
+		}
+
+		actualValue, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if actualValue != tc.ExpectedValue {
+			t.Errorf("expected register A to be %#02x, got %#02x", tc.ExpectedValue, actualValue)
+		}
+	}
+}
+
 func TestOp0x76_0x77(t *testing.T) {
 	cases := []struct {
 		Name          string
