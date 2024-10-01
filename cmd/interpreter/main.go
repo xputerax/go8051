@@ -1480,44 +1480,100 @@ func operationTable() map[byte]Opcode {
 		return err
 	}}
 
-	tbl[0x88] = Opcode{Name: "MOV", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x88] = Opcode{Name: "MOV ramaddr,R0", Eval: func(vm *Machine, operands []byte) error {
+		loc := operands[0]
+
+		val, err := vm.ReadMem(LOC_R0) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		err = vm.WriteMem(loc, val)
+		return err
 	}}
 
-	tbl[0x89] = Opcode{Name: "MOV", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x89] = Opcode{Name: "MOV ramaddr,R1", Eval: func(vm *Machine, operands []byte) error {
+		loc := operands[0]
+
+		val, err := vm.ReadMem(LOC_R1) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		err = vm.WriteMem(loc, val)
+		return err
 	}}
 
-	tbl[0x8a] = Opcode{Name: "MOV", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x8a] = Opcode{Name: "MOV ramaddr,R2", Eval: func(vm *Machine, operands []byte) error {
+		loc := operands[0]
+
+		val, err := vm.ReadMem(LOC_R2) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		err = vm.WriteMem(loc, val)
+		return err
 	}}
 
-	tbl[0x8b] = Opcode{Name: "MOV", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x8b] = Opcode{Name: "MOV ramaddr,R3", Eval: func(vm *Machine, operands []byte) error {
+		loc := operands[0]
+
+		val, err := vm.ReadMem(LOC_R3) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		err = vm.WriteMem(loc, val)
+		return err
 	}}
 
-	tbl[0x8c] = Opcode{Name: "MOV", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x8c] = Opcode{Name: "MOV ramaddr,R4", Eval: func(vm *Machine, operands []byte) error {
+		loc := operands[0]
+
+		val, err := vm.ReadMem(LOC_R4) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		err = vm.WriteMem(loc, val)
+		return err
 	}}
 
-	tbl[0x8d] = Opcode{Name: "MOV", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x8d] = Opcode{Name: "MOV ramaddr,R5", Eval: func(vm *Machine, operands []byte) error {
+		loc := operands[0]
+
+		val, err := vm.ReadMem(LOC_R5) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		err = vm.WriteMem(loc, val)
+		return err
 	}}
 
-	tbl[0x8e] = Opcode{Name: "MOV", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x8e] = Opcode{Name: "MOV ramaddr,R6", Eval: func(vm *Machine, operands []byte) error {
+		loc := operands[0]
+
+		val, err := vm.ReadMem(LOC_R6) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		err = vm.WriteMem(loc, val)
+		return err
 	}}
 
-	tbl[0x8f] = Opcode{Name: "MOV", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x8f] = Opcode{Name: "MOV ramaddr,R7", Eval: func(vm *Machine, operands []byte) error {
+		loc := operands[0]
+
+		val, err := vm.ReadMem(LOC_R7) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		err = vm.WriteMem(loc, val)
+		return err
 	}}
 
 	tbl[0x90] = Opcode{Name: "MOV", Eval: func(vm *Machine, operands []byte) error {
