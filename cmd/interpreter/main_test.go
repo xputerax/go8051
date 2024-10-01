@@ -979,7 +979,7 @@ func TestOp0xE5_0xE8_0xEF(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		actualValue, err := vm.ReadMem(tc.MoveFrom)
+		actualValue, err := vm.ReadMem(tc.MoveInto)
 		if err != nil {
 			t.Fatal(err)
 		}
