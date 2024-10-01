@@ -637,3 +637,70 @@ func TestOp0x33(t *testing.T) {
 		}
 	}
 }
+
+func TestOp0x76_0x77(t *testing.T) {
+	cases := []struct {
+		Name          string
+		Opcode        byte
+		Addr          uint8
+		Ptr           uint8
+		ExpectedValue byte
+	}{
+		{Name: "@R0", Opcode: 0x76, Addr: LOC_R0, Ptr: 0x02, ExpectedValue: 0xAA},
+		{Name: "@R1", Opcode: 0x77, Addr: LOC_R0, Ptr: 0x02, ExpectedValue: 0xDD},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		if err := vm.WriteMem(tc.Addr, tc.Ptr); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.Feed([]byte{0x76, tc.ExpectedValue}); err != nil {
+			t.Fatal(err)
+		}
+
+		actualValue, err := vm.DerefMem(tc.Addr)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if actualValue != tc.ExpectedValue {
+			t.Errorf("expected %s to be %#02x, got %#02x", tc.Name, tc.ExpectedValue, actualValue)
+		}
+	}
+}
+
+func TestOp0x78_0x7f(t *testing.T) {
+	cases := []struct {
+		Name          string
+		Opcode        byte
+		Addr          uint8
+		ExpectedValue byte
+	}{
+		{Name: "R0", Opcode: 0x78, Addr: LOC_R0, ExpectedValue: 0xAA + 0},
+		{Name: "R1", Opcode: 0x79, Addr: LOC_R1, ExpectedValue: 0xAA + 1},
+		{Name: "R2", Opcode: 0x7a, Addr: LOC_R2, ExpectedValue: 0xAA + 2},
+		{Name: "R3", Opcode: 0x7b, Addr: LOC_R3, ExpectedValue: 0xAA + 3},
+		{Name: "R4", Opcode: 0x7c, Addr: LOC_R4, ExpectedValue: 0xAA + 4},
+		{Name: "R5", Opcode: 0x7d, Addr: LOC_R5, ExpectedValue: 0xAA + 5},
+		{Name: "R6", Opcode: 0x7e, Addr: LOC_R6, ExpectedValue: 0xAA + 6},
+		{Name: "R7", Opcode: 0x7f, Addr: LOC_R7, ExpectedValue: 0xAA + 7},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		if err := vm.Feed([]byte{tc.Opcode, tc.ExpectedValue}); err != nil {
+			t.Fatal(err)
+		}
+
+		actualValue, err := vm.ReadMem(tc.Addr)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if actualValue != tc.ExpectedValue {
+			t.Errorf("expected value in %s to be %#02x, got %#02x", tc.Name, tc.ExpectedValue, actualValue)
+		}
+	}
+}
