@@ -1374,3 +1374,13 @@ func TestOp0xCF(t *testing.T) {
 	// TODO: implement
 	t.Skipf("TODO: implement")
 }
+
+func TestOp0xD6(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0xD7(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}

@@ -492,6 +492,37 @@ func genericXch(vm *Machine, src uint8, dest uint8) error {
 	return nil
 }
 
+func genericXchd(vm *Machine, dest uint8, src uint8) error {
+	destVal, err := vm.ReadMem(dest)
+	if err != nil {
+		return err
+	}
+
+	srcVal, err := vm.ReadMem(src)
+	if err != nil {
+		return err
+	}
+
+	destLower := destVal & 0b00001111
+	destUpper := destVal & 0b11110000
+
+	srcLower := srcVal & 0b00001111
+	srcUpper := srcVal & 0b11110000
+
+	newDest := destUpper | srcLower
+	newSrc := srcUpper | destLower
+
+	if err := vm.WriteMem(src, newSrc); err != nil {
+		return err
+	}
+
+	if err := vm.WriteMem(dest, newDest); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func operationTable() map[byte]Opcode {
 	tbl := make(map[byte]Opcode)
 	tbl[0x00] = Opcode{Name: "NOP", Eval: func(vm *Machine, operands []byte) error {
@@ -2085,14 +2116,20 @@ func operationTable() map[byte]Opcode {
 		return nil
 	}}
 
-	tbl[0xd6] = Opcode{Name: "XCHD", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0xd6] = Opcode{Name: "XCHD A,@R0", Eval: func(vm *Machine, operands []byte) error {
+		ptr, err := vm.ReadMem(LOC_R0) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+		return genericXchd(vm, SFR_ACC, ptr)
 	}}
 
-	tbl[0xd7] = Opcode{Name: "XCHD", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0xd7] = Opcode{Name: "XCHD A,@R1", Eval: func(vm *Machine, operands []byte) error {
+		ptr, err := vm.ReadMem(LOC_R1) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+		return genericXchd(vm, SFR_ACC, ptr)
 	}}
 
 	tbl[0xd8] = Opcode{Name: "DJNZ R0,reladdr", Eval: func(vm *Machine, operands []byte) error {
