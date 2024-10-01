@@ -662,6 +662,32 @@ func TestOp0x74(t *testing.T) {
 	}
 }
 
+func TestOp0x75(t *testing.T) {
+	cases := []struct {
+		Addr          uint8
+		ExpectedValue byte
+	}{
+		{Addr: 0x0, ExpectedValue: 0xAD},
+		{Addr: 0xFF, ExpectedValue: 0xBB},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		if err := vm.Feed([]byte{0x75, tc.Addr, tc.ExpectedValue}); err != nil {
+			t.Fatal(err)
+		}
+
+		actualValue, err := vm.ReadMem(tc.Addr)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if actualValue != tc.ExpectedValue {
+			t.Errorf("expected value at address %#02x to be %#02x, got %#02x", tc.Addr, tc.ExpectedValue, actualValue)
+		}
+	}
+}
+
 func TestOp0x76_0x77(t *testing.T) {
 	cases := []struct {
 		Name          string
