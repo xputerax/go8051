@@ -832,3 +832,44 @@ func TestOp0x88_0x8f(t *testing.T) {
 		}
 	}
 }
+
+func TestOp0xA6_0xA7(t *testing.T) {
+	cases := []struct {
+		Name          string
+		Opcode        byte
+		Dest          uint8
+		MoveInto      uint8
+		MoveFrom      uint8
+		ExpectedValue byte
+	}{
+		// R0 points to 0x01, addr 0x02 contains the data that we want (0xAA). deref'ing R0 should return 0xAA
+		{Name: "@R0", Opcode: 0xA6, Dest: LOC_R0, MoveInto: 0x20, MoveFrom: 0x10, ExpectedValue: 0xAA},
+		{Name: "@R1", Opcode: 0xA7, Dest: LOC_R1, MoveInto: 0x20, MoveFrom: 0x10, ExpectedValue: 0xAB},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		if err := vm.WriteMem(tc.Dest, tc.MoveInto); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.WriteMem(tc.MoveFrom, tc.ExpectedValue); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.Feed([]byte{tc.Opcode, tc.MoveFrom}); err != nil {
+			t.Fatal(err)
+		}
+
+		actualValue, err := vm.DerefMem(tc.Dest)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if actualValue != tc.ExpectedValue {
+			t.Errorf("%s: expected value at address %#02x to be %#02x, got %#02x (opcode %#02x)",
+				tc.Name, tc.Dest, tc.ExpectedValue, actualValue, tc.Opcode,
+			)
+		}
+	}
+}
