@@ -1072,3 +1072,73 @@ func TestOp0xFF(t *testing.T) {
 	// TODO: implement
 	t.Skipf("TODO: implement")
 }
+
+func TestOp0x42(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0x43(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0x44(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0x45(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0x46(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0x47(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0x48(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0x49(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0x4a(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0x4b(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0x4c(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0x4d(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0x4e(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}
+
+func TestOp0x4f(t *testing.T) {
+	// TODO: implement
+	t.Skipf("TODO: implement")
+}

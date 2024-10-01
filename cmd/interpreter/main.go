@@ -395,6 +395,31 @@ func main() {
 	}
 }
 
+func genericOrl(vm *Machine, dest uint8, src uint8) error {
+	destVal, err := vm.ReadMem(dest)
+	if err != nil {
+		return err
+	}
+
+	srcVal, err := vm.ReadMem(dest)
+	if err != nil {
+		return err
+	}
+
+	err = vm.WriteMem(dest, destVal|srcVal)
+	return err
+}
+
+func genericOrlImm(vm *Machine, dest uint8, value byte) error {
+	destVal, err := vm.ReadMem(dest)
+	if err != nil {
+		return err
+	}
+
+	err = vm.WriteMem(dest, destVal|value)
+	return err
+}
+
 func operationTable() map[byte]Opcode {
 	tbl := make(map[byte]Opcode)
 	tbl[0x00] = Opcode{Name: "NOP", Eval: func(vm *Machine, operands []byte) error {
@@ -1100,73 +1125,69 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0x42] = Opcode{Name: "ORL data addr,A", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		return genericOrl(vm, operands[0], SFR_ACC)
 	}}
 
 	tbl[0x43] = Opcode{Name: "ORL data addr,#data", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		return genericOrlImm(vm, operands[0], operands[1])
 	}}
 
 	tbl[0x44] = Opcode{Name: "ORL A,#data", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		return genericOrlImm(vm, SFR_ACC, operands[0])
 	}}
 
-	tbl[0x45] = Opcode{Name: "ORL A,data add", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x45] = Opcode{Name: "ORL A,data addr", Eval: func(vm *Machine, operands []byte) error {
+		return genericOrl(vm, SFR_ACC, operands[0])
 	}}
 
 	tbl[0x46] = Opcode{Name: "ORL A,@R0", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		R0, err := vm.ReadMem(LOC_R0) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		return genericOrl(vm, SFR_ACC, R0)
 	}}
 
 	tbl[0x47] = Opcode{Name: "ORL A,@R1", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		R1, err := vm.ReadMem(LOC_R1) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		return genericOrl(vm, SFR_ACC, R1)
 	}}
 
 	tbl[0x48] = Opcode{Name: "ORL A,R0", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		return genericOrl(vm, SFR_ACC, LOC_R0) // TODO: memory bank
 	}}
 
 	tbl[0x49] = Opcode{Name: "ORL A,R1", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		return genericOrl(vm, SFR_ACC, LOC_R1) // TODO: memory bank
 	}}
 
 	tbl[0x4a] = Opcode{Name: "ORL A,R2", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		return genericOrl(vm, SFR_ACC, LOC_R2) // TODO: memory bank
 	}}
 
 	tbl[0x4b] = Opcode{Name: "ORL A,R3", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		return genericOrl(vm, SFR_ACC, LOC_R3) // TODO: memory bank
 	}}
 
 	tbl[0x4c] = Opcode{Name: "ORL A,R4", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		return genericOrl(vm, SFR_ACC, LOC_R4) // TODO: memory bank
 	}}
 
 	tbl[0x4d] = Opcode{Name: "ORL A,R5", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		return genericOrl(vm, SFR_ACC, LOC_R5) // TODO: memory bank
 	}}
 
 	tbl[0x4e] = Opcode{Name: "ORL A,R6", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		return genericOrl(vm, SFR_ACC, LOC_R6) // TODO: memory bank
 	}}
 
 	tbl[0x4f] = Opcode{Name: "ORL A,R7", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+		return genericOrl(vm, SFR_ACC, LOC_R7) // TODO: memory bank
 	}}
 
 	tbl[0x50] = Opcode{Name: "JNC reladdr", Eval: func(vm *Machine, operands []byte) error {
