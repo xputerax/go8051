@@ -1287,3 +1287,35 @@ func TestOp0x85(t *testing.T) {
 	// TODO: implement
 	t.Skipf("TODO: implement")
 }
+
+func TestOp0xC4(t *testing.T) {
+	cases := []struct {
+		InitialValue  byte
+		ExpectedValue byte
+	}{
+		{InitialValue: 0x00, ExpectedValue: 0x00},
+		{InitialValue: 0xFF, ExpectedValue: 0xFF},
+		{InitialValue: 0b11110000, ExpectedValue: 0b00001111},
+		{InitialValue: 0b00001111, ExpectedValue: 0b11110000},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		if err := vm.WriteMem(SFR_ACC, tc.InitialValue); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.Feed([]byte{0xC4}); err != nil {
+			t.Fatal(err)
+		}
+
+		actualValue, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if actualValue != tc.ExpectedValue {
+			t.Errorf("expected A register to be %#02x, got %#02x", tc.ExpectedValue, actualValue)
+		}
+	}
+}

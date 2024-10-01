@@ -1959,9 +1959,23 @@ func operationTable() map[byte]Opcode {
 		return nil
 	}}
 
-	tbl[0xc4] = Opcode{Name: "SWAP", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0xc4] = Opcode{Name: "SWAP A", Eval: func(vm *Machine, operands []byte) error {
+		A, err := vm.ReadMem(SFR_ACC)
+		if err != nil {
+			return err
+		}
+
+		lowerBits := 0b00001111 & A
+		upperBits := 0b11110000 & A
+
+		// swap positions
+		lowerBits <<= 4
+		upperBits >>= 4
+
+		swapped := upperBits | lowerBits // combine
+
+		err = vm.WriteMem(SFR_ACC, swapped)
+		return err
 	}}
 
 	tbl[0xc5] = Opcode{Name: "XCH", Eval: func(vm *Machine, operands []byte) error {
