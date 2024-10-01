@@ -470,6 +470,28 @@ func genericXrlImm(vm *Machine, dest uint8, immVal byte) error {
 	return err
 }
 
+func genericXch(vm *Machine, src uint8, dest uint8) error {
+	srcVal, err := vm.ReadMem(src)
+	if err != nil {
+		return err
+	}
+
+	destVal, err := vm.ReadMem(dest)
+	if err != nil {
+		return err
+	}
+
+	if err := vm.WriteMem(src, destVal); err != nil {
+		return err
+	}
+
+	if err := vm.WriteMem(dest, srcVal); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func operationTable() map[byte]Opcode {
 	tbl := make(map[byte]Opcode)
 	tbl[0x00] = Opcode{Name: "NOP", Eval: func(vm *Machine, operands []byte) error {
@@ -1978,59 +2000,59 @@ func operationTable() map[byte]Opcode {
 		return err
 	}}
 
-	tbl[0xc5] = Opcode{Name: "XCH", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0xc5] = Opcode{Name: "XCH A,iram addr", Eval: func(vm *Machine, operands []byte) error {
+		srcAddr := operands[0]
+		return genericXch(vm, SFR_ACC, srcAddr)
 	}}
 
-	tbl[0xc6] = Opcode{Name: "XCH", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0xc6] = Opcode{Name: "XCH A,@R0", Eval: func(vm *Machine, operands []byte) error {
+		r0, err := vm.ReadMem(LOC_R0) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		return genericXch(vm, SFR_ACC, r0)
 	}}
 
-	tbl[0xc7] = Opcode{Name: "XCH", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0xc7] = Opcode{Name: "XCH A,@R1", Eval: func(vm *Machine, operands []byte) error {
+		r1, err := vm.ReadMem(LOC_R1) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		return genericXch(vm, SFR_ACC, r1)
 	}}
 
-	tbl[0xc8] = Opcode{Name: "XCH", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0xc8] = Opcode{Name: "XCH A,R0", Eval: func(vm *Machine, operands []byte) error {
+		return genericXch(vm, SFR_ACC, LOC_R0) // TODO: memory bank
 	}}
 
-	tbl[0xc9] = Opcode{Name: "XCH", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0xc9] = Opcode{Name: "XCH A,R1", Eval: func(vm *Machine, operands []byte) error {
+		return genericXch(vm, SFR_ACC, LOC_R1) // TODO: memory bank
 	}}
 
-	tbl[0xca] = Opcode{Name: "XCH", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0xca] = Opcode{Name: "XCH A,R2", Eval: func(vm *Machine, operands []byte) error {
+		return genericXch(vm, SFR_ACC, LOC_R2) // TODO: memory bank
 	}}
 
-	tbl[0xcb] = Opcode{Name: "XCH", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0xcb] = Opcode{Name: "XCH A,R3", Eval: func(vm *Machine, operands []byte) error {
+		return genericXch(vm, SFR_ACC, LOC_R3) // TODO: memory bank
 	}}
 
-	tbl[0xcc] = Opcode{Name: "XCH", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0xcc] = Opcode{Name: "XCH A,R4", Eval: func(vm *Machine, operands []byte) error {
+		return genericXch(vm, SFR_ACC, LOC_R4) // TODO: memory bank
 	}}
 
-	tbl[0xcd] = Opcode{Name: "XCH", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0xcd] = Opcode{Name: "XCH A,R5", Eval: func(vm *Machine, operands []byte) error {
+		return genericXch(vm, SFR_ACC, LOC_R5) // TODO: memory bank
 	}}
 
-	tbl[0xce] = Opcode{Name: "XCH", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0xce] = Opcode{Name: "XCH A,R6", Eval: func(vm *Machine, operands []byte) error {
+		return genericXch(vm, SFR_ACC, LOC_R6) // TODO: memory bank
 	}}
 
-	tbl[0xcf] = Opcode{Name: "XCH", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0xcf] = Opcode{Name: "XCH A,R7", Eval: func(vm *Machine, operands []byte) error {
+		return genericXch(vm, SFR_ACC, LOC_R7) // TODO: memory bank
 	}}
 
 	tbl[0xd0] = Opcode{Name: "POP", Eval: func(vm *Machine, operands []byte) error {
