@@ -873,3 +873,42 @@ func TestOp0xA6_0xA7(t *testing.T) {
 		}
 	}
 }
+
+func TestOp0xA8_0xAF(t *testing.T) {
+	cases := []struct {
+		Name          string
+		Opcode        byte
+		MoveInto      uint8
+		MoveFrom      uint8
+		ExpectedValue byte
+	}{
+		{Name: "R0", Opcode: 0xA8, MoveInto: LOC_R0, MoveFrom: 0xAA + 0, ExpectedValue: 0xBB + 0},
+		{Name: "R1", Opcode: 0xA9, MoveInto: LOC_R1, MoveFrom: 0xAA + 1, ExpectedValue: 0xBB + 1},
+		{Name: "R2", Opcode: 0xAA, MoveInto: LOC_R2, MoveFrom: 0xAA + 2, ExpectedValue: 0xBB + 2},
+		{Name: "R3", Opcode: 0xAB, MoveInto: LOC_R3, MoveFrom: 0xAA + 3, ExpectedValue: 0xBB + 3},
+		{Name: "R4", Opcode: 0xAC, MoveInto: LOC_R4, MoveFrom: 0xAA + 4, ExpectedValue: 0xBB + 4},
+		{Name: "R5", Opcode: 0xAD, MoveInto: LOC_R5, MoveFrom: 0xAA + 5, ExpectedValue: 0xBB + 5},
+		{Name: "R6", Opcode: 0xAE, MoveInto: LOC_R6, MoveFrom: 0xAA + 6, ExpectedValue: 0xBB + 6},
+		{Name: "R7", Opcode: 0xAF, MoveInto: LOC_R7, MoveFrom: 0xAA + 7, ExpectedValue: 0xBB + 7},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		if err := vm.WriteMem(tc.MoveFrom, tc.ExpectedValue); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.Feed([]byte{tc.Opcode, tc.MoveFrom}); err != nil {
+			t.Fatal(err)
+		}
+
+		actualValue, err := vm.ReadMem(tc.MoveInto)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if actualValue != tc.ExpectedValue {
+			t.Errorf("%s: expected address %#02x to be %#02x, got %#02x (opcode %#02x)", tc.Name, tc.MoveInto, tc.ExpectedValue, actualValue, tc.Opcode)
+		}
+	}
+}
