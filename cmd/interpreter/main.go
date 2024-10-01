@@ -420,6 +420,31 @@ func genericOrlImm(vm *Machine, dest uint8, value byte) error {
 	return err
 }
 
+func genericAnl(vm *Machine, dest uint8, src uint8) error {
+	destVal, err := vm.ReadMem(dest)
+	if err != nil {
+		return err
+	}
+
+	srcVal, err := vm.ReadMem(src)
+	if err != nil {
+		return err
+	}
+
+	err = vm.WriteMem(dest, destVal|srcVal)
+	return err
+}
+
+func genericAnlImm(vm *Machine, dest uint8, value byte) error {
+	destVal, err := vm.ReadMem(dest)
+	if err != nil {
+		return err
+	}
+
+	err = vm.WriteMem(dest, destVal|value)
+	return err
+}
+
 func operationTable() map[byte]Opcode {
 	tbl := make(map[byte]Opcode)
 	tbl[0x00] = Opcode{Name: "NOP", Eval: func(vm *Machine, operands []byte) error {
@@ -1200,74 +1225,70 @@ func operationTable() map[byte]Opcode {
 		return nil
 	}}
 
-	tbl[0x52] = Opcode{Name: "ANL", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x52] = Opcode{Name: "ANL iram addr,A", Eval: func(vm *Machine, operands []byte) error {
+		return genericAnl(vm, operands[0], operands[1])
 	}}
 
-	tbl[0x53] = Opcode{Name: "ANL", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x53] = Opcode{Name: "ANL iram addr,#data", Eval: func(vm *Machine, operands []byte) error {
+		return genericAnlImm(vm, operands[0], operands[1])
 	}}
 
-	tbl[0x54] = Opcode{Name: "ANL", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x54] = Opcode{Name: "ANL A,#data", Eval: func(vm *Machine, operands []byte) error {
+		return genericAnlImm(vm, SFR_ACC, operands[0])
 	}}
 
-	tbl[0x55] = Opcode{Name: "ANL", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x55] = Opcode{Name: "ANL A,iram addr", Eval: func(vm *Machine, operands []byte) error {
+		return genericAnl(vm, SFR_ACC, operands[0])
 	}}
 
-	tbl[0x56] = Opcode{Name: "ANL", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x56] = Opcode{Name: "ANL A,@R0", Eval: func(vm *Machine, operands []byte) error {
+		r0, err := vm.ReadMem(LOC_R0) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		return genericAnl(vm, SFR_ACC, r0)
 	}}
 
-	tbl[0x57] = Opcode{Name: "ANL", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x57] = Opcode{Name: "ANL A,@R1", Eval: func(vm *Machine, operands []byte) error {
+		r1, err := vm.ReadMem(LOC_R1) // TODO: memory bank
+		if err != nil {
+			return err
+		}
+
+		return genericAnl(vm, SFR_ACC, r1)
 	}}
 
-	tbl[0x58] = Opcode{Name: "ANL", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x58] = Opcode{Name: "ANL A,R0", Eval: func(vm *Machine, operands []byte) error {
+		return genericAnl(vm, SFR_ACC, LOC_R0) // TODO: memory bank
 	}}
 
-	tbl[0x59] = Opcode{Name: "ANL", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x59] = Opcode{Name: "ANL A,R1", Eval: func(vm *Machine, operands []byte) error {
+		return genericAnl(vm, SFR_ACC, LOC_R1) // TODO: memory bank
 	}}
 
-	tbl[0x5a] = Opcode{Name: "ANL", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x5a] = Opcode{Name: "ANL A,R2", Eval: func(vm *Machine, operands []byte) error {
+		return genericAnl(vm, SFR_ACC, LOC_R2) // TODO: memory bank
 	}}
 
-	tbl[0x5b] = Opcode{Name: "ANL", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x5b] = Opcode{Name: "ANL A,R3", Eval: func(vm *Machine, operands []byte) error {
+		return genericAnl(vm, SFR_ACC, LOC_R3) // TODO: memory bank
 	}}
 
-	tbl[0x5c] = Opcode{Name: "ANL", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x5c] = Opcode{Name: "ANL A,R4", Eval: func(vm *Machine, operands []byte) error {
+		return genericAnl(vm, SFR_ACC, LOC_R4) // TODO: memory bank
 	}}
 
-	tbl[0x5d] = Opcode{Name: "ANL", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x5d] = Opcode{Name: "ANL A,R5", Eval: func(vm *Machine, operands []byte) error {
+		return genericAnl(vm, SFR_ACC, LOC_R5) // TODO: memory bank
 	}}
 
-	tbl[0x5e] = Opcode{Name: "ANL", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x5e] = Opcode{Name: "ANL A,R6", Eval: func(vm *Machine, operands []byte) error {
+		return genericAnl(vm, SFR_ACC, LOC_R6) // TODO: memory bank
 	}}
 
-	tbl[0x5f] = Opcode{Name: "ANL", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
-		return nil
+	tbl[0x5f] = Opcode{Name: "ANL A,R7", Eval: func(vm *Machine, operands []byte) error {
+		return genericAnl(vm, SFR_ACC, LOC_R7) // TODO: memory bank
 	}}
 
 	tbl[0x60] = Opcode{Name: "JZ reladdr", Eval: func(vm *Machine, operands []byte) error {
