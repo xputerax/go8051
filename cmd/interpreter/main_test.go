@@ -989,3 +989,36 @@ func TestOp0xE5_0xE8_0xEF(t *testing.T) {
 		}
 	}
 }
+
+func TestOp0xF5(t *testing.T) {
+	cases := []struct {
+		CopyInto      uint8
+		ExpectedValue byte
+	}{
+		{CopyInto: 0xFF, ExpectedValue: 0xAA},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+
+		var expectedValue byte = tc.ExpectedValue
+		var copyInto uint8 = tc.CopyInto
+
+		if err := vm.WriteMem(SFR_ACC, expectedValue); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.Feed([]byte{0xf5, copyInto}); err != nil {
+			t.Fatal(err)
+		}
+
+		actualValue, err := vm.ReadMem(copyInto)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if actualValue != expectedValue {
+			t.Errorf("expected address %#02x to be %#02x, got %#02x", copyInto, expectedValue, actualValue)
+		}
+	}
+}
