@@ -754,3 +754,42 @@ func TestOp0x78_0x7f(t *testing.T) {
 		}
 	}
 }
+
+func TestOp0x86_0x87(t *testing.T) {
+	cases := []struct {
+		Name          string
+		Opcode        byte
+		MoveFrom      uint8
+		Ptr           uint8
+		MoveInto      uint8
+		ExpectedValue byte
+	}{
+		{Name: "@R0", Opcode: 0x86, MoveFrom: LOC_R0, Ptr: 0x01, MoveInto: 0x02, ExpectedValue: 0xAA},
+		{Name: "@R1", Opcode: 0x87, MoveFrom: LOC_R1, Ptr: 0x03, MoveInto: 0x04, ExpectedValue: 0xBB},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+
+		if err := vm.WriteMem(tc.MoveFrom, tc.Ptr); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.WriteMem(tc.Ptr, tc.ExpectedValue); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.Feed([]byte{tc.Opcode, tc.MoveInto}); err != nil {
+			t.Fatal(err)
+		}
+
+		actualValue, err := vm.ReadMem(tc.MoveInto)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if actualValue != tc.ExpectedValue {
+			t.Errorf("expected memory address %#02x to be %#02x, got %#02x", tc.MoveInto, tc.ExpectedValue, actualValue)
+		}
+	}
+}
