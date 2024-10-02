@@ -39,6 +39,9 @@ const PSW_OV_MASK byte = (1 << 2)
 const PSW_RESERVED_MASK byte = (1 << 1)
 const PSW_P_MASK byte = (1 << 0)
 
+// how many registers per memory/register bank. R0-R7 therefore 8
+const BANK_SIZE byte = 8
+
 // Carry bit
 func PSW_C(psw byte) bool {
 	return (psw & PSW_C_MASK) == PSW_C_MASK
@@ -161,7 +164,7 @@ func (m *Machine) Feed(instructions []byte) error {
 		return fmt.Errorf("cannot execute instruction because program counter exceeds 0xFFFF (65535)")
 	}
 
-	log.Printf("executing instruction '%02X' (%s) with operand '%v'", opcode, op.Name, operands)
+	log.Printf("executing instruction '%02X' (%s) with operand '%v' (bank %d)", opcode, op.Name, operands, m.bankNo())
 
 	log.Printf("BEFORE: %+v\n", m.registers)
 
@@ -380,6 +383,54 @@ func (m *Machine) SetrefMem(loc uint8, value byte) error {
 	err = m.WriteMem(ptr, value)
 
 	return err
+}
+
+func (m *Machine) bankNo() byte {
+	psw, _ := m.ReadMem(SFR_PSW)
+	bankNo := psw & (PSW_RS1_MASK | PSW_RS0_MASK) >> 3
+	return bankNo
+}
+
+// TODO: DX issue. user might forget to add m.bankOffset() to R0-R7 addr
+func (m *Machine) bankOffset() byte {
+	bankNo := m.bankNo()
+	return BANK_SIZE * bankNo
+}
+
+func (m *Machine) SetBankNo(bankNo byte) error {
+	if bankNo > 3 {
+		return fmt.Errorf("bankNo cannot exceed 3")
+	}
+
+	psw, err := m.ReadMem(SFR_PSW)
+	if err != nil {
+		return err
+	}
+
+	var bankNoMask byte = bankNo << 3
+
+	psw &= ^PSW_RS0_MASK // clear bit
+	psw &= ^PSW_RS1_MASK // clear bit
+	psw |= bankNoMask
+
+	err = m.WriteMem(SFR_PSW, psw)
+	return err
+}
+
+func (m *Machine) ReadBankMem(loc uint8) (byte, error) {
+	return m.ReadMem(loc + m.bankOffset())
+}
+
+func (m *Machine) WriteBankMem(loc uint8, value byte) error {
+	return m.WriteMem(loc+m.bankOffset(), value)
+}
+
+func (m *Machine) DerefBank(loc uint8) (byte, error) {
+	return m.DerefMem(loc + m.bankOffset())
+}
+
+func (m *Machine) SetrefBank(loc uint8, value byte) error {
+	return m.SetrefMem(loc+m.bankOffset(), value)
 }
 
 func main() {

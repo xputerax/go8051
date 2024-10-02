@@ -138,3 +138,303 @@ func TestSetrefMem(t *testing.T) {
 		}
 	}
 }
+
+func TestBankNo_BankOffset(t *testing.T) {
+	cases := []struct {
+		RS1            byte
+		RS0            byte
+		BankNo         byte
+		ExpectedOffset byte
+	}{
+		{RS1: 0, RS0: 0, BankNo: 0, ExpectedOffset: 0 * BANK_SIZE},
+		{RS1: 0, RS0: 1, BankNo: 1, ExpectedOffset: 1 * BANK_SIZE},
+		{RS1: 1, RS0: 0, BankNo: 2, ExpectedOffset: 2 * BANK_SIZE},
+		{RS1: 1, RS0: 1, BankNo: 3, ExpectedOffset: 3 * BANK_SIZE},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		psw, _ := vm.ReadMem(SFR_PSW)
+
+		if tc.RS0 == 0 {
+			psw = PSW_UNSET(psw, PSW_RS0_MASK)
+		} else if tc.RS0 == 1 {
+			psw = PSW_SET(psw, PSW_RS0_MASK)
+		} else {
+			t.Fatalf("invalid value for RS0: %d", tc.RS0)
+		}
+
+		if tc.RS1 == 0 {
+			psw = PSW_UNSET(psw, PSW_RS1_MASK)
+		} else if tc.RS1 == 1 {
+			psw = PSW_SET(psw, PSW_RS1_MASK)
+		} else {
+			t.Fatalf("invalid value for RS1: %d", tc.RS1)
+		}
+
+		err := vm.WriteMem(SFR_PSW, psw)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		actualBankNo := vm.bankNo()
+		actualOffset := vm.bankOffset()
+
+		if actualBankNo != tc.BankNo {
+			t.Errorf("RS1: %d, RS0: %d: expected bank number to be %d, got %d", tc.RS1, tc.RS0, tc.BankNo, actualBankNo)
+		}
+
+		if actualOffset != tc.ExpectedOffset {
+			t.Errorf("RS1: %d, RS0: %d: expected bank %d offset to be %d, got %d", tc.RS1, tc.RS0, tc.BankNo, tc.ExpectedOffset, actualOffset)
+		}
+	}
+}
+
+func TestSetBankNo(t *testing.T) {
+	cases := []struct {
+		expected byte
+	}{
+		{expected: 0},
+		{expected: 1},
+		{expected: 2},
+		{expected: 3},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		if err := vm.SetBankNo(tc.expected); err != nil {
+			t.Fatal(err)
+		}
+
+		actual := vm.bankNo()
+
+		if actual != tc.expected {
+			t.Errorf("expected bank no to be %d, got %d", tc.expected, actual)
+		}
+	}
+}
+
+func TestSetBankNoErr(t *testing.T) {
+	vm := NewMachine()
+	err := vm.SetBankNo(4)
+	if err == nil {
+		t.Errorf("expected SetBankNo to return error, nil given")
+	}
+}
+
+func TestRead_WriteBankMem(t *testing.T) {
+	cases := []struct {
+		Name          string
+		Reg           uint8
+		Bank          byte
+		ExpectedValue byte
+	}{
+		{Name: "R0", Reg: LOC_R0, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "R0", Reg: LOC_R0, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "R0", Reg: LOC_R0, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "R0", Reg: LOC_R0, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "R1", Reg: LOC_R1, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "R1", Reg: LOC_R1, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "R1", Reg: LOC_R1, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "R1", Reg: LOC_R1, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "R2", Reg: LOC_R2, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "R2", Reg: LOC_R2, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "R2", Reg: LOC_R2, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "R2", Reg: LOC_R2, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "R3", Reg: LOC_R3, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "R3", Reg: LOC_R3, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "R3", Reg: LOC_R3, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "R3", Reg: LOC_R3, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "R4", Reg: LOC_R4, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "R4", Reg: LOC_R4, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "R4", Reg: LOC_R4, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "R4", Reg: LOC_R4, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "R5", Reg: LOC_R5, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "R5", Reg: LOC_R5, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "R5", Reg: LOC_R5, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "R5", Reg: LOC_R5, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "R6", Reg: LOC_R6, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "R6", Reg: LOC_R6, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "R6", Reg: LOC_R6, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "R6", Reg: LOC_R6, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "R7", Reg: LOC_R7, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "R7", Reg: LOC_R7, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "R7", Reg: LOC_R7, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "R7", Reg: LOC_R7, Bank: 3, ExpectedValue: 0xFF},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		if err := vm.SetBankNo(tc.Bank); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.WriteBankMem(tc.Reg, tc.ExpectedValue); err != nil {
+			t.Fatal(err)
+		}
+
+		actualValue, err := vm.ReadBankMem(tc.Reg)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if actualValue != tc.ExpectedValue {
+			t.Errorf("expected value in %s bank %d to be %#02x, got %#02x", tc.Name, tc.Bank, tc.ExpectedValue, actualValue)
+		}
+	}
+}
+
+func TestDerefBank(t *testing.T) {
+	cases := []struct {
+		Name          string
+		Reg           uint8
+		Ptr           uint8
+		Bank          byte
+		ExpectedValue byte
+	}{
+		{Name: "@R0", Reg: LOC_R0, Ptr: 0x2f, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "@R0", Reg: LOC_R0, Ptr: 0x2f, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "@R0", Reg: LOC_R0, Ptr: 0x2f, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "@R0", Reg: LOC_R0, Ptr: 0x2f, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "@R1", Reg: LOC_R1, Ptr: 0x2f, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "@R1", Reg: LOC_R1, Ptr: 0x2f, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "@R1", Reg: LOC_R1, Ptr: 0x2f, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "@R1", Reg: LOC_R1, Ptr: 0x2f, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "@R2", Reg: LOC_R2, Ptr: 0x2f, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "@R2", Reg: LOC_R2, Ptr: 0x2f, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "@R2", Reg: LOC_R2, Ptr: 0x2f, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "@R2", Reg: LOC_R2, Ptr: 0x2f, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "@R3", Reg: LOC_R3, Ptr: 0x2f, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "@R3", Reg: LOC_R3, Ptr: 0x2f, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "@R3", Reg: LOC_R3, Ptr: 0x2f, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "@R3", Reg: LOC_R3, Ptr: 0x2f, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "@R4", Reg: LOC_R4, Ptr: 0x2f, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "@R4", Reg: LOC_R4, Ptr: 0x2f, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "@R4", Reg: LOC_R4, Ptr: 0x2f, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "@R4", Reg: LOC_R4, Ptr: 0x2f, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "@R5", Reg: LOC_R5, Ptr: 0x2f, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "@R5", Reg: LOC_R5, Ptr: 0x2f, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "@R5", Reg: LOC_R5, Ptr: 0x2f, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "@R5", Reg: LOC_R5, Ptr: 0x2f, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "@R6", Reg: LOC_R6, Ptr: 0x2f, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "@R6", Reg: LOC_R6, Ptr: 0x2f, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "@R6", Reg: LOC_R6, Ptr: 0x2f, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "@R6", Reg: LOC_R6, Ptr: 0x2f, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "@R7", Reg: LOC_R7, Ptr: 0x2f, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "@R7", Reg: LOC_R7, Ptr: 0x2f, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "@R7", Reg: LOC_R7, Ptr: 0x2f, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "@R7", Reg: LOC_R7, Ptr: 0x2f, Bank: 3, ExpectedValue: 0xFF},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		if err := vm.SetBankNo(tc.Bank); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.WriteBankMem(tc.Reg, tc.Ptr); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.WriteMem(tc.Ptr, tc.ExpectedValue); err != nil {
+			t.Fatal(err)
+		}
+
+		actualValue, err := vm.DerefBank(tc.Reg)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if actualValue != tc.ExpectedValue {
+			t.Errorf("expected bank %d reg %s value to be %#02x, got %#02x", tc.Bank, tc.Name, tc.ExpectedValue, actualValue)
+		}
+	}
+}
+
+func TestSetrefBank(t *testing.T) {
+	cases := []struct {
+		Name          string
+		Reg           uint8
+		Ptr           uint8
+		Bank          byte
+		ExpectedValue byte
+	}{
+		{Name: "@R0", Reg: LOC_R0, Ptr: 0x2f, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "@R0", Reg: LOC_R0, Ptr: 0x2f, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "@R0", Reg: LOC_R0, Ptr: 0x2f, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "@R0", Reg: LOC_R0, Ptr: 0x2f, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "@R1", Reg: LOC_R1, Ptr: 0x2f, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "@R1", Reg: LOC_R1, Ptr: 0x2f, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "@R1", Reg: LOC_R1, Ptr: 0x2f, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "@R1", Reg: LOC_R1, Ptr: 0x2f, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "@R2", Reg: LOC_R2, Ptr: 0x2f, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "@R2", Reg: LOC_R2, Ptr: 0x2f, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "@R2", Reg: LOC_R2, Ptr: 0x2f, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "@R2", Reg: LOC_R2, Ptr: 0x2f, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "@R3", Reg: LOC_R3, Ptr: 0x2f, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "@R3", Reg: LOC_R3, Ptr: 0x2f, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "@R3", Reg: LOC_R3, Ptr: 0x2f, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "@R3", Reg: LOC_R3, Ptr: 0x2f, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "@R4", Reg: LOC_R4, Ptr: 0x2f, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "@R4", Reg: LOC_R4, Ptr: 0x2f, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "@R4", Reg: LOC_R4, Ptr: 0x2f, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "@R4", Reg: LOC_R4, Ptr: 0x2f, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "@R5", Reg: LOC_R5, Ptr: 0x2f, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "@R5", Reg: LOC_R5, Ptr: 0x2f, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "@R5", Reg: LOC_R5, Ptr: 0x2f, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "@R5", Reg: LOC_R5, Ptr: 0x2f, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "@R6", Reg: LOC_R6, Ptr: 0x2f, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "@R6", Reg: LOC_R6, Ptr: 0x2f, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "@R6", Reg: LOC_R6, Ptr: 0x2f, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "@R6", Reg: LOC_R6, Ptr: 0x2f, Bank: 3, ExpectedValue: 0xFF},
+
+		{Name: "@R7", Reg: LOC_R7, Ptr: 0x2f, Bank: 0, ExpectedValue: 0xFF},
+		{Name: "@R7", Reg: LOC_R7, Ptr: 0x2f, Bank: 1, ExpectedValue: 0xFF},
+		{Name: "@R7", Reg: LOC_R7, Ptr: 0x2f, Bank: 2, ExpectedValue: 0xFF},
+		{Name: "@R7", Reg: LOC_R7, Ptr: 0x2f, Bank: 3, ExpectedValue: 0xFF},
+	}
+
+	for _, tc := range cases {
+		vm := NewMachine()
+		if err := vm.SetBankNo(tc.Bank); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.WriteBankMem(tc.Reg, tc.Ptr); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := vm.SetrefBank(tc.Reg, tc.ExpectedValue); err != nil {
+			t.Fatal(err)
+		}
+
+		actualValue, err := vm.DerefBank(tc.Reg)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if actualValue != tc.ExpectedValue {
+			t.Errorf("expected bank %d reg %s value to be %#02x, got %#02x", tc.Bank, tc.Name, tc.ExpectedValue, actualValue)
+		}
+	}
+}
