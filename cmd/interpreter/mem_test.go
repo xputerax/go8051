@@ -77,7 +77,7 @@ func TestDerefMem(t *testing.T) {
 	}{
 		{Addr: 0x00, Ptr: 0x01, PtrValue: 0xAD},
 		{Addr: 0x01, Ptr: 0x02, PtrValue: 0xFF},
-		{Addr: 0xBB, Ptr: 0xAA, PtrValue: 0x69},
+		{Addr: 0x7E, Ptr: 0x7F, PtrValue: 0x69},
 	}
 
 	for _, tc := range cases {
