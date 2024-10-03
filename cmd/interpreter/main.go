@@ -357,7 +357,6 @@ func (m *Machine) ReadMem(loc uint8) (byte, error) {
 }
 
 func (m *Machine) DerefMem(loc uint8) (byte, error) {
-	// TODO: take into account memory banks
 	ptr, err := m.ReadMem(loc)
 	if err != nil {
 		return 0, fmt.Errorf("failed to read memory location %#02x: %s", loc, err)
@@ -391,7 +390,6 @@ func (m *Machine) bankNo() byte {
 	return bankNo
 }
 
-// TODO: DX issue. user might forget to add m.bankOffset() to R0-R7 addr
 func (m *Machine) bankOffset() byte {
 	bankNo := m.bankNo()
 	return BANK_SIZE * bankNo
@@ -521,22 +519,22 @@ func genericXrlImm(vm *Machine, dest uint8, immVal byte) error {
 	return err
 }
 
-func genericXch(vm *Machine, src uint8, dest uint8) error {
-	srcVal, err := vm.ReadMem(src)
-	if err != nil {
-		return err
-	}
-
+func genericXch(vm *Machine, dest uint8, src uint8) error {
 	destVal, err := vm.ReadMem(dest)
 	if err != nil {
 		return err
 	}
 
-	if err := vm.WriteMem(src, destVal); err != nil {
+	srcVal, err := vm.ReadMem(src)
+	if err != nil {
 		return err
 	}
 
 	if err := vm.WriteMem(dest, srcVal); err != nil {
+		return err
+	}
+
+	if err := vm.WriteMem(src, destVal); err != nil {
 		return err
 	}
 
@@ -631,122 +629,112 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0x06] = Opcode{Name: "INC @R0", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R0 // TODO: take into account memory bank
-		val, err := vm.DerefMem(loc)
+		val, err := vm.DerefBank(LOC_R0)
 		if err != nil {
 			return err
 		}
 
 		val += 1
-		err = vm.SetrefMem(loc, val)
+		err = vm.SetrefBank(LOC_R0, val)
 		return err
 	}}
 
 	tbl[0x07] = Opcode{Name: "INC @R1", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R1 // TODO: take into account memory bank
-		val, err := vm.DerefMem(loc)
+		val, err := vm.DerefBank(LOC_R1)
 		if err != nil {
 			return err
 		}
 
 		val += 1
-		err = vm.SetrefMem(loc, val)
+		err = vm.SetrefBank(LOC_R1, val)
 		return err
 	}}
 
 	tbl[0x08] = Opcode{Name: "INC R0", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R0 // TODO: take into account memory bank
-		val, err := vm.ReadMem(loc)
+		val, err := vm.ReadBankMem(LOC_R0)
 		if err != nil {
 			return err
 		}
 
 		val += 1
-		err = vm.WriteMem(loc, val)
+		err = vm.WriteBankMem(LOC_R0, val)
 		return err
 	}}
 
 	tbl[0x09] = Opcode{Name: "INC R1", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R1 // TODO: take into account memory bank
-		val, err := vm.ReadMem(loc)
+		val, err := vm.ReadBankMem(LOC_R1)
 		if err != nil {
 			return err
 		}
 
 		val += 1
-		err = vm.WriteMem(loc, val)
+		err = vm.WriteBankMem(LOC_R1, val)
 		return err
 	}}
 
 	tbl[0x0a] = Opcode{Name: "INC R2", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R2 // TODO: take into account memory bank
-		val, err := vm.ReadMem(loc)
+		val, err := vm.ReadBankMem(LOC_R2)
 		if err != nil {
 			return err
 		}
 
 		val += 1
-		err = vm.WriteMem(loc, val)
+		err = vm.WriteBankMem(LOC_R2, val)
 		return err
 	}}
 
 	tbl[0x0b] = Opcode{Name: "INC R3", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R3 // TODO: take into account memory bank
-		val, err := vm.ReadMem(loc)
+		val, err := vm.ReadBankMem(LOC_R3)
 		if err != nil {
 			return err
 		}
 
 		val += 1
-		err = vm.WriteMem(loc, val)
+		err = vm.WriteBankMem(LOC_R3, val)
 		return err
 	}}
 
 	tbl[0x0c] = Opcode{Name: "INC R4", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R4 // TODO: take into account memory bank
-		val, err := vm.ReadMem(loc)
+		val, err := vm.ReadBankMem(LOC_R4)
 		if err != nil {
 			return err
 		}
 
 		val += 1
-		err = vm.WriteMem(loc, val)
+		err = vm.WriteBankMem(LOC_R4, val)
 		return err
 	}}
 
 	tbl[0x0d] = Opcode{Name: "INC R5", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R5 // TODO: take into account memory bank
-		val, err := vm.ReadMem(loc)
+		val, err := vm.ReadBankMem(LOC_R5)
 		if err != nil {
 			return err
 		}
 
 		val += 1
-		err = vm.WriteMem(loc, val)
+		err = vm.WriteBankMem(LOC_R5, val)
 		return err
 	}}
 
 	tbl[0x0e] = Opcode{Name: "INC R6", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R6 // TODO: take into account memory bank
-		val, err := vm.ReadMem(loc)
+		val, err := vm.ReadBankMem(LOC_R6)
 		if err != nil {
 			return err
 		}
 
 		val += 1
-		err = vm.WriteMem(loc, val)
+		err = vm.WriteBankMem(LOC_R6, val)
 		return err
 	}}
 
 	tbl[0x0f] = Opcode{Name: "INC R7", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R7 // TODO: take into account memory bank
-		val, err := vm.ReadMem(loc)
+		val, err := vm.ReadBankMem(LOC_R7)
 		if err != nil {
 			return err
 		}
 
 		val += 1
-		err = vm.WriteMem(loc, val)
+		err = vm.WriteBankMem(LOC_R7, val)
 		return err
 	}}
 
@@ -825,122 +813,112 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0x16] = Opcode{Name: "DEC @R0", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R0 // TODO: memory bank
-		val, err := vm.DerefMem(loc)
+		val, err := vm.DerefBank(LOC_R0)
 		if err != nil {
 			return err
 		}
 
 		val -= 1
-		err = vm.SetrefMem(loc, val)
+		err = vm.SetrefBank(LOC_R0, val)
 		return err
 	}}
 
 	tbl[0x17] = Opcode{Name: "DEC @R1", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R1 // TODO: memory bank
-		val, err := vm.DerefMem(loc)
+		val, err := vm.DerefBank(LOC_R1)
 		if err != nil {
 			return err
 		}
 
 		val -= 1
-		err = vm.SetrefMem(loc, val)
+		err = vm.SetrefBank(LOC_R1, val)
 		return err
 	}}
 
 	tbl[0x18] = Opcode{Name: "DEC R0", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R0 // TODO: memory bank
-		val, err := vm.ReadMem(loc)
+		val, err := vm.ReadBankMem(LOC_R0)
 		if err != nil {
 			return err
 		}
 
 		val -= 1
-		err = vm.WriteMem(loc, val)
+		err = vm.WriteBankMem(LOC_R0, val)
 		return err
 	}}
 
 	tbl[0x19] = Opcode{Name: "DEC R1", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R1 // TODO: memory bank
-		val, err := vm.ReadMem(loc)
+		val, err := vm.ReadBankMem(LOC_R1)
 		if err != nil {
 			return err
 		}
 
 		val -= 1
-		err = vm.WriteMem(loc, val)
+		err = vm.WriteBankMem(LOC_R1, val)
 		return err
 	}}
 
 	tbl[0x1a] = Opcode{Name: "DEC R2", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R2 // TODO: memory bank
-		val, err := vm.ReadMem(loc)
+		val, err := vm.ReadBankMem(LOC_R2)
 		if err != nil {
 			return err
 		}
 
 		val -= 1
-		err = vm.WriteMem(loc, val)
+		err = vm.WriteBankMem(LOC_R2, val)
 		return err
 	}}
 
 	tbl[0x1b] = Opcode{Name: "DEC R3", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R3 // TODO: memory bank
-		val, err := vm.ReadMem(loc)
+		val, err := vm.ReadBankMem(LOC_R3)
 		if err != nil {
 			return err
 		}
 
 		val -= 1
-		err = vm.WriteMem(loc, val)
+		err = vm.WriteBankMem(LOC_R3, val)
 		return err
 	}}
 
 	tbl[0x1c] = Opcode{Name: "DEC R4", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R4 // TODO: memory bank
-		val, err := vm.ReadMem(loc)
+		val, err := vm.ReadBankMem(LOC_R4)
 		if err != nil {
 			return err
 		}
 
 		val -= 1
-		err = vm.WriteMem(loc, val)
+		err = vm.WriteBankMem(LOC_R4, val)
 		return err
 	}}
 
 	tbl[0x1d] = Opcode{Name: "DEC R5", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R5 // TODO: memory bank
-		val, err := vm.ReadMem(loc)
+		val, err := vm.ReadBankMem(LOC_R5)
 		if err != nil {
 			return err
 		}
 
 		val -= 1
-		err = vm.WriteMem(loc, val)
+		err = vm.WriteBankMem(LOC_R5, val)
 		return err
 	}}
 
 	tbl[0x1e] = Opcode{Name: "DEC R6", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R6 // TODO: memory bank
-		val, err := vm.ReadMem(loc)
+		val, err := vm.ReadBankMem(LOC_R6)
 		if err != nil {
 			return err
 		}
 
 		val -= 1
-		err = vm.WriteMem(loc, val)
+		err = vm.WriteBankMem(LOC_R6, val)
 		return err
 	}}
 
 	tbl[0x1f] = Opcode{Name: "DEC R7", Eval: func(vm *Machine, operands []byte) error {
-		loc := LOC_R7 // TODO: memory bank
-		val, err := vm.ReadMem(loc)
+		val, err := vm.ReadBankMem(LOC_R7)
 		if err != nil {
 			return err
 		}
 
 		val -= 1
-		err = vm.WriteMem(loc, val)
+		err = vm.WriteBankMem(LOC_R7, val)
 		return err
 	}}
 
@@ -1010,12 +988,12 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		val, err := vm.DerefMem(LOC_R0) // TODO: memory bank
+		r0val, err := vm.DerefBank(LOC_R0)
 		if err != nil {
 			return err
 		}
 
-		err = vm.SetrefMem(LOC_R0, A+val)
+		err = vm.WriteMem(SFR_ACC, A+r0val)
 		return err
 	}}
 
@@ -1026,12 +1004,12 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		val, err := vm.DerefMem(LOC_R1) // TODO: memory bank
+		val, err := vm.DerefBank(LOC_R1)
 		if err != nil {
 			return err
 		}
 
-		err = vm.SetrefMem(LOC_R1, A+val)
+		err = vm.WriteMem(SFR_ACC, A+val)
 		return err
 	}}
 
@@ -1042,7 +1020,7 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		val, err := vm.ReadMem(LOC_R0) // TODO: memory bank
+		val, err := vm.ReadBankMem(LOC_R0)
 		if err != nil {
 			return err
 		}
@@ -1058,7 +1036,7 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		val, err := vm.ReadMem(LOC_R1) // TODO: memory bank
+		val, err := vm.ReadBankMem(LOC_R1)
 		if err != nil {
 			return err
 		}
@@ -1074,7 +1052,7 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		val, err := vm.ReadMem(LOC_R2) // TODO: memory bank
+		val, err := vm.ReadBankMem(LOC_R2)
 		if err != nil {
 			return err
 		}
@@ -1091,7 +1069,7 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		val, err := vm.ReadMem(LOC_R3) // TODO: memory bank
+		val, err := vm.ReadBankMem(LOC_R3)
 		if err != nil {
 			return err
 		}
@@ -1107,7 +1085,7 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		val, err := vm.ReadMem(LOC_R4) // TODO: memory bank
+		val, err := vm.ReadBankMem(LOC_R4)
 		if err != nil {
 			return err
 		}
@@ -1123,7 +1101,7 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		val, err := vm.ReadMem(LOC_R5) // TODO: memory bank
+		val, err := vm.ReadBankMem(LOC_R5)
 		if err != nil {
 			return err
 		}
@@ -1139,7 +1117,7 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		val, err := vm.ReadMem(LOC_R6) // TODO: memory bank
+		val, err := vm.ReadBankMem(LOC_R6)
 		if err != nil {
 			return err
 		}
@@ -1155,7 +1133,7 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		val, err := vm.ReadMem(LOC_R7) // TODO: memory bank
+		val, err := vm.ReadBankMem(LOC_R7)
 		if err != nil {
 			return err
 		}
@@ -1295,7 +1273,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0x46] = Opcode{Name: "ORL A,@R0", Eval: func(vm *Machine, operands []byte) error {
-		R0, err := vm.ReadMem(LOC_R0) // TODO: memory bank
+		R0, err := vm.ReadBankMem(LOC_R0)
 		if err != nil {
 			return err
 		}
@@ -1304,7 +1282,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0x47] = Opcode{Name: "ORL A,@R1", Eval: func(vm *Machine, operands []byte) error {
-		R1, err := vm.ReadMem(LOC_R1) // TODO: memory bank
+		R1, err := vm.ReadBankMem(LOC_R1)
 		if err != nil {
 			return err
 		}
@@ -1313,35 +1291,35 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0x48] = Opcode{Name: "ORL A,R0", Eval: func(vm *Machine, operands []byte) error {
-		return genericOrl(vm, SFR_ACC, LOC_R0) // TODO: memory bank
+		return genericOrl(vm, SFR_ACC, LOC_R0+vm.bankOffset())
 	}}
 
 	tbl[0x49] = Opcode{Name: "ORL A,R1", Eval: func(vm *Machine, operands []byte) error {
-		return genericOrl(vm, SFR_ACC, LOC_R1) // TODO: memory bank
+		return genericOrl(vm, SFR_ACC, LOC_R1+vm.bankOffset())
 	}}
 
 	tbl[0x4a] = Opcode{Name: "ORL A,R2", Eval: func(vm *Machine, operands []byte) error {
-		return genericOrl(vm, SFR_ACC, LOC_R2) // TODO: memory bank
+		return genericOrl(vm, SFR_ACC, LOC_R2+vm.bankOffset())
 	}}
 
 	tbl[0x4b] = Opcode{Name: "ORL A,R3", Eval: func(vm *Machine, operands []byte) error {
-		return genericOrl(vm, SFR_ACC, LOC_R3) // TODO: memory bank
+		return genericOrl(vm, SFR_ACC, LOC_R3+vm.bankOffset())
 	}}
 
 	tbl[0x4c] = Opcode{Name: "ORL A,R4", Eval: func(vm *Machine, operands []byte) error {
-		return genericOrl(vm, SFR_ACC, LOC_R4) // TODO: memory bank
+		return genericOrl(vm, SFR_ACC, LOC_R4+vm.bankOffset())
 	}}
 
 	tbl[0x4d] = Opcode{Name: "ORL A,R5", Eval: func(vm *Machine, operands []byte) error {
-		return genericOrl(vm, SFR_ACC, LOC_R5) // TODO: memory bank
+		return genericOrl(vm, SFR_ACC, LOC_R5+vm.bankOffset())
 	}}
 
 	tbl[0x4e] = Opcode{Name: "ORL A,R6", Eval: func(vm *Machine, operands []byte) error {
-		return genericOrl(vm, SFR_ACC, LOC_R6) // TODO: memory bank
+		return genericOrl(vm, SFR_ACC, LOC_R6+vm.bankOffset())
 	}}
 
 	tbl[0x4f] = Opcode{Name: "ORL A,R7", Eval: func(vm *Machine, operands []byte) error {
-		return genericOrl(vm, SFR_ACC, LOC_R7) // TODO: memory bank
+		return genericOrl(vm, SFR_ACC, LOC_R7+vm.bankOffset())
 	}}
 
 	tbl[0x50] = Opcode{Name: "JNC reladdr", Eval: func(vm *Machine, operands []byte) error {
@@ -1371,7 +1349,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0x56] = Opcode{Name: "ANL A,@R0", Eval: func(vm *Machine, operands []byte) error {
-		r0, err := vm.ReadMem(LOC_R0) // TODO: memory bank
+		r0, err := vm.ReadBankMem(LOC_R0)
 		if err != nil {
 			return err
 		}
@@ -1380,7 +1358,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0x57] = Opcode{Name: "ANL A,@R1", Eval: func(vm *Machine, operands []byte) error {
-		r1, err := vm.ReadMem(LOC_R1) // TODO: memory bank
+		r1, err := vm.ReadBankMem(LOC_R1)
 		if err != nil {
 			return err
 		}
@@ -1389,35 +1367,35 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0x58] = Opcode{Name: "ANL A,R0", Eval: func(vm *Machine, operands []byte) error {
-		return genericAnl(vm, SFR_ACC, LOC_R0) // TODO: memory bank
+		return genericAnl(vm, SFR_ACC, LOC_R0+vm.bankOffset())
 	}}
 
 	tbl[0x59] = Opcode{Name: "ANL A,R1", Eval: func(vm *Machine, operands []byte) error {
-		return genericAnl(vm, SFR_ACC, LOC_R1) // TODO: memory bank
+		return genericAnl(vm, SFR_ACC, LOC_R1+vm.bankOffset())
 	}}
 
 	tbl[0x5a] = Opcode{Name: "ANL A,R2", Eval: func(vm *Machine, operands []byte) error {
-		return genericAnl(vm, SFR_ACC, LOC_R2) // TODO: memory bank
+		return genericAnl(vm, SFR_ACC, LOC_R2+vm.bankOffset())
 	}}
 
 	tbl[0x5b] = Opcode{Name: "ANL A,R3", Eval: func(vm *Machine, operands []byte) error {
-		return genericAnl(vm, SFR_ACC, LOC_R3) // TODO: memory bank
+		return genericAnl(vm, SFR_ACC, LOC_R3+vm.bankOffset())
 	}}
 
 	tbl[0x5c] = Opcode{Name: "ANL A,R4", Eval: func(vm *Machine, operands []byte) error {
-		return genericAnl(vm, SFR_ACC, LOC_R4) // TODO: memory bank
+		return genericAnl(vm, SFR_ACC, LOC_R4+vm.bankOffset())
 	}}
 
 	tbl[0x5d] = Opcode{Name: "ANL A,R5", Eval: func(vm *Machine, operands []byte) error {
-		return genericAnl(vm, SFR_ACC, LOC_R5) // TODO: memory bank
+		return genericAnl(vm, SFR_ACC, LOC_R5+vm.bankOffset())
 	}}
 
 	tbl[0x5e] = Opcode{Name: "ANL A,R6", Eval: func(vm *Machine, operands []byte) error {
-		return genericAnl(vm, SFR_ACC, LOC_R6) // TODO: memory bank
+		return genericAnl(vm, SFR_ACC, LOC_R6+vm.bankOffset())
 	}}
 
 	tbl[0x5f] = Opcode{Name: "ANL A,R7", Eval: func(vm *Machine, operands []byte) error {
-		return genericAnl(vm, SFR_ACC, LOC_R7) // TODO: memory bank
+		return genericAnl(vm, SFR_ACC, LOC_R7+vm.bankOffset())
 	}}
 
 	tbl[0x60] = Opcode{Name: "JZ reladdr", Eval: func(vm *Machine, operands []byte) error {
@@ -1447,7 +1425,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0x66] = Opcode{Name: "XRL A,@R0", Eval: func(vm *Machine, operands []byte) error {
-		r0, err := vm.ReadMem(LOC_R0) // TODO: memory bank
+		r0, err := vm.ReadBankMem(LOC_R0)
 		if err != nil {
 			return err
 		}
@@ -1456,7 +1434,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0x67] = Opcode{Name: "XRL A,@R1", Eval: func(vm *Machine, operands []byte) error {
-		r1, err := vm.ReadMem(LOC_R1) // TODO: memory bank
+		r1, err := vm.ReadBankMem(LOC_R1)
 		if err != nil {
 			return err
 		}
@@ -1465,35 +1443,35 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0x68] = Opcode{Name: "XRL A,R0", Eval: func(vm *Machine, operands []byte) error {
-		return genericXrl(vm, SFR_ACC, LOC_R0) // TODO: memory bank
+		return genericXrl(vm, SFR_ACC, LOC_R0+vm.bankOffset())
 	}}
 
 	tbl[0x69] = Opcode{Name: "XRL A,R1", Eval: func(vm *Machine, operands []byte) error {
-		return genericXrl(vm, SFR_ACC, LOC_R1) // TODO: memory bank
+		return genericXrl(vm, SFR_ACC, LOC_R1+vm.bankOffset())
 	}}
 
 	tbl[0x6a] = Opcode{Name: "XRL A,R2", Eval: func(vm *Machine, operands []byte) error {
-		return genericXrl(vm, SFR_ACC, LOC_R2) // TODO: memory bank
+		return genericXrl(vm, SFR_ACC, LOC_R2+vm.bankOffset())
 	}}
 
 	tbl[0x6b] = Opcode{Name: "XRL A,R3", Eval: func(vm *Machine, operands []byte) error {
-		return genericXrl(vm, SFR_ACC, LOC_R3) // TODO: memory bank
+		return genericXrl(vm, SFR_ACC, LOC_R3+vm.bankOffset())
 	}}
 
 	tbl[0x6c] = Opcode{Name: "XRL A,R4", Eval: func(vm *Machine, operands []byte) error {
-		return genericXrl(vm, SFR_ACC, LOC_R4) // TODO: memory bank
+		return genericXrl(vm, SFR_ACC, LOC_R4+vm.bankOffset())
 	}}
 
 	tbl[0x6d] = Opcode{Name: "XRL A,R5", Eval: func(vm *Machine, operands []byte) error {
-		return genericXrl(vm, SFR_ACC, LOC_R5) // TODO: memory bank
+		return genericXrl(vm, SFR_ACC, LOC_R5+vm.bankOffset())
 	}}
 
 	tbl[0x6e] = Opcode{Name: "XRL A,R6", Eval: func(vm *Machine, operands []byte) error {
-		return genericXrl(vm, SFR_ACC, LOC_R6) // TODO: memory bank
+		return genericXrl(vm, SFR_ACC, LOC_R6+vm.bankOffset())
 	}}
 
 	tbl[0x6f] = Opcode{Name: "XRL A,R7", Eval: func(vm *Machine, operands []byte) error {
-		return genericXrl(vm, SFR_ACC, LOC_R7) // TODO: memory bank
+		return genericXrl(vm, SFR_ACC, LOC_R7+vm.bankOffset())
 	}}
 
 	tbl[0x70] = Opcode{Name: "JNZ reladdr", Eval: func(vm *Machine, operands []byte) error {
@@ -1535,61 +1513,61 @@ func operationTable() map[byte]Opcode {
 
 	tbl[0x76] = Opcode{Name: "MOV @R0,#data", Eval: func(vm *Machine, operands []byte) error {
 		data := operands[0]
-		err := vm.SetrefMem(LOC_R0, data) // TODO: memory bank
+		err := vm.SetrefBank(LOC_R0, data)
 		return err
 	}}
 
 	tbl[0x77] = Opcode{Name: "MOV @R1,#data", Eval: func(vm *Machine, operands []byte) error {
 		data := operands[0]
-		err := vm.SetrefMem(LOC_R1, data) // TODO: memory bank
+		err := vm.SetrefBank(LOC_R1, data)
 		return err
 	}}
 
 	tbl[0x78] = Opcode{Name: "MOV R0,#data", Eval: func(vm *Machine, operands []byte) error {
 		data := operands[0]
-		err := vm.WriteMem(LOC_R0, data) // TODO: memory bank
+		err := vm.WriteBankMem(LOC_R0, data)
 		return err
 	}}
 
 	tbl[0x79] = Opcode{Name: "MOV R1,#data", Eval: func(vm *Machine, operands []byte) error {
 		data := operands[0]
-		err := vm.WriteMem(LOC_R1, data) // TODO: memory bank
+		err := vm.WriteBankMem(LOC_R1, data)
 		return err
 	}}
 
 	tbl[0x7a] = Opcode{Name: "MOV R2,#data", Eval: func(vm *Machine, operands []byte) error {
 		data := operands[0]
-		err := vm.WriteMem(LOC_R2, data) // TODO: memory bank
+		err := vm.WriteBankMem(LOC_R2, data)
 		return err
 	}}
 
 	tbl[0x7b] = Opcode{Name: "MOV R3,#data", Eval: func(vm *Machine, operands []byte) error {
 		data := operands[0]
-		err := vm.WriteMem(LOC_R3, data) // TODO: memory bank
+		err := vm.WriteBankMem(LOC_R3, data)
 		return err
 	}}
 
 	tbl[0x7c] = Opcode{Name: "MOV R4,#data", Eval: func(vm *Machine, operands []byte) error {
 		data := operands[0]
-		err := vm.WriteMem(LOC_R4, data) // TODO: memory bank
+		err := vm.WriteBankMem(LOC_R4, data)
 		return err
 	}}
 
 	tbl[0x7d] = Opcode{Name: "MOV R5,#data", Eval: func(vm *Machine, operands []byte) error {
 		data := operands[0]
-		err := vm.WriteMem(LOC_R5, data) // TODO: memory bank
+		err := vm.WriteBankMem(LOC_R5, data)
 		return err
 	}}
 
 	tbl[0x7e] = Opcode{Name: "MOV R6,#data", Eval: func(vm *Machine, operands []byte) error {
 		data := operands[0]
-		err := vm.WriteMem(LOC_R6, data) // TODO: memory bank
+		err := vm.WriteBankMem(LOC_R6, data)
 		return err
 	}}
 
 	tbl[0x7f] = Opcode{Name: "MOV R7,#data", Eval: func(vm *Machine, operands []byte) error {
 		data := operands[0]
-		err := vm.WriteMem(LOC_R7, data) // TODO: memory bank
+		err := vm.WriteBankMem(LOC_R7, data)
 		return err
 	}}
 
@@ -1636,7 +1614,7 @@ func operationTable() map[byte]Opcode {
 	tbl[0x86] = Opcode{Name: "MOV ramaddr,@R0", Eval: func(vm *Machine, operands []byte) error {
 		loc := operands[0]
 
-		val, err := vm.DerefMem(LOC_R0) // TODO: memory bank
+		val, err := vm.DerefBank(LOC_R0)
 		if err != nil {
 			return err
 		}
@@ -1648,7 +1626,7 @@ func operationTable() map[byte]Opcode {
 	tbl[0x87] = Opcode{Name: "MOV ramaddr,@R1", Eval: func(vm *Machine, operands []byte) error {
 		loc := operands[0]
 
-		val, err := vm.DerefMem(LOC_R1) // TODO: memory bank
+		val, err := vm.DerefBank(LOC_R1)
 		if err != nil {
 			return err
 		}
@@ -1660,7 +1638,7 @@ func operationTable() map[byte]Opcode {
 	tbl[0x88] = Opcode{Name: "MOV ramaddr,R0", Eval: func(vm *Machine, operands []byte) error {
 		loc := operands[0]
 
-		val, err := vm.ReadMem(LOC_R0) // TODO: memory bank
+		val, err := vm.ReadBankMem(LOC_R0)
 		if err != nil {
 			return err
 		}
@@ -1672,7 +1650,7 @@ func operationTable() map[byte]Opcode {
 	tbl[0x89] = Opcode{Name: "MOV ramaddr,R1", Eval: func(vm *Machine, operands []byte) error {
 		loc := operands[0]
 
-		val, err := vm.ReadMem(LOC_R1) // TODO: memory bank
+		val, err := vm.ReadBankMem(LOC_R1)
 		if err != nil {
 			return err
 		}
@@ -1684,7 +1662,7 @@ func operationTable() map[byte]Opcode {
 	tbl[0x8a] = Opcode{Name: "MOV ramaddr,R2", Eval: func(vm *Machine, operands []byte) error {
 		loc := operands[0]
 
-		val, err := vm.ReadMem(LOC_R2) // TODO: memory bank
+		val, err := vm.ReadBankMem(LOC_R2)
 		if err != nil {
 			return err
 		}
@@ -1696,7 +1674,7 @@ func operationTable() map[byte]Opcode {
 	tbl[0x8b] = Opcode{Name: "MOV ramaddr,R3", Eval: func(vm *Machine, operands []byte) error {
 		loc := operands[0]
 
-		val, err := vm.ReadMem(LOC_R3) // TODO: memory bank
+		val, err := vm.ReadBankMem(LOC_R3)
 		if err != nil {
 			return err
 		}
@@ -1708,7 +1686,7 @@ func operationTable() map[byte]Opcode {
 	tbl[0x8c] = Opcode{Name: "MOV ramaddr,R4", Eval: func(vm *Machine, operands []byte) error {
 		loc := operands[0]
 
-		val, err := vm.ReadMem(LOC_R4) // TODO: memory bank
+		val, err := vm.ReadBankMem(LOC_R4)
 		if err != nil {
 			return err
 		}
@@ -1720,7 +1698,7 @@ func operationTable() map[byte]Opcode {
 	tbl[0x8d] = Opcode{Name: "MOV ramaddr,R5", Eval: func(vm *Machine, operands []byte) error {
 		loc := operands[0]
 
-		val, err := vm.ReadMem(LOC_R5) // TODO: memory bank
+		val, err := vm.ReadBankMem(LOC_R5)
 		if err != nil {
 			return err
 		}
@@ -1732,7 +1710,7 @@ func operationTable() map[byte]Opcode {
 	tbl[0x8e] = Opcode{Name: "MOV ramaddr,R6", Eval: func(vm *Machine, operands []byte) error {
 		loc := operands[0]
 
-		val, err := vm.ReadMem(LOC_R6) // TODO: memory bank
+		val, err := vm.ReadBankMem(LOC_R6)
 		if err != nil {
 			return err
 		}
@@ -1744,7 +1722,7 @@ func operationTable() map[byte]Opcode {
 	tbl[0x8f] = Opcode{Name: "MOV ramaddr,R7", Eval: func(vm *Machine, operands []byte) error {
 		loc := operands[0]
 
-		val, err := vm.ReadMem(LOC_R7) // TODO: memory bank
+		val, err := vm.ReadBankMem(LOC_R7)
 		if err != nil {
 			return err
 		}
@@ -1869,7 +1847,7 @@ func operationTable() map[byte]Opcode {
 		if err != nil {
 			return err
 		}
-		err = vm.SetrefMem(LOC_R0, val) // TODO: memory bank
+		err = vm.SetrefBank(LOC_R0, val)
 		return err
 	}}
 
@@ -1879,7 +1857,7 @@ func operationTable() map[byte]Opcode {
 		if err != nil {
 			return err
 		}
-		err = vm.SetrefMem(LOC_R1, val) // TODO: memory bank
+		err = vm.SetrefBank(LOC_R1, val)
 		return err
 	}}
 
@@ -1889,7 +1867,7 @@ func operationTable() map[byte]Opcode {
 		if err != nil {
 			return err
 		}
-		err = vm.WriteMem(LOC_R0, val) // TODO: memory bank
+		err = vm.WriteBankMem(LOC_R0, val)
 		return err
 	}}
 
@@ -1899,7 +1877,7 @@ func operationTable() map[byte]Opcode {
 		if err != nil {
 			return err
 		}
-		err = vm.WriteMem(LOC_R1, val) // TODO: memory bank
+		err = vm.WriteBankMem(LOC_R1, val)
 		return err
 	}}
 
@@ -1909,7 +1887,7 @@ func operationTable() map[byte]Opcode {
 		if err != nil {
 			return err
 		}
-		err = vm.WriteMem(LOC_R2, val) // TODO: memory bank
+		err = vm.WriteBankMem(LOC_R2, val)
 		return err
 	}}
 
@@ -1919,7 +1897,7 @@ func operationTable() map[byte]Opcode {
 		if err != nil {
 			return err
 		}
-		err = vm.WriteMem(LOC_R3, val) // TODO: memory bank
+		err = vm.WriteBankMem(LOC_R3, val)
 		return err
 	}}
 
@@ -1929,7 +1907,7 @@ func operationTable() map[byte]Opcode {
 		if err != nil {
 			return err
 		}
-		err = vm.WriteMem(LOC_R4, val) // TODO: memory bank
+		err = vm.WriteBankMem(LOC_R4, val)
 		return err
 	}}
 
@@ -1939,7 +1917,7 @@ func operationTable() map[byte]Opcode {
 		if err != nil {
 			return err
 		}
-		err = vm.WriteMem(LOC_R5, val) // TODO: memory bank
+		err = vm.WriteBankMem(LOC_R5, val)
 		return err
 	}}
 
@@ -1949,7 +1927,7 @@ func operationTable() map[byte]Opcode {
 		if err != nil {
 			return err
 		}
-		err = vm.WriteMem(LOC_R6, val) // TODO: memory bank
+		err = vm.WriteBankMem(LOC_R6, val)
 		return err
 	}}
 
@@ -1959,7 +1937,7 @@ func operationTable() map[byte]Opcode {
 		if err != nil {
 			return err
 		}
-		err = vm.WriteMem(LOC_R7, val) // TODO: memory bank
+		err = vm.WriteBankMem(LOC_R7, val)
 		return err
 	}}
 
@@ -2088,7 +2066,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0xc6] = Opcode{Name: "XCH A,@R0", Eval: func(vm *Machine, operands []byte) error {
-		r0, err := vm.ReadMem(LOC_R0) // TODO: memory bank
+		r0, err := vm.ReadBankMem(LOC_R0)
 		if err != nil {
 			return err
 		}
@@ -2097,7 +2075,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0xc7] = Opcode{Name: "XCH A,@R1", Eval: func(vm *Machine, operands []byte) error {
-		r1, err := vm.ReadMem(LOC_R1) // TODO: memory bank
+		r1, err := vm.ReadBankMem(LOC_R1)
 		if err != nil {
 			return err
 		}
@@ -2106,35 +2084,35 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0xc8] = Opcode{Name: "XCH A,R0", Eval: func(vm *Machine, operands []byte) error {
-		return genericXch(vm, SFR_ACC, LOC_R0) // TODO: memory bank
+		return genericXch(vm, SFR_ACC, LOC_R0+vm.bankOffset())
 	}}
 
 	tbl[0xc9] = Opcode{Name: "XCH A,R1", Eval: func(vm *Machine, operands []byte) error {
-		return genericXch(vm, SFR_ACC, LOC_R1) // TODO: memory bank
+		return genericXch(vm, SFR_ACC, LOC_R1+vm.bankOffset())
 	}}
 
 	tbl[0xca] = Opcode{Name: "XCH A,R2", Eval: func(vm *Machine, operands []byte) error {
-		return genericXch(vm, SFR_ACC, LOC_R2) // TODO: memory bank
+		return genericXch(vm, SFR_ACC, LOC_R2+vm.bankOffset())
 	}}
 
 	tbl[0xcb] = Opcode{Name: "XCH A,R3", Eval: func(vm *Machine, operands []byte) error {
-		return genericXch(vm, SFR_ACC, LOC_R3) // TODO: memory bank
+		return genericXch(vm, SFR_ACC, LOC_R3+vm.bankOffset())
 	}}
 
 	tbl[0xcc] = Opcode{Name: "XCH A,R4", Eval: func(vm *Machine, operands []byte) error {
-		return genericXch(vm, SFR_ACC, LOC_R4) // TODO: memory bank
+		return genericXch(vm, SFR_ACC, LOC_R4+vm.bankOffset())
 	}}
 
 	tbl[0xcd] = Opcode{Name: "XCH A,R5", Eval: func(vm *Machine, operands []byte) error {
-		return genericXch(vm, SFR_ACC, LOC_R5) // TODO: memory bank
+		return genericXch(vm, SFR_ACC, LOC_R5+vm.bankOffset())
 	}}
 
 	tbl[0xce] = Opcode{Name: "XCH A,R6", Eval: func(vm *Machine, operands []byte) error {
-		return genericXch(vm, SFR_ACC, LOC_R6) // TODO: memory bank
+		return genericXch(vm, SFR_ACC, LOC_R6+vm.bankOffset())
 	}}
 
 	tbl[0xcf] = Opcode{Name: "XCH A,R7", Eval: func(vm *Machine, operands []byte) error {
-		return genericXch(vm, SFR_ACC, LOC_R7) // TODO: memory bank
+		return genericXch(vm, SFR_ACC, LOC_R7+vm.bankOffset())
 	}}
 
 	tbl[0xd0] = Opcode{Name: "POP", Eval: func(vm *Machine, operands []byte) error {
@@ -2168,7 +2146,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0xd6] = Opcode{Name: "XCHD A,@R0", Eval: func(vm *Machine, operands []byte) error {
-		ptr, err := vm.ReadMem(LOC_R0) // TODO: memory bank
+		ptr, err := vm.ReadBankMem(LOC_R0)
 		if err != nil {
 			return err
 		}
@@ -2176,7 +2154,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0xd7] = Opcode{Name: "XCHD A,@R1", Eval: func(vm *Machine, operands []byte) error {
-		ptr, err := vm.ReadMem(LOC_R1) // TODO: memory bank
+		ptr, err := vm.ReadBankMem(LOC_R1)
 		if err != nil {
 			return err
 		}
@@ -2260,7 +2238,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0xe6] = Opcode{Name: "MOV A,@R0", Eval: func(vm *Machine, operands []byte) error {
-		val, err := vm.DerefMem(LOC_R0) // TODO: memory bank
+		val, err := vm.DerefBank(LOC_R0)
 		if err != nil {
 			return err
 		}
@@ -2270,7 +2248,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0xe7] = Opcode{Name: "MOV A,@R1", Eval: func(vm *Machine, operands []byte) error {
-		val, err := vm.DerefMem(LOC_R1) // TODO: memory bank
+		val, err := vm.DerefBank(LOC_R1)
 		if err != nil {
 			return err
 		}
@@ -2280,7 +2258,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0xe8] = Opcode{Name: "MOV A,R0", Eval: func(vm *Machine, operands []byte) error {
-		r0, err := vm.ReadMem(LOC_R0) // TODO: memory bank
+		r0, err := vm.ReadBankMem(LOC_R0)
 		if err != nil {
 			return err
 		}
@@ -2289,7 +2267,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0xe9] = Opcode{Name: "MOV A,R1", Eval: func(vm *Machine, operands []byte) error {
-		r1, err := vm.ReadMem(LOC_R1) // TODO: memory bank
+		r1, err := vm.ReadBankMem(LOC_R1)
 		if err != nil {
 			return err
 		}
@@ -2298,7 +2276,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0xea] = Opcode{Name: "MOV A,R2", Eval: func(vm *Machine, operands []byte) error {
-		r2, err := vm.ReadMem(LOC_R2) // TODO: memory bank
+		r2, err := vm.ReadBankMem(LOC_R2)
 		if err != nil {
 			return err
 		}
@@ -2307,7 +2285,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0xeb] = Opcode{Name: "MOV A,R3", Eval: func(vm *Machine, operands []byte) error {
-		r3, err := vm.ReadMem(LOC_R3) // TODO: memory bank
+		r3, err := vm.ReadBankMem(LOC_R3)
 		if err != nil {
 			return err
 		}
@@ -2316,7 +2294,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0xec] = Opcode{Name: "MOV A,R4", Eval: func(vm *Machine, operands []byte) error {
-		r4, err := vm.ReadMem(LOC_R4) // TODO: memory bank
+		r4, err := vm.ReadBankMem(LOC_R4)
 		if err != nil {
 			return err
 		}
@@ -2325,7 +2303,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0xed] = Opcode{Name: "MOV A,R5", Eval: func(vm *Machine, operands []byte) error {
-		r5, err := vm.ReadMem(LOC_R5) // TODO: memory bank
+		r5, err := vm.ReadBankMem(LOC_R5)
 		if err != nil {
 			return err
 		}
@@ -2334,7 +2312,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0xee] = Opcode{Name: "MOV A,R6", Eval: func(vm *Machine, operands []byte) error {
-		r6, err := vm.ReadMem(LOC_R6) // TODO: memory bank
+		r6, err := vm.ReadBankMem(LOC_R6)
 		if err != nil {
 			return err
 		}
@@ -2343,7 +2321,7 @@ func operationTable() map[byte]Opcode {
 	}}
 
 	tbl[0xef] = Opcode{Name: "MOV A,R7", Eval: func(vm *Machine, operands []byte) error {
-		r7, err := vm.ReadMem(LOC_R7) // TODO: memory bank
+		r7, err := vm.ReadBankMem(LOC_R7)
 		if err != nil {
 			return err
 		}
@@ -2393,7 +2371,7 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		err = vm.SetrefMem(LOC_R0, A) // TODO: memory bank
+		err = vm.SetrefBank(LOC_R0, A)
 		return err
 	}}
 
@@ -2403,7 +2381,7 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		err = vm.SetrefMem(LOC_R1, A) // TODO: memory bank
+		err = vm.SetrefBank(LOC_R1, A)
 		return err
 	}}
 
@@ -2413,7 +2391,7 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		err = vm.WriteMem(LOC_R0, A) // TODO: memory bank
+		err = vm.WriteBankMem(LOC_R0, A)
 		return err
 	}}
 
@@ -2423,7 +2401,7 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		err = vm.WriteMem(LOC_R1, A) // TODO: memory bank
+		err = vm.WriteBankMem(LOC_R1, A)
 		return err
 	}}
 
@@ -2433,7 +2411,7 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		err = vm.WriteMem(LOC_R2, A) // TODO: memory bank
+		err = vm.WriteBankMem(LOC_R2, A)
 		return err
 	}}
 
@@ -2443,7 +2421,7 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		err = vm.WriteMem(LOC_R3, A) // TODO: memory bank
+		err = vm.WriteBankMem(LOC_R3, A)
 		return err
 	}}
 
@@ -2453,7 +2431,7 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		err = vm.WriteMem(LOC_R4, A) // TODO: memory bank
+		err = vm.WriteBankMem(LOC_R4, A)
 		return err
 	}}
 
@@ -2463,7 +2441,7 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		err = vm.WriteMem(LOC_R5, A) // TODO: memory bank
+		err = vm.WriteBankMem(LOC_R5, A)
 		return err
 	}}
 
@@ -2473,7 +2451,7 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		err = vm.WriteMem(LOC_R6, A) // TODO: memory bank
+		err = vm.WriteBankMem(LOC_R6, A)
 		return err
 	}}
 
@@ -2483,7 +2461,7 @@ func operationTable() map[byte]Opcode {
 			return err
 		}
 
-		err = vm.WriteMem(LOC_R7, A) // TODO: memory bank
+		err = vm.WriteBankMem(LOC_R7, A)
 		return err
 	}}
 
