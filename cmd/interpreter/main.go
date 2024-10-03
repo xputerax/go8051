@@ -480,7 +480,7 @@ func genericAnl(vm *Machine, dest uint8, src uint8) error {
 		return err
 	}
 
-	err = vm.WriteMem(dest, destVal|srcVal)
+	err = vm.WriteMem(dest, destVal&srcVal)
 	return err
 }
 
@@ -490,7 +490,7 @@ func genericAnlImm(vm *Machine, dest uint8, value byte) error {
 		return err
 	}
 
-	err = vm.WriteMem(dest, destVal|value)
+	err = vm.WriteMem(dest, destVal&value)
 	return err
 }
 
