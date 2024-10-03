@@ -452,7 +452,7 @@ func genericOrl(vm *Machine, dest uint8, src uint8) error {
 		return err
 	}
 
-	srcVal, err := vm.ReadMem(dest)
+	srcVal, err := vm.ReadMem(src)
 	if err != nil {
 		return err
 	}
