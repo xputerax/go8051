@@ -1783,3 +1783,26 @@ func TestOp0xD7(t *testing.T) {
 	// TODO: implement
 	t.Skipf("TODO: implement")
 }
+
+func TestOp0xE4(t *testing.T) {
+	var initialValue byte = 0xFF
+	var expectedValue byte = 0x00
+
+	vm := NewMachine()
+	if err := vm.WriteMem(SFR_ACC, initialValue); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := vm.Feed([]byte{0xe4}); err != nil {
+		t.Fatal(err)
+	}
+
+	actualValue, err := vm.ReadMem(SFR_ACC)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if actualValue != expectedValue {
+		t.Errorf("expected A register to be %#08b, got %#08b", expectedValue, actualValue)
+	}
+}
