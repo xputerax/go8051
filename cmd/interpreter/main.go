@@ -122,6 +122,7 @@ type Machine struct {
 	Program   []byte
 	Data      []byte
 	PC        uint16 // Program counter / instruction pointer
+	SP        uint8  // Stack pointer
 }
 
 func NewMachine() *Machine {
@@ -130,6 +131,7 @@ func NewMachine() *Machine {
 		Program:   make([]byte, 4*1024, 4*1024), // pre-allocate 4KB ROM
 		Data:      make([]byte, 256, 256),       // pre-allocate 256B RAM
 		PC:        0,
+		SP:        LOC_R7, // Stack starts at 0x07
 	}
 
 	return &vm
