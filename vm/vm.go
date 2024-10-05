@@ -1,4 +1,4 @@
-package main
+package vm
 
 import (
 	"fmt"
@@ -431,19 +431,6 @@ func (m *Machine) DerefBank(loc uint8) (byte, error) {
 
 func (m *Machine) SetrefBank(loc uint8, value byte) error {
 	return m.SetrefMem(loc+m.bankOffset(), value)
-}
-
-func main() {
-	m := Machine{
-		registers: Register{},
-	}
-
-	// ni kalau receive raw instruction/byte code
-	// TODO: pass assembly, software akan translate jadi byte code, feed masuk VM
-	err := m.Feed([]byte{0x24, 0xFF})
-	if err != nil {
-		fmt.Printf("err: %s\n", err)
-	}
 }
 
 func genericOrl(vm *Machine, dest uint8, src uint8) error {
