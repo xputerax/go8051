@@ -1806,3 +1806,50 @@ func TestOp0xE4(t *testing.T) {
 		t.Errorf("expected A register to be %#08b, got %#08b", expectedValue, actualValue)
 	}
 }
+
+func TestOp0xC0_0xD0(t *testing.T) {
+	var srcAddr byte = 0x2F
+	var expectedValue byte = 0xFF
+
+	vm := NewMachine()
+	err := vm.WriteMem(srcAddr, expectedValue)
+	if err != nil {
+		t.Fatal(err)
+	}
+	currentSp := vm.SP
+	expectedNewSp := currentSp + 1
+
+	if err := vm.Feed([]byte{0xc0, srcAddr}); err != nil {
+		t.Fatal(err)
+	}
+
+	newSp := vm.SP
+
+	if newSp != expectedNewSp {
+		t.Errorf("expected SP to be %d, got %d", expectedNewSp, newSp)
+	}
+
+	spVal, err := vm.ReadMem(newSp)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if spVal != expectedValue {
+		t.Errorf("direct read: expected value at SP (%d) to be %#02x, got %#02x", newSp, expectedValue, spVal)
+	}
+
+	var popInto byte = 0x00
+
+	if err := vm.Feed([]byte{0xd0, popInto}); err != nil {
+		t.Fatal(err)
+	}
+
+	poppedValue, err := vm.ReadMem(popInto)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if poppedValue != expectedValue {
+		t.Errorf("pop: expected POPped value to be %#02x, got %#02x", expectedValue, poppedValue)
+	}
+}

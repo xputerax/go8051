@@ -2023,8 +2023,21 @@ func operationTable() map[byte]Opcode {
 		return nil
 	}}
 
-	tbl[0xc0] = Opcode{Name: "PUSH", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
+	tbl[0xc0] = Opcode{Name: "PUSH ramaddr", Eval: func(vm *Machine, operands []byte) error {
+		addr := operands[0]
+
+		val, err := vm.ReadMem(addr)
+		if err != nil {
+			return err
+		}
+
+		newSp := vm.SP + 1
+
+		if err := vm.WriteMem(newSp, val); err != nil {
+			return err
+		}
+
+		vm.SP = newSp
 		return nil
 	}}
 
@@ -2117,8 +2130,20 @@ func operationTable() map[byte]Opcode {
 		return genericXch(vm, SFR_ACC, LOC_R7+vm.bankOffset())
 	}}
 
-	tbl[0xd0] = Opcode{Name: "POP", Eval: func(vm *Machine, operands []byte) error {
-		// TODO: implement
+	tbl[0xd0] = Opcode{Name: "POP ramaddr", Eval: func(vm *Machine, operands []byte) error {
+		srcAddr := vm.SP
+		destAddr := operands[0]
+
+		val, err := vm.ReadMem(srcAddr)
+		if err != nil {
+			return err
+		}
+
+		if err := vm.WriteMem(destAddr, val); err != nil {
+			return err
+		}
+
+		vm.SP -= 1
 		return nil
 	}}
 
