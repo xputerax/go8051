@@ -2,7 +2,6 @@ package vm
 
 import (
 	"fmt"
-	"log"
 )
 
 /** Special function registers - 80h - FFh */
@@ -166,16 +165,16 @@ func (m *Machine) Feed(instructions []byte) error {
 		return fmt.Errorf("cannot execute instruction because program counter exceeds 0xFFFF (65535)")
 	}
 
-	log.Printf("executing instruction '%02X' (%s) with operand '%v' (bank %d)", opcode, op.Name, operands, m.bankNo())
+	// log.Printf("executing instruction '%02X' (%s) with operand '%v' (bank %d)", opcode, op.Name, operands, m.bankNo())
 
-	log.Printf("BEFORE: %+v\n", m.registers)
+	// log.Printf("BEFORE: %+v\n", m.registers)
 
 	evalErr := op.Eval(m, operands)
 	if evalErr != nil {
 		return fmt.Errorf("VM eval error: %s", evalErr)
 	}
 
-	log.Printf("AFTER: %+v\n", m.registers)
+	// log.Printf("AFTER: %+v\n", m.registers)
 
 	m.PC += uint16(len(instructions))
 
@@ -570,12 +569,12 @@ func operationTable() map[byte]Opcode {
 
 	tbl[0x01] = Opcode{Name: "AJMP codeaddr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x01 not implemented")
 	}}
 
 	tbl[0x02] = Opcode{Name: "LJMP codeaddr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x02 not implemented")
 	}}
 
 	tbl[0x03] = Opcode{Name: "RR A", Eval: func(vm *Machine, operands []byte) error {
@@ -729,17 +728,17 @@ func operationTable() map[byte]Opcode {
 
 	tbl[0x10] = Opcode{Name: "JBC bit,rel", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x10 not implemented")
 	}}
 
 	tbl[0x11] = Opcode{Name: "ACALL page0", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x11 not implemented")
 	}}
 
 	tbl[0x12] = Opcode{Name: "LCALL codeaddr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x12 not implemented")
 	}}
 
 	tbl[0x13] = Opcode{Name: "RRC A", Eval: func(vm *Machine, operands []byte) error {
@@ -913,17 +912,17 @@ func operationTable() map[byte]Opcode {
 
 	tbl[0x20] = Opcode{Name: "JB", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x20 not implemented")
 	}}
 
 	tbl[0x21] = Opcode{Name: "AJMP", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x21 not implemented")
 	}}
 
 	tbl[0x22] = Opcode{Name: "RET", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x22 not implemented")
 	}}
 
 	tbl[0x23] = Opcode{Name: "RL A", Eval: func(vm *Machine, operands []byte) error {
@@ -1133,17 +1132,17 @@ func operationTable() map[byte]Opcode {
 
 	tbl[0x30] = Opcode{Name: "JNB bit addr,code addr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x30 not implemented")
 	}}
 
 	tbl[0x31] = Opcode{Name: "ACALL code addr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x31 not implemented")
 	}}
 
 	tbl[0x32] = Opcode{Name: "RETI", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x32 not implemented")
 	}}
 
 	tbl[0x33] = Opcode{Name: "RLC A", Eval: func(vm *Machine, operands []byte) error {
@@ -1177,72 +1176,72 @@ func operationTable() map[byte]Opcode {
 
 	tbl[0x34] = Opcode{Name: "ADDC", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x34 not implemented")
 	}}
 
 	tbl[0x35] = Opcode{Name: "ADDC", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x35 not implemented")
 	}}
 
 	tbl[0x36] = Opcode{Name: "ADDC", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x36 not implemented")
 	}}
 
 	tbl[0x37] = Opcode{Name: "ADDC", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x37 not implemented")
 	}}
 
 	tbl[0x38] = Opcode{Name: "ADDC", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x38 not implemented")
 	}}
 
 	tbl[0x39] = Opcode{Name: "ADDC", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x39 not implemented")
 	}}
 
 	tbl[0x3a] = Opcode{Name: "ADDC", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x3a not implemented")
 	}}
 
 	tbl[0x3b] = Opcode{Name: "ADDC", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x3b not implemented")
 	}}
 
 	tbl[0x3c] = Opcode{Name: "ADDC", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x3c not implemented")
 	}}
 
 	tbl[0x3d] = Opcode{Name: "ADDC", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x3d not implemented")
 	}}
 
 	tbl[0x3e] = Opcode{Name: "ADDC", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x3e not implemented")
 	}}
 
 	tbl[0x3f] = Opcode{Name: "ADDC", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x3f not implemented")
 	}}
 
 	tbl[0x40] = Opcode{Name: "JC reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x40 not implemented")
 	}}
 
 	tbl[0x41] = Opcode{Name: "AJMP", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x41 not implemented")
 	}}
 
 	tbl[0x42] = Opcode{Name: "ORL data addr,A", Eval: func(vm *Machine, operands []byte) error {
@@ -1313,12 +1312,12 @@ func operationTable() map[byte]Opcode {
 
 	tbl[0x50] = Opcode{Name: "JNC reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x50 not implemented")
 	}}
 
 	tbl[0x51] = Opcode{Name: "ACALL", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x51 not implemented")
 	}}
 
 	tbl[0x52] = Opcode{Name: "ANL iram addr,A", Eval: func(vm *Machine, operands []byte) error {
@@ -1389,12 +1388,12 @@ func operationTable() map[byte]Opcode {
 
 	tbl[0x60] = Opcode{Name: "JZ reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x60 not implemented")
 	}}
 
 	tbl[0x61] = Opcode{Name: "AJMP", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x61 not implemented")
 	}}
 
 	tbl[0x62] = Opcode{Name: "XRL iram addr,A", Eval: func(vm *Machine, operands []byte) error {
@@ -1465,22 +1464,22 @@ func operationTable() map[byte]Opcode {
 
 	tbl[0x70] = Opcode{Name: "JNZ reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x70 not implemented")
 	}}
 
 	tbl[0x71] = Opcode{Name: "ACALL", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x71 not implemented")
 	}}
 
 	tbl[0x72] = Opcode{Name: "ORL", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x72 not implemented")
 	}}
 
 	tbl[0x73] = Opcode{Name: "JMP", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x73 not implemented")
 	}}
 
 	tbl[0x74] = Opcode{Name: "MOV A,#data", Eval: func(vm *Machine, operands []byte) error {
@@ -1562,27 +1561,27 @@ func operationTable() map[byte]Opcode {
 
 	tbl[0x80] = Opcode{Name: "SJMP reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x80 not implemented")
 	}}
 
 	tbl[0x81] = Opcode{Name: "AJMP", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x81 not implemented")
 	}}
 
 	tbl[0x82] = Opcode{Name: "ANL", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x82 not implemented")
 	}}
 
 	tbl[0x83] = Opcode{Name: "MOVC", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x83 not implemented")
 	}}
 
 	tbl[0x84] = Opcode{Name: "DIV", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x84 not implemented")
 	}}
 
 	tbl[0x85] = Opcode{Name: "MOV addr1,addr2", Eval: func(vm *Machine, operands []byte) error {
@@ -1722,112 +1721,112 @@ func operationTable() map[byte]Opcode {
 
 	tbl[0x90] = Opcode{Name: "MOV", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x90 not implemented")
 	}}
 
 	tbl[0x91] = Opcode{Name: "ACALL", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x91 not implemented")
 	}}
 
 	tbl[0x92] = Opcode{Name: "MOV", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x92 not implemented")
 	}}
 
 	tbl[0x93] = Opcode{Name: "MOVC", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x93 not implemented")
 	}}
 
 	tbl[0x94] = Opcode{Name: "SUBB", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x94 not implemented")
 	}}
 
 	tbl[0x95] = Opcode{Name: "SUBB", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x95 not implemented")
 	}}
 
 	tbl[0x96] = Opcode{Name: "SUBB", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x96 not implemented")
 	}}
 
 	tbl[0x97] = Opcode{Name: "SUBB", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x97 not implemented")
 	}}
 
 	tbl[0x98] = Opcode{Name: "SUBB", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x98 not implemented")
 	}}
 
 	tbl[0x99] = Opcode{Name: "SUBB", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x99 not implemented")
 	}}
 
 	tbl[0x9a] = Opcode{Name: "SUBB", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x9a not implemented")
 	}}
 
 	tbl[0x9b] = Opcode{Name: "SUBB", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x9b not implemented")
 	}}
 
 	tbl[0x9c] = Opcode{Name: "SUBB", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x9c not implemented")
 	}}
 
 	tbl[0x9d] = Opcode{Name: "SUBB", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x9d not implemented")
 	}}
 
 	tbl[0x9e] = Opcode{Name: "SUBB", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x9e not implemented")
 	}}
 
 	tbl[0x9f] = Opcode{Name: "SUBB", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0x9f not implemented")
 	}}
 
 	tbl[0xa0] = Opcode{Name: "ORL", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xa0 not implemented")
 	}}
 
 	tbl[0xa1] = Opcode{Name: "AJMP", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xa1 not implemented")
 	}}
 
 	tbl[0xa2] = Opcode{Name: "MOV", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xa2 not implemented")
 	}}
 
 	tbl[0xa3] = Opcode{Name: "INC", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xa3 not implemented")
 	}}
 
 	tbl[0xa4] = Opcode{Name: "MUL", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xa4 not implemented")
 	}}
 
 	tbl[0xa5] = Opcode{Name: "?", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xa5 not implemented")
 	}}
 
 	tbl[0xa6] = Opcode{Name: "MOV @R0,ramaddr", Eval: func(vm *Machine, operands []byte) error {
@@ -1932,82 +1931,82 @@ func operationTable() map[byte]Opcode {
 
 	tbl[0xb0] = Opcode{Name: "ANL", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xb0 not implemented")
 	}}
 
 	tbl[0xb1] = Opcode{Name: "ACALL", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xb1 not implemented")
 	}}
 
 	tbl[0xb2] = Opcode{Name: "CPL bitaddr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xb2 not implemented")
 	}}
 
 	tbl[0xb3] = Opcode{Name: "CPL", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xb3 not implemented")
 	}}
 
 	tbl[0xb4] = Opcode{Name: "CJNE A,#data,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xb4 not implemented")
 	}}
 
 	tbl[0xb5] = Opcode{Name: "CJNE A,iram addr,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xb5 not implemented")
 	}}
 
 	tbl[0xb6] = Opcode{Name: "CJNE @R0,#data,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xb6 not implemented")
 	}}
 
 	tbl[0xb7] = Opcode{Name: "CJNE @R1,#data,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xb7 not implemented")
 	}}
 
 	tbl[0xb8] = Opcode{Name: "CJNE R0,#data,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xb8 not implemented")
 	}}
 
 	tbl[0xb9] = Opcode{Name: "CJNE R1,#data,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xb9 not implemented")
 	}}
 
 	tbl[0xba] = Opcode{Name: "CJNE R2,#data,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xba not implemented")
 	}}
 
 	tbl[0xbb] = Opcode{Name: "CJNE R3,#data,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xbb not implemented")
 	}}
 
 	tbl[0xbc] = Opcode{Name: "CJNE R4,#data,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xbc not implemented")
 	}}
 
 	tbl[0xbd] = Opcode{Name: "CJNE R5,#data,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xbd not implemented")
 	}}
 
 	tbl[0xbe] = Opcode{Name: "CJNE R6,#data,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xbe not implemented")
 	}}
 
 	tbl[0xbf] = Opcode{Name: "CJNE R7,#data,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xbf not implemented")
 	}}
 
 	tbl[0xc0] = Opcode{Name: "PUSH ramaddr", Eval: func(vm *Machine, operands []byte) error {
@@ -2030,17 +2029,17 @@ func operationTable() map[byte]Opcode {
 
 	tbl[0xc1] = Opcode{Name: "AJMP", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xc1 not implemented")
 	}}
 
 	tbl[0xc2] = Opcode{Name: "CLR", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xc2 not implemented")
 	}}
 
 	tbl[0xc3] = Opcode{Name: "CLR", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xc3 not implemented")
 	}}
 
 	tbl[0xc4] = Opcode{Name: "SWAP A", Eval: func(vm *Machine, operands []byte) error {
@@ -2136,27 +2135,27 @@ func operationTable() map[byte]Opcode {
 
 	tbl[0xd1] = Opcode{Name: "ACALL", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xd1 not implemented")
 	}}
 
 	tbl[0xd2] = Opcode{Name: "SETB", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xd2 not implemented")
 	}}
 
 	tbl[0xd3] = Opcode{Name: "SETB", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xd3 not implemented")
 	}}
 
 	tbl[0xd4] = Opcode{Name: "DA", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xd4 not implemented")
 	}}
 
 	tbl[0xd5] = Opcode{Name: "DJNZ", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xd5 not implemented")
 	}}
 
 	tbl[0xd6] = Opcode{Name: "XCHD A,@R0", Eval: func(vm *Machine, operands []byte) error {
@@ -2177,62 +2176,62 @@ func operationTable() map[byte]Opcode {
 
 	tbl[0xd8] = Opcode{Name: "DJNZ R0,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xd8 not implemented")
 	}}
 
 	tbl[0xd9] = Opcode{Name: "DJNZ R1,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xd9 not implemented")
 	}}
 
 	tbl[0xda] = Opcode{Name: "DJNZ R2,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xda not implemented")
 	}}
 
 	tbl[0xdb] = Opcode{Name: "DJNZ R3,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xdb not implemented")
 	}}
 
 	tbl[0xdc] = Opcode{Name: "DJNZ R4,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xdc not implemented")
 	}}
 
 	tbl[0xdd] = Opcode{Name: "DJNZ R5,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xdd not implemented")
 	}}
 
 	tbl[0xde] = Opcode{Name: "DJNZ R6,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xde not implemented")
 	}}
 
 	tbl[0xdf] = Opcode{Name: "DJNZ R7,reladdr", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xdf not implemented")
 	}}
 
 	tbl[0xe0] = Opcode{Name: "MOVX", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xe0 not implemented")
 	}}
 
 	tbl[0xe1] = Opcode{Name: "AJMP", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xe1 not implemented")
 	}}
 
 	tbl[0xe2] = Opcode{Name: "MOVX", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xe2 not implemented")
 	}}
 
 	tbl[0xe3] = Opcode{Name: "MOVX", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xe3 not implemented")
 	}}
 
 	tbl[0xe4] = Opcode{Name: "CLR A", Eval: func(vm *Machine, operands []byte) error {
@@ -2345,27 +2344,27 @@ func operationTable() map[byte]Opcode {
 
 	tbl[0xf0] = Opcode{Name: "MOVX", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xf0 not implemented")
 	}}
 
 	tbl[0xf1] = Opcode{Name: "ACALL", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xf1 not implemented")
 	}}
 
 	tbl[0xf2] = Opcode{Name: "MOVX", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xf2 not implemented")
 	}}
 
 	tbl[0xf3] = Opcode{Name: "MOVX", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xf3 not implemented")
 	}}
 
 	tbl[0xf4] = Opcode{Name: "CPL", Eval: func(vm *Machine, operands []byte) error {
 		// TODO: implement
-		return nil
+		return fmt.Errorf("instruction 0xf4 not implemented")
 	}}
 
 	tbl[0xf5] = Opcode{Name: "MOV ramaddr,A", Eval: func(vm *Machine, operands []byte) error {
